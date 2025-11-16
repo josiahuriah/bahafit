@@ -1,4 +1,6 @@
-export default {
+import { defineType } from 'sanity'
+
+export default defineType({
   name: 'coach',
   title: 'Coach/Trainer',
   type: 'document',
@@ -98,4 +100,4 @@ export default {
       ]
     }
   ]
-}
+})

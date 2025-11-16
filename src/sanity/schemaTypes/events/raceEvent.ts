@@ -1,4 +1,6 @@
-export default {
+import { defineType } from 'sanity'
+
+export default defineType({
   name: 'raceEvent',
   title: 'Race Event',
   type: 'document',
@@ -113,4 +115,4 @@ export default {
       type: 'url'
     }
   ]
-}
+})

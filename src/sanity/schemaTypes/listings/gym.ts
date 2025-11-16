@@ -1,4 +1,6 @@
-export default {
+import { defineType } from 'sanity'
+
+export default defineType({
   name: 'gym',
   title: 'Gym',
   type: 'document',
@@ -131,4 +133,4 @@ export default {
       }
     }
   ]
-}
+})

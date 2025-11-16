@@ -1,4 +1,6 @@
-export default {
+import { defineType } from 'sanity'
+
+export default defineType({
   name: 'blockContent',
   title: 'Block Content',
   type: 'array',
@@ -39,4 +41,4 @@ export default {
       options: { hotspot: true }
     }
   ]
-}
+})

@@ -1,5 +1,7 @@
-// schemas/events/competition.js
-export default {
+import { defineType } from 'sanity'
+
+// schemas/events/competition.ts
+export default defineType({
   name: 'competition',
   title: 'Competition Event',
   type: 'document',
@@ -39,4 +41,4 @@ export default {
       of: [{ type: 'string' }]
     }
   ]
-}
+})

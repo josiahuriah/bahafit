@@ -1,5 +1,7 @@
 // Will be developed in future
-// export default {
+// import { defineType } from 'sanity'
+//
+// export default defineType({
 //   name: 'post',
 //   title: 'Blog Post',
 //   type: 'document',
@@ -13,4 +15,4 @@
 //     { name: 'body', type: 'blockContent' },
 //     { name: 'excerpt', type: 'text' }
 //   ]
-// }
+// })

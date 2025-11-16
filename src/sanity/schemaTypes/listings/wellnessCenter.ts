@@ -1,5 +1,7 @@
-// schemas/listings/wellnessCenter.js
-export default {
+import { defineType } from 'sanity'
+
+// schemas/listings/wellnessCenter.ts
+export default defineType({
   name: 'wellnessCenter',
   title: 'Wellness Center',
   type: 'document',
@@ -50,4 +52,4 @@ export default {
       }]
     }
   ]
-}
+})
