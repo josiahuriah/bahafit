@@ -1,6 +1,5 @@
 import NextAuth from 'next-auth'
-import type { User as NextAuthUser, Session } from 'next-auth'
-import type { JWT } from 'next-auth/jwt'
+import type { Session } from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
 import Google from 'next-auth/providers/google'
 import Facebook from 'next-auth/providers/facebook'
@@ -36,8 +35,22 @@ declare module 'next-auth/jwt' {
   }
 }
 
+// Create a custom adapter that wraps MongoDB adapter and ensures proper typing
+const adapter = MongoDBAdapter(clientPromise)
+const customAdapter = {
+  ...adapter,
+  createUser: async (user: any) => {
+    const newUser = await adapter.createUser?.(user)
+    return {
+      ...newUser,
+      role: 'user' as UserRole,
+      isActive: true,
+    }
+  },
+} as any
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
-  adapter: MongoDBAdapter(clientPromise),
+  adapter: customAdapter,
   providers: [
     Credentials({
       credentials: {
@@ -116,7 +129,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     async jwt({ token, user, trigger, session }) {
       // Initial sign in
       if (user) {
-        token.id = user.id
+        token.id = user.id || ''
         token.role = user.role
         token.isActive = user.isActive
       }
