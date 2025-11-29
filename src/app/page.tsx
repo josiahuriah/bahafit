@@ -10,14 +10,14 @@ export default function Home() {
       <Header />
 
       {/* Hero Section with Video Background */}
-      <section className="relative h-screen w-full overflow-hidden">
+      <section className="relative h-screen w-full overflow-hidden bg-black">
         {/* Video Background */}
         <video
           autoPlay
           loop
           muted
           playsInline
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-contain md:object-cover"
         >
           <source src="/videos/hero-video.mp4" type="video/mp4" />
           {/* Fallback gradient if video doesn't load */}
