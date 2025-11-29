@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 
 export default function Footer() {
   return (
@@ -7,12 +8,18 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand Section */}
           <div className="col-span-1">
-            <div className="flex items-center space-x-2 mb-4">
-              <div className="h-10 w-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-xl">B</span>
-              </div>
-              <span className="text-xl font-bold text-white">Bahafit</span>
-            </div>
+            {/* Logo */}
+                      <div className="flex items-center">
+                          <div className="h-12 w-36 rounded-lg flex items-center justify-center">
+                          <Image
+                            src="/images/logo.png"
+                            alt="Big Dunn Entertainment"
+                            width={120}
+                            height={80}
+                            className="h-10 w-auto"
+                          />
+                        </div>              
+                      </div>
             <p className="text-sm text-gray-400 mb-4">
               Connecting the Caribbean fitness community with events, trainers, and wellness resources.
             </p>
