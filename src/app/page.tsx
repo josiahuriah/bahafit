@@ -290,14 +290,14 @@ export default function Home() {
       </section>
 
       {/* Find Everything Section */}
-      <section className="h-screen flex flex-col bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20">
+      <section className="flex flex-col bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-8">
           <h2 className="text-4xl md:text-5xl font-bold text-black mb-12 text-center">
             Find everything you're looking for
           </h2>
         </div>
 
-        <div className="flex-1 grid grid-cols-1 md:grid-cols-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 md:h-[70vh] min-h-[600px]">
           {[
             { number: '01', title: 'FITNESS CLASSES', image: '/images/fitness-classes.jpg' },
             { number: '02', title: 'NUTRITIONAL EATS', image: '/images/nutritional-eats.jpg' },
