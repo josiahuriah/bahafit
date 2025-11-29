@@ -29,7 +29,7 @@ export async function createRegistration(
 
 export async function getRegistrationById(id: string): Promise<Registration | null> {
   const collection = await getRegistrationsCollection()
-  const registration = await collection.findOne({ _id: new ObjectId(id) })
+  const registration = await collection.findOne({ _id: new ObjectId(id) } as any)
 
   if (!registration) return null
 
@@ -107,7 +107,7 @@ export async function updateRegistration(
   delete updateData._id
 
   const result = await collection.findOneAndUpdate(
-    { _id: new ObjectId(id) },
+    { _id: new ObjectId(id) } as any,
     { $set: updateData },
     { returnDocument: 'after' }
   )

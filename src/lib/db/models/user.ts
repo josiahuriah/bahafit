@@ -60,7 +60,7 @@ export async function getUserByEmail(email: string): Promise<User | null> {
 
 export async function getUserById(id: string): Promise<User | null> {
   const collection = await getUsersCollection()
-  const user = await collection.findOne({ _id: new ObjectId(id) })
+  const user = await collection.findOne({ _id: new ObjectId(id) } as any)
 
   if (!user) return null
 
@@ -87,7 +87,7 @@ export async function updateUser(
   delete updateData.password
 
   const result = await collection.findOneAndUpdate(
-    { _id: new ObjectId(id) },
+    { _id: new ObjectId(id) } as any,
     { $set: updateData },
     { returnDocument: 'after' }
   )
@@ -143,7 +143,7 @@ export async function getAllUsers(filters?: {
 
 export async function deleteUser(id: string): Promise<boolean> {
   const collection = await getUsersCollection()
-  const result = await collection.deleteOne({ _id: new ObjectId(id) })
+  const result = await collection.deleteOne({ _id: new ObjectId(id) } as any)
   return result.deletedCount === 1
 }
 
