@@ -1,6 +1,11 @@
 import { MongoClient, Db } from 'mongodb'
 
-const options = {}
+const options = {
+  tls: true,
+  tlsAllowInvalidCertificates: true,
+  serverSelectionTimeoutMS: 10000,
+  connectTimeoutMS: 10000,
+}
 
 let client: MongoClient
 let clientPromise: Promise<MongoClient> | null = null
