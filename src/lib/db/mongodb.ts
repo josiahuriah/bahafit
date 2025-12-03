@@ -1,10 +1,8 @@
 import { MongoClient, Db } from 'mongodb'
 
 const options = {
-  tls: true,
-  tlsAllowInvalidCertificates: true,
-  serverSelectionTimeoutMS: 10000,
-  connectTimeoutMS: 10000,
+  serverSelectionTimeoutMS: 5000,
+  socketTimeoutMS: 10000,
 }
 
 let client: MongoClient
