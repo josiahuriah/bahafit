@@ -1,3 +1,8 @@
+import Link from 'next/link'
+import Header from '@/components/layout/Header'
+import Footer from '@/components/layout/Footer'
+import Image from 'next/image';
+
 <section className="relative py-32 bg-gradient-to-br from-gray-50 to-white overflow-hidden">
         {/* Decorative Elements */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-[#0dd5b5] opacity-5 rounded-full blur-3xl"></div>
