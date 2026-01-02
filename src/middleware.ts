@@ -11,6 +11,17 @@ export async function middleware(request: NextRequest) {
     secret: process.env.NEXTAUTH_SECRET,
   })
 
+  // Debug logging (remove after fixing)
+  if (pathname.startsWith('/admin')) {
+    console.log('=== ADMIN ACCESS DEBUG ===')
+    console.log('Path:', pathname)
+    console.log('Has token:', !!token)
+    console.log('Token role:', token?.role)
+    console.log('Token isActive:', token?.isActive)
+    console.log('NEXTAUTH_SECRET set:', !!process.env.NEXTAUTH_SECRET)
+    console.log('========================')
+  }
+
   // Define protected routes
   const isAdminRoute = pathname.startsWith('/admin')
   const isAuthRoute = pathname.startsWith('/auth')
