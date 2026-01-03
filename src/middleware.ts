@@ -1,24 +1,17 @@
+import { auth } from '@/lib/auth'
 import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
-import { getToken } from 'next-auth/jwt'
 
-export async function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl
-
-  // Get the token to check authentication
-  const token = await getToken({
-    req: request,
-    secret: process.env.NEXTAUTH_SECRET,
-  })
+export default auth((req) => {
+  const { pathname } = req.nextUrl
+  const session = req.auth
 
   // Debug logging (remove after fixing)
   if (pathname.startsWith('/admin')) {
     console.log('=== ADMIN ACCESS DEBUG ===')
     console.log('Path:', pathname)
-    console.log('Has token:', !!token)
-    console.log('Token role:', token?.role)
-    console.log('Token isActive:', token?.isActive)
-    console.log('NEXTAUTH_SECRET set:', !!process.env.NEXTAUTH_SECRET)
+    console.log('Has session:', !!session)
+    console.log('User role:', session?.user?.role)
+    console.log('User isActive:', session?.user?.isActive)
     console.log('========================')
   }
 
@@ -28,60 +21,48 @@ export async function middleware(request: NextRequest) {
   const isApiAdminRoute = pathname.startsWith('/api/admin')
 
   // Redirect authenticated users away from auth pages
-  if (isAuthRoute && token) {
-    // If user is already logged in, redirect to dashboard based on role
-    if (token.role === 'admin') {
-      return NextResponse.redirect(new URL('/admin', request.url))
+  if (isAuthRoute && session) {
+    if (session.user?.role === 'admin') {
+      return NextResponse.redirect(new URL('/admin', req.url))
     }
-    return NextResponse.redirect(new URL('/dashboard', request.url))
+    return NextResponse.redirect(new URL('/dashboard', req.url))
   }
 
   // Protect admin routes
   if (isAdminRoute || isApiAdminRoute) {
-    if (!token) {
-      // Not authenticated - redirect to signin
-      const signInUrl = new URL('/auth/signin', request.url)
+    if (!session) {
+      const signInUrl = new URL('/auth/signin', req.url)
       signInUrl.searchParams.set('callbackUrl', pathname)
       return NextResponse.redirect(signInUrl)
     }
 
-    if (token.role !== 'admin') {
-      // Not an admin - redirect to unauthorized page
-      return NextResponse.redirect(new URL('/unauthorized', request.url))
+    if (session.user?.role !== 'admin') {
+      return NextResponse.redirect(new URL('/unauthorized', req.url))
     }
 
-    if (!token.isActive) {
-      // Account is inactive
-      return NextResponse.redirect(new URL('/account-inactive', request.url))
+    if (!session.user?.isActive) {
+      return NextResponse.redirect(new URL('/account-inactive', req.url))
     }
   }
 
-  // Protect dashboard routes (for all authenticated users)
+  // Protect dashboard routes
   if (pathname.startsWith('/dashboard')) {
-    if (!token) {
-      const signInUrl = new URL('/auth/signin', request.url)
+    if (!session) {
+      const signInUrl = new URL('/auth/signin', req.url)
       signInUrl.searchParams.set('callbackUrl', pathname)
       return NextResponse.redirect(signInUrl)
     }
 
-    if (!token.isActive) {
-      return NextResponse.redirect(new URL('/account-inactive', request.url))
+    if (!session.user?.isActive) {
+      return NextResponse.redirect(new URL('/account-inactive', req.url))
     }
   }
 
   return NextResponse.next()
-}
+})
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - public folder
-     * - api/auth (NextAuth API routes)
-     */
     '/((?!_next/static|_next/image|favicon.ico|public|api/auth).*)',
   ],
 }
