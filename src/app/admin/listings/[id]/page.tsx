@@ -83,7 +83,6 @@ interface FitnessListing {
   status: string
   featured: boolean
   verified: boolean
-  averageRating?: number
   totalReviews: number
   viewCount: number
   contactClicks: number
@@ -379,12 +378,6 @@ export default function ListingDetailPage() {
               <div className="text-center">
                 <p className="text-2xl font-bold text-gray-900">{listing.totalReviews || 0}</p>
                 <p className="text-sm text-gray-500">Reviews</p>
-              </div>
-              <div className="text-center">
-                <p className="text-2xl font-bold text-gray-900">
-                  {listing.averageRating ? listing.averageRating.toFixed(1) : 'N/A'}
-                </p>
-                <p className="text-sm text-gray-500">Avg Rating</p>
               </div>
             </div>
           </div>

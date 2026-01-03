@@ -45,7 +45,6 @@ export async function GET(
       tags,
       verified,
       featured,
-      averageRating,
       totalReviews,
       "featuredImage": featuredImage.asset->url,
       "images": images[].asset->url
@@ -71,7 +70,6 @@ export async function GET(
       "location": location.city,
       "featuredImage": featuredImage.asset->url,
       priceRange,
-      averageRating,
       verified
     }`
 

@@ -423,14 +423,7 @@ export default {
         }]}
       ]
     },
-    // Reviews and Ratings
-    {
-      name: 'averageRating',
-      title: 'Average Rating',
-      type: 'number',
-      readOnly: true,
-      validation: Rule => Rule.min(0).max(5)
-    },
+    // Reviews
     {
       name: 'totalReviews',
       title: 'Total Reviews',
@@ -576,11 +569,6 @@ export default {
       name: 'viewsDesc',
       by: [{ field: 'viewCount', direction: 'desc' }]
     },
-    {
-      title: 'Highest Rated',
-      name: 'ratingDesc',
-      by: [{ field: 'averageRating', direction: 'desc' }]
-    }
   ],
   preview: {
     select: {

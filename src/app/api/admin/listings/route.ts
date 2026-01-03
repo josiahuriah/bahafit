@@ -57,7 +57,6 @@ export async function GET(req: NextRequest) {
       "ownerName": owner->name,
       "ownerType": owner->userType,
       "featuredImage": featuredImage.asset->url,
-      averageRating,
       totalReviews,
       viewCount,
       _createdAt,

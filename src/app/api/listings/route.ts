@@ -62,7 +62,6 @@ export async function GET(req: NextRequest) {
         period
       },
       "featuredImage": featuredImage.asset->url,
-      averageRating,
       totalReviews,
       tags
     }`
