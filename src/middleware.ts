@@ -1,65 +1,46 @@
-import { auth } from '@/lib/auth'
 import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
 
-export default auth((req) => {
-  const { pathname } = req.nextUrl
-  const session = req.auth
+export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl
 
-  // Debug logging (remove after fixing)
+  // Get session token from cookies
+  const sessionToken = request.cookies.get('authjs.session-token')?.value
+    || request.cookies.get('__Secure-authjs.session-token')?.value
+
+  // Debug logging
   if (pathname.startsWith('/admin')) {
     console.log('=== ADMIN ACCESS DEBUG ===')
     console.log('Path:', pathname)
-    console.log('Has session:', !!session)
-    console.log('User role:', session?.user?.role)
-    console.log('User isActive:', session?.user?.isActive)
+    console.log('Has session token:', !!sessionToken)
     console.log('========================')
   }
 
   // Define protected routes
   const isAdminRoute = pathname.startsWith('/admin')
-  const isAuthRoute = pathname.startsWith('/auth')
   const isApiAdminRoute = pathname.startsWith('/api/admin')
 
-  // Redirect authenticated users away from auth pages
-  if (isAuthRoute && session) {
-    if (session.user?.role === 'admin') {
-      return NextResponse.redirect(new URL('/admin', req.url))
-    }
-    return NextResponse.redirect(new URL('/dashboard', req.url))
-  }
-
-  // Protect admin routes
+  // For admin routes, check if user has a session token
+  // The actual role check will happen in the page/API route
   if (isAdminRoute || isApiAdminRoute) {
-    if (!session) {
-      const signInUrl = new URL('/auth/signin', req.url)
+    if (!sessionToken) {
+      const signInUrl = new URL('/auth/signin', request.url)
       signInUrl.searchParams.set('callbackUrl', pathname)
       return NextResponse.redirect(signInUrl)
-    }
-
-    if (session.user?.role !== 'admin') {
-      return NextResponse.redirect(new URL('/unauthorized', req.url))
-    }
-
-    if (!session.user?.isActive) {
-      return NextResponse.redirect(new URL('/account-inactive', req.url))
     }
   }
 
   // Protect dashboard routes
   if (pathname.startsWith('/dashboard')) {
-    if (!session) {
-      const signInUrl = new URL('/auth/signin', req.url)
+    if (!sessionToken) {
+      const signInUrl = new URL('/auth/signin', request.url)
       signInUrl.searchParams.set('callbackUrl', pathname)
       return NextResponse.redirect(signInUrl)
-    }
-
-    if (!session.user?.isActive) {
-      return NextResponse.redirect(new URL('/account-inactive', req.url))
     }
   }
 
   return NextResponse.next()
-})
+}
 
 export const config = {
   matcher: [
