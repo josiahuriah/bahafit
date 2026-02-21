@@ -9,47 +9,18 @@ import { formatDateTime } from '@/lib/utils'
 interface FitnessEvent {
   _id: string
   title: string
-  slug: { current: string }
+  slug?: { current: string }
   eventType: string
   description: any
   shortDescription?: string
   startDate: string
-  endDate?: string
   registrationStartDate?: string
   registrationDeadline?: string
-  earlyBirdDeadline?: string
-  isVirtual: boolean
-  virtualEventLink?: string
-  virtualEventPlatform?: string
   location?: {
     venueName?: string
     address?: string
-    city?: string
-    island?: string
-    country?: string
-    latitude?: number
-    longitude?: number
-    directions?: string
   }
-  capacity?: number
-  currentRegistrations: number
-  waitlistEnabled: boolean
-  requiresRegistration: boolean
-  isFree: boolean
-  pricing?: Array<{
-    tierName: string
-    description?: string
-    price: number
-    earlyBirdPrice?: number
-    currency: string
-    capacity?: number
-    includes?: string[]
-  }>
-  contactInfo?: {
-    email?: string
-    phone?: string
-    whatsapp?: string
-  }
+  price?: number
   organizer?: {
     _id: string
     name: string
@@ -62,11 +33,9 @@ interface FitnessEvent {
     website?: string
   }>
   amenities?: string[]
-  tags?: string[]
   status: string
   featured: boolean
   featuredImage?: string
-  images?: string[]
   _createdAt: string
   _updatedAt: string
 }
@@ -80,17 +49,11 @@ const eventTypeLabels: Record<string, string> = {
   competition: 'Fitness Competition',
   crossfit: 'CrossFit Competition',
   bodybuilding: 'Bodybuilding Show',
-  challenge: 'Fitness Challenge',
-  bootcamp: 'Bootcamp',
   yoga_retreat: 'Yoga Retreat',
   wellness_expo: 'Wellness Expo',
-  workshop: 'Fitness Workshop',
-  charity: 'Charity Event',
   beach_workout: 'Beach Workout',
   group_class: 'Group Fitness Class',
   tournament: 'Sports Tournament',
-  outdoor_adventure: 'Outdoor Adventure',
-  virtual: 'Virtual Event',
   other: 'Other',
 }
 
@@ -229,8 +192,10 @@ export default function EventDetailPage() {
               <h1 className="text-3xl font-bold text-gray-900">{event.title}</h1>
               <p className="mt-1 text-sm text-gray-500">
                 {eventTypeLabels[event.eventType] || event.eventType}
-                {event.isVirtual && ' (Virtual)'}
               </p>
+              {event.slug?.current && (
+                <p className="mt-0.5 text-xs text-gray-400 font-mono">/{event.slug.current}</p>
+              )}
             </div>
           </div>
 
@@ -285,6 +250,9 @@ export default function EventDetailPage() {
                   <option value="completed">Completed</option>
                   <option value="archived">Archived</option>
                 </select>
+                {event.status !== 'published' && (
+                  <p className="mt-1 text-xs text-gray-400">Slug auto-generates on publish.</p>
+                )}
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Featured</label>
@@ -305,12 +273,6 @@ export default function EventDetailPage() {
                 <dt className="text-sm font-medium text-gray-500">Start Date</dt>
                 <dd className="mt-1 text-sm text-gray-900">{formatDateTime(event.startDate)}</dd>
               </div>
-              {event.endDate && (
-                <div>
-                  <dt className="text-sm font-medium text-gray-500">End Date</dt>
-                  <dd className="mt-1 text-sm text-gray-900">{formatDateTime(event.endDate)}</dd>
-                </div>
-              )}
               {event.registrationDeadline && (
                 <div>
                   <dt className="text-sm font-medium text-gray-500">Registration Deadline</dt>
@@ -318,20 +280,10 @@ export default function EventDetailPage() {
                 </div>
               )}
               <div>
-                <dt className="text-sm font-medium text-gray-500">Capacity</dt>
-                <dd className="mt-1 text-sm text-gray-900">
-                  {event.currentRegistrations || 0} / {event.capacity || 'Unlimited'}
-                </dd>
-              </div>
-              <div>
                 <dt className="text-sm font-medium text-gray-500">Price</dt>
                 <dd className="mt-1 text-sm text-gray-900">
-                  {event.isFree ? 'Free' : (event.pricing?.length ? 'Multiple tiers' : 'Not set')}
+                  {event.price != null && event.price > 0 ? 'BSD ' + event.price : 'Free'}
                 </dd>
-              </div>
-              <div>
-                <dt className="text-sm font-medium text-gray-500">Registration Required</dt>
-                <dd className="mt-1 text-sm text-gray-900">{event.requiresRegistration ? 'Yes' : 'No'}</dd>
               </div>
             </dl>
           </div>
@@ -339,19 +291,7 @@ export default function EventDetailPage() {
           {/* Location */}
           <div className="bg-white shadow rounded-lg p-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-4">Location</h2>
-            {event.isVirtual ? (
-              <div>
-                <p className="text-sm text-gray-600">This is a virtual event</p>
-                {event.virtualEventPlatform && (
-                  <p className="mt-2 text-sm text-gray-900">Platform: {event.virtualEventPlatform}</p>
-                )}
-                {event.virtualEventLink && (
-                  <a href={event.virtualEventLink} target="_blank" rel="noopener noreferrer" className="mt-2 text-sm text-indigo-600 hover:text-indigo-500 block">
-                    Event Link
-                  </a>
-                )}
-              </div>
-            ) : event.location ? (
+            {event.location ? (
               <dl className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {event.location.venueName && (
                   <div>
@@ -365,71 +305,16 @@ export default function EventDetailPage() {
                     <dd className="mt-1 text-sm text-gray-900">{event.location.address}</dd>
                   </div>
                 )}
-                {event.location.city && (
-                  <div>
-                    <dt className="text-sm font-medium text-gray-500">City</dt>
-                    <dd className="mt-1 text-sm text-gray-900">{event.location.city}</dd>
-                  </div>
-                )}
-                {event.location.island && (
-                  <div>
-                    <dt className="text-sm font-medium text-gray-500">Island</dt>
-                    <dd className="mt-1 text-sm text-gray-900">{event.location.island}</dd>
-                  </div>
-                )}
               </dl>
             ) : (
               <p className="text-sm text-gray-500">No location information provided</p>
             )}
           </div>
 
-          {/* Pricing Tiers */}
-          {event.pricing && event.pricing.length > 0 && (
-            <div className="bg-white shadow rounded-lg p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Pricing Tiers</h2>
-              <div className="space-y-4">
-                {event.pricing.map((tier, index) => (
-                  <div key={index} className="border rounded-lg p-4">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <h3 className="font-medium text-gray-900">{tier.tierName}</h3>
-                        {tier.description && (
-                          <p className="text-sm text-gray-500 mt-1">{tier.description}</p>
-                        )}
-                      </div>
-                      <div className="text-right">
-                        <p className="text-lg font-semibold text-gray-900">
-                          {tier.currency} {tier.price}
-                        </p>
-                        {tier.earlyBirdPrice && (
-                          <p className="text-sm text-green-600">
-                            Early Bird: {tier.currency} {tier.earlyBirdPrice}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                    {tier.includes && tier.includes.length > 0 && (
-                      <ul className="mt-3 text-sm text-gray-600">
-                        {tier.includes.map((item, i) => (
-                          <li key={i} className="flex items-center gap-2">
-                            <svg className="h-4 w-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                            </svg>
-                            {item}
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Description */}
+          {/* Short Description */}
           {event.shortDescription && (
             <div className="bg-white shadow rounded-lg p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Description</h2>
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">Short Description</h2>
               <p className="text-sm text-gray-700">{event.shortDescription}</p>
             </div>
           )}
@@ -457,33 +342,6 @@ export default function EventDetailPage() {
             )}
           </div>
 
-          {/* Contact Info */}
-          {event.contactInfo && (
-            <div className="bg-white shadow rounded-lg p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Contact Information</h2>
-              <dl className="space-y-2">
-                {event.contactInfo.email && (
-                  <div>
-                    <dt className="text-sm font-medium text-gray-500">Email</dt>
-                    <dd className="text-sm text-gray-900">{event.contactInfo.email}</dd>
-                  </div>
-                )}
-                {event.contactInfo.phone && (
-                  <div>
-                    <dt className="text-sm font-medium text-gray-500">Phone</dt>
-                    <dd className="text-sm text-gray-900">{event.contactInfo.phone}</dd>
-                  </div>
-                )}
-                {event.contactInfo.whatsapp && (
-                  <div>
-                    <dt className="text-sm font-medium text-gray-500">WhatsApp</dt>
-                    <dd className="text-sm text-gray-900">{event.contactInfo.whatsapp}</dd>
-                  </div>
-                )}
-              </dl>
-            </div>
-          )}
-
           {/* Amenities */}
           {event.amenities && event.amenities.length > 0 && (
             <div className="bg-white shadow rounded-lg p-6">
@@ -495,23 +353,6 @@ export default function EventDetailPage() {
                     className="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700"
                   >
                     {amenity.replace(/_/g, ' ')}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Tags */}
-          {event.tags && event.tags.length > 0 && (
-            <div className="bg-white shadow rounded-lg p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Tags</h2>
-              <div className="flex flex-wrap gap-2">
-                {event.tags.map((tag, index) => (
-                  <span
-                    key={index}
-                    className="inline-flex items-center rounded-full bg-indigo-100 px-3 py-1 text-xs font-medium text-indigo-700"
-                  >
-                    {tag}
                   </span>
                 ))}
               </div>

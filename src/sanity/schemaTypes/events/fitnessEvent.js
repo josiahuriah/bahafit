@@ -3,18 +3,20 @@ export default {
   title: 'Fitness Event',
   type: 'document',
   fields: [
+    // Core Info
     {
       name: 'title',
       title: 'Event Title',
       type: 'string',
       validation: Rule => Rule.required().min(5).max(100)
     },
+    // Slug is hidden — auto-generated upon publication via the admin API
     {
       name: 'slug',
       title: 'Slug',
       type: 'slug',
       options: { source: 'title', maxLength: 96 },
-      validation: Rule => Rule.required()
+      hidden: true
     },
     {
       name: 'eventType',
@@ -31,17 +33,11 @@ export default {
           { title: 'Fitness Competition', value: 'competition' },
           { title: 'CrossFit Competition', value: 'crossfit' },
           { title: 'Bodybuilding Show', value: 'bodybuilding' },
-          { title: 'Fitness Challenge', value: 'challenge' },
-          { title: 'Bootcamp', value: 'bootcamp' },
           { title: 'Yoga Retreat', value: 'yoga_retreat' },
           { title: 'Wellness Expo', value: 'wellness_expo' },
-          { title: 'Fitness Workshop', value: 'workshop' },
-          { title: 'Charity Event', value: 'charity' },
           { title: 'Beach Workout', value: 'beach_workout' },
           { title: 'Group Fitness Class', value: 'group_class' },
           { title: 'Sports Tournament', value: 'tournament' },
-          { title: 'Outdoor Adventure', value: 'outdoor_adventure' },
-          { title: 'Virtual Event', value: 'virtual' },
           { title: 'Other', value: 'other' }
         ]
       }
@@ -73,37 +69,12 @@ export default {
         }
       ]
     },
-    {
-      name: 'images',
-      title: 'Gallery Images',
-      type: 'array',
-      of: [{
-        type: 'image',
-        options: { hotspot: true },
-        fields: [
-          { name: 'alt', type: 'string', title: 'Alternative Text' },
-          { name: 'caption', type: 'string', title: 'Caption' }
-        ]
-      }]
-    },
     // Date and Time
     {
       name: 'startDate',
       title: 'Start Date & Time',
       type: 'datetime',
       validation: Rule => Rule.required()
-    },
-    {
-      name: 'endDate',
-      title: 'End Date & Time',
-      type: 'datetime',
-      description: 'Leave empty for single-day events'
-    },
-    {
-      name: 'isMultiDay',
-      title: 'Multi-Day Event',
-      type: 'boolean',
-      initialValue: false
     },
     {
       name: 'registrationStartDate',
@@ -115,126 +86,25 @@ export default {
       title: 'Registration Deadline',
       type: 'datetime'
     },
-    {
-      name: 'earlyBirdDeadline',
-      title: 'Early Bird Deadline',
-      type: 'datetime',
-      description: 'Deadline for early bird pricing'
-    },
     // Location
-    {
-      name: 'isVirtual',
-      title: 'Virtual Event',
-      type: 'boolean',
-      initialValue: false
-    },
-    {
-      name: 'virtualEventLink',
-      title: 'Virtual Event Link',
-      type: 'url',
-      hidden: ({ document }) => !document?.isVirtual
-    },
-    {
-      name: 'virtualEventPlatform',
-      title: 'Virtual Platform',
-      type: 'string',
-      options: {
-        list: [
-          { title: 'Zoom', value: 'zoom' },
-          { title: 'Google Meet', value: 'google_meet' },
-          { title: 'Microsoft Teams', value: 'teams' },
-          { title: 'YouTube Live', value: 'youtube' },
-          { title: 'Facebook Live', value: 'facebook' },
-          { title: 'Instagram Live', value: 'instagram' },
-          { title: 'Custom Platform', value: 'custom' },
-          { title: 'Other', value: 'other' }
-        ]
-      },
-      hidden: ({ document }) => !document?.isVirtual
-    },
     {
       name: 'location',
       title: 'Event Location',
       type: 'object',
-      hidden: ({ document }) => document?.isVirtual === true,
       fields: [
         { name: 'venueName', type: 'string', title: 'Venue Name' },
-        { name: 'address', type: 'string', title: 'Street Address' },
-        { name: 'city', type: 'string', title: 'City' },
-        { name: 'island', type: 'string', title: 'Island' },
-        { name: 'country', type: 'string', title: 'Country', initialValue: 'Bahamas' },
-        { name: 'postalCode', type: 'string', title: 'Postal Code' },
-        { name: 'latitude', type: 'number', title: 'Latitude' },
-        { name: 'longitude', type: 'number', title: 'Longitude' },
-        { name: 'directions', type: 'text', title: 'Directions/Notes', rows: 3 }
+        { name: 'address', type: 'string', title: 'Address' }
       ]
-    },
-    // Capacity and Registration
-    {
-      name: 'capacity',
-      title: 'Maximum Capacity',
-      type: 'number',
-      validation: Rule => Rule.min(1),
-      description: 'Maximum number of participants'
-    },
-    {
-      name: 'currentRegistrations',
-      title: 'Current Registrations',
-      type: 'number',
-      initialValue: 0,
-      readOnly: true
-    },
-    {
-      name: 'waitlistEnabled',
-      title: 'Enable Waitlist',
-      type: 'boolean',
-      initialValue: false
-    },
-    {
-      name: 'requiresRegistration',
-      title: 'Requires Registration',
-      type: 'boolean',
-      initialValue: true
     },
     // Pricing
     {
-      name: 'isFree',
-      title: 'Free Event',
-      type: 'boolean',
-      initialValue: false
+      name: 'price',
+      title: 'Price (BSD)',
+      type: 'number',
+      description: 'Entry price in Bahamian dollars. Leave empty or set to 0 for free events.',
+      validation: Rule => Rule.min(0)
     },
-    {
-      name: 'pricing',
-      title: 'Pricing Tiers',
-      type: 'array',
-      hidden: ({ document }) => document?.isFree === true,
-      of: [{
-        type: 'object',
-        fields: [
-          { name: 'tierName', type: 'string', title: 'Tier Name', validation: Rule => Rule.required() },
-          { name: 'description', type: 'string', title: 'Description' },
-          { name: 'price', type: 'number', title: 'Price', validation: Rule => Rule.required().min(0) },
-          { name: 'earlyBirdPrice', type: 'number', title: 'Early Bird Price' },
-          { name: 'currency', type: 'string', title: 'Currency', initialValue: 'BSD' },
-          { name: 'capacity', type: 'number', title: 'Tier Capacity' },
-          { name: 'includes', type: 'array', of: [{ type: 'string' }], title: 'Includes' }
-        ],
-        preview: {
-          select: {
-            title: 'tierName',
-            price: 'price',
-            currency: 'currency'
-          },
-          prepare({ title, price, currency }) {
-            return {
-              title,
-              subtitle: `${currency || 'BSD'} ${price}`
-            }
-          }
-        }
-      }]
-    },
-    // Categories for race events
+    // Race Categories (for race-type events)
     {
       name: 'raceCategories',
       title: 'Race Categories',
@@ -251,7 +121,7 @@ export default {
       }],
       hidden: ({ document }) => !['race', 'marathon', 'triathlon', 'cycling', 'swimming'].includes(document?.eventType)
     },
-    // Organizer Info
+    // Organizer
     {
       name: 'organizer',
       title: 'Organizer',
@@ -259,23 +129,7 @@ export default {
       to: [{ type: 'user' }],
       validation: Rule => Rule.required()
     },
-    {
-      name: 'coOrganizers',
-      title: 'Co-Organizers',
-      type: 'array',
-      of: [{ type: 'reference', to: [{ type: 'user' }] }]
-    },
-    {
-      name: 'contactInfo',
-      title: 'Contact Information',
-      type: 'object',
-      fields: [
-        { name: 'email', type: 'string', title: 'Contact Email' },
-        { name: 'phone', type: 'string', title: 'Contact Phone' },
-        { name: 'whatsapp', type: 'string', title: 'WhatsApp Number' }
-      ]
-    },
-    // Sponsors and Partners
+    // Sponsors
     {
       name: 'sponsors',
       title: 'Sponsors',
@@ -298,14 +152,7 @@ export default {
         ]
       }]
     },
-    // Additional Details
-    {
-      name: 'requirements',
-      title: 'Requirements',
-      type: 'array',
-      of: [{ type: 'string' }],
-      description: 'What participants need to bring or requirements'
-    },
+    // Amenities
     {
       name: 'amenities',
       title: 'Amenities Provided',
@@ -328,42 +175,6 @@ export default {
         ]
       }
     },
-    {
-      name: 'ageRestriction',
-      title: 'Age Restriction',
-      type: 'object',
-      fields: [
-        { name: 'minAge', type: 'number', title: 'Minimum Age' },
-        { name: 'maxAge', type: 'number', title: 'Maximum Age' },
-        { name: 'allowMinorsWithGuardian', type: 'boolean', title: 'Allow Minors with Guardian', initialValue: false }
-      ]
-    },
-    {
-      name: 'schedule',
-      title: 'Event Schedule',
-      type: 'array',
-      of: [{
-        type: 'object',
-        fields: [
-          { name: 'time', type: 'string', title: 'Time' },
-          { name: 'activity', type: 'string', title: 'Activity' },
-          { name: 'description', type: 'string', title: 'Description' },
-          { name: 'location', type: 'string', title: 'Location' }
-        ]
-      }]
-    },
-    {
-      name: 'faqs',
-      title: 'Frequently Asked Questions',
-      type: 'array',
-      of: [{
-        type: 'object',
-        fields: [
-          { name: 'question', type: 'string', title: 'Question' },
-          { name: 'answer', type: 'text', title: 'Answer' }
-        ]
-      }]
-    },
     // External Links
     {
       name: 'externalRegistrationUrl',
@@ -384,24 +195,6 @@ export default {
         { name: 'facebook', type: 'url', title: 'Facebook Event' },
         { name: 'instagram', type: 'url', title: 'Instagram' },
         { name: 'twitter', type: 'url', title: 'Twitter/X' }
-      ]
-    },
-    // SEO and Meta
-    {
-      name: 'tags',
-      title: 'Tags',
-      type: 'array',
-      of: [{ type: 'string' }],
-      options: { layout: 'tags' }
-    },
-    {
-      name: 'seo',
-      title: 'SEO',
-      type: 'object',
-      fields: [
-        { name: 'metaTitle', type: 'string', title: 'Meta Title' },
-        { name: 'metaDescription', type: 'text', title: 'Meta Description', rows: 3 },
-        { name: 'keywords', type: 'array', of: [{ type: 'string' }], title: 'Keywords' }
       ]
     },
     // Status
@@ -488,17 +281,11 @@ export default {
         competition: 'Fitness Competition',
         crossfit: 'CrossFit Competition',
         bodybuilding: 'Bodybuilding Show',
-        challenge: 'Fitness Challenge',
-        bootcamp: 'Bootcamp',
         yoga_retreat: 'Yoga Retreat',
         wellness_expo: 'Wellness Expo',
-        workshop: 'Fitness Workshop',
-        charity: 'Charity Event',
         beach_workout: 'Beach Workout',
         group_class: 'Group Fitness Class',
         tournament: 'Sports Tournament',
-        outdoor_adventure: 'Outdoor Adventure',
-        virtual: 'Virtual Event',
         other: 'Other'
       }
       const formattedDate = date ? new Date(date).toLocaleDateString() : 'No date set'

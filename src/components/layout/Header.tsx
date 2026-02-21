@@ -29,27 +29,29 @@ export default function Header() {
   const [accountDropdownOpen, setAccountDropdownOpen] = useState(false)
 
   return (
-    <header className="bg-white shadow-md sticky top-0 z-50">
+    <header className="bg-white border-b border-black/8 sticky top-0 z-50">
       <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
+        <div className="flex h-[60px] items-center justify-between">
+
           {/* Logo */}
-          <div className="flex items-center">
-              <div className="h-12 w-36 rounded-lg flex items-center justify-center">
+          <div className="flex items-center flex-shrink-0">
+            <Link href="/" className="flex items-center">
               <Image
                 src="/images/logo.png"
-                alt="Big Dunn Entertainment"
-                width={120}
-                height={80}
-                className="h-10 w-auto"
+                alt="Bahafit"
+                width={110}
+                height={36}
+                className="h-9 w-auto"
               />
-            </div>              
+            </Link>
           </div>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex md:items-center md:space-x-6">
+          {/* Desktop Navigation — center */}
+          <div className="hidden md:flex md:items-center md:gap-1">
             <Link
               href="/"
-              className="text-black hover:text-[#f7d656] px-3 py-2 text-sm font-medium transition-colors"
+              className="px-3 py-2 text-sm font-medium text-black/70 hover:text-black transition-colors"
+              style={{ fontFamily: 'var(--font-body)' }}
             >
               Home
             </Link>
@@ -60,26 +62,24 @@ export default function Header() {
               onMouseEnter={() => setEventsDropdownOpen(true)}
               onMouseLeave={() => setEventsDropdownOpen(false)}
             >
-              <button className="text-black hover:text-[#f7d656] px-3 py-2 text-sm font-medium transition-colors flex items-center">
-                Fitness Events
-                <svg
-                  className="ml-1 h-4 w-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              <button
+                className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-black/70 hover:text-black transition-colors"
+                style={{ fontFamily: 'var(--font-body)' }}
+              >
+                Events
+                <svg className="h-3.5 w-3.5 mt-px" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
 
               {eventsDropdownOpen && (
-                <div className="absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
-                  <div className="py-1">
+                <div className="absolute left-0 top-full mt-0 w-52 bg-white border border-black/8 shadow-xl shadow-black/5 rounded-lg overflow-hidden z-50">
+                  <div className="py-1.5">
                     {fitnessEventsMenu.map((item) => (
                       <Link
                         key={item.name}
                         href={item.href}
-                        className="block px-4 py-2 text-sm text-black hover:bg-[#0dd5b5] hover:bg-opacity-10 hover:text-[#0dd5b5] transition-colors"
+                        className="block px-4 py-2 text-sm text-black/70 hover:text-[#0dd5b5] hover:bg-[#0dd5b5]/5 transition-colors"
                       >
                         {item.name}
                       </Link>
@@ -95,26 +95,24 @@ export default function Header() {
               onMouseEnter={() => setListingsDropdownOpen(true)}
               onMouseLeave={() => setListingsDropdownOpen(false)}
             >
-              <button className="text-black hover:text-[#f7d656] px-3 py-2 text-sm font-medium transition-colors flex items-center">
-                Fitness Listings
-                <svg
-                  className="ml-1 h-4 w-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              <button
+                className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-black/70 hover:text-black transition-colors"
+                style={{ fontFamily: 'var(--font-body)' }}
+              >
+                Listings
+                <svg className="h-3.5 w-3.5 mt-px" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
 
               {listingsDropdownOpen && (
-                <div className="absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
-                  <div className="py-1">
+                <div className="absolute left-0 top-full mt-0 w-52 bg-white border border-black/8 shadow-xl shadow-black/5 rounded-lg overflow-hidden z-50">
+                  <div className="py-1.5">
                     {fitnessListingsMenu.map((item) => (
                       <Link
                         key={item.name}
                         href={item.href}
-                        className="block px-4 py-2 text-sm text-black hover:bg-[#0dd5b5] hover:bg-opacity-10 hover:text-[#0dd5b5] transition-colors"
+                        className="block px-4 py-2 text-sm text-black/70 hover:text-[#0dd5b5] hover:bg-[#0dd5b5]/5 transition-colors"
                       >
                         {item.name}
                       </Link>
@@ -125,63 +123,49 @@ export default function Header() {
             </div>
           </div>
 
-          {/* Auth Section */}
-          <div className="hidden md:flex md:items-center md:space-x-4">
+          {/* Auth Section — right */}
+          <div className="hidden md:flex md:items-center md:gap-2">
             {status === 'loading' ? (
-              <div className="text-sm text-gray-500">Loading...</div>
+              <div className="text-sm text-black/40">Loading…</div>
             ) : session ? (
               <div
                 className="relative"
                 onMouseEnter={() => setAccountDropdownOpen(true)}
                 onMouseLeave={() => setAccountDropdownOpen(false)}
               >
-                <button className="flex items-center space-x-2 text-black hover:text-[#f7d656] px-3 py-2 text-sm font-medium transition-colors">
-                  <div className="h-8 w-8 rounded-full bg-[#0dd5b5] flex items-center justify-center">
-                    <span className="text-white font-medium text-sm">
+                <button className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-black/70 hover:text-black transition-colors">
+                  <div className="h-7 w-7 rounded-full bg-[#0dd5b5] flex items-center justify-center flex-shrink-0">
+                    <span className="text-white font-semibold text-xs">
                       {session.user.name?.charAt(0).toUpperCase()}
                     </span>
                   </div>
-                  <span>My Account</span>
-                  <svg
-                    className="h-4 w-4"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  <span>Account</span>
+                  <svg className="h-3.5 w-3.5 mt-px" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                   </svg>
                 </button>
 
                 {accountDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
-                    <div className="py-1">
-                      <div className="px-4 py-2 text-sm text-black border-b border-gray-100">
-                        <div className="font-medium">{session.user.name}</div>
-                        <div className="text-xs text-gray-500">{session.user.email}</div>
+                  <div className="absolute right-0 top-full mt-0 w-48 bg-white border border-black/8 shadow-xl shadow-black/5 rounded-lg overflow-hidden z-50">
+                    <div className="py-1.5">
+                      <div className="px-4 py-2.5 border-b border-black/6">
+                        <div className="text-sm font-semibold text-black">{session.user.name}</div>
+                        <div className="text-xs text-black/40 mt-0.5 truncate">{session.user.email}</div>
                       </div>
-                      <Link
-                        href="/dashboard"
-                        className="block px-4 py-2 text-sm text-black hover:bg-[#0dd5b5] hover:bg-opacity-10 hover:text-[#0dd5b5] transition-colors"
-                      >
+                      <Link href="/dashboard" className="block px-4 py-2 text-sm text-black/70 hover:text-[#0dd5b5] hover:bg-[#0dd5b5]/5 transition-colors">
                         Dashboard
                       </Link>
                       {session.user.role === 'admin' && (
-                        <Link
-                          href="/admin"
-                          className="block px-4 py-2 text-sm text-black hover:bg-[#0dd5b5] hover:bg-opacity-10 hover:text-[#0dd5b5] transition-colors"
-                        >
+                        <Link href="/admin" className="block px-4 py-2 text-sm text-black/70 hover:text-[#0dd5b5] hover:bg-[#0dd5b5]/5 transition-colors">
                           Admin Panel
                         </Link>
                       )}
-                      <Link
-                        href="/profile"
-                        className="block px-4 py-2 text-sm text-black hover:bg-[#0dd5b5] hover:bg-opacity-10 hover:text-[#0dd5b5] transition-colors"
-                      >
+                      <Link href="/profile" className="block px-4 py-2 text-sm text-black/70 hover:text-[#0dd5b5] hover:bg-[#0dd5b5]/5 transition-colors">
                         Profile Settings
                       </Link>
                       <button
                         onClick={() => signOut({ callbackUrl: '/' })}
-                        className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                        className="block w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-red-50 transition-colors"
                       >
                         Sign Out
                       </button>
@@ -190,39 +174,35 @@ export default function Header() {
                 )}
               </div>
             ) : (
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center gap-2">
                 <Link
                   href="/auth/signin"
-                  className="text-black hover:text-[#f7d656] px-3 py-2 text-sm font-medium transition-colors"
+                  className="px-4 py-2 text-sm font-medium text-black/70 hover:text-black transition-colors"
                 >
                   Sign In
                 </Link>
                 <Link
                   href="/auth/signup"
-                  className="bg-[#0dd5b5] text-white hover:bg-[#0bc5a5] px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                  className="bg-black text-white hover:bg-[#0dd5b5] px-4 py-2 rounded-lg text-sm font-medium transition-colors"
                 >
-                  Sign Up
+                  Join Free
                 </Link>
               </div>
             )}
           </div>
 
-          {/* Mobile menu button */}
+          {/* Mobile hamburger */}
           <div className="md:hidden">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="text-black hover:text-[#f7d656] p-2"
+              className="p-2 text-black/70 hover:text-black transition-colors"
+              aria-label="Toggle menu"
             >
-              <svg
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
+              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 {mobileMenuOpen ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                 ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
                 )}
               </svg>
             </button>
@@ -231,80 +211,82 @@ export default function Header() {
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden pb-4 border-t border-gray-200 mt-2 pt-2">
-            <div className="space-y-1">
+          <div className="md:hidden border-t border-black/8 py-4">
+            <div className="space-y-0.5">
               <Link
                 href="/"
-                className="block px-3 py-2 text-base font-medium text-black hover:text-[#f7d656] hover:bg-[#f7d656] hover:bg-opacity-10 rounded-md"
+                className="block px-3 py-2.5 text-sm font-medium text-black/70 hover:text-black hover:bg-black/3 rounded-lg transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
               >
                 Home
               </Link>
 
-              <div className="space-y-1">
-                <div className="px-3 py-2 text-base font-medium text-black">Fitness Events</div>
+              <div>
+                <div className="px-3 py-2.5 text-xs font-semibold text-black/40 uppercase tracking-widest">
+                  Events
+                </div>
                 {fitnessEventsMenu.map((item) => (
                   <Link
                     key={item.name}
                     href={item.href}
-                    className="block pl-6 pr-3 py-2 text-sm text-black hover:text-[#0dd5b5] hover:bg-[#0dd5b5] hover:bg-opacity-10 rounded-md"
+                    className="block pl-5 pr-3 py-2 text-sm text-black/60 hover:text-[#0dd5b5] hover:bg-[#0dd5b5]/5 rounded-lg transition-colors"
+                    onClick={() => setMobileMenuOpen(false)}
                   >
                     {item.name}
                   </Link>
                 ))}
               </div>
 
-              <div className="space-y-1">
-                <div className="px-3 py-2 text-base font-medium text-black">Fitness Listings</div>
+              <div>
+                <div className="px-3 py-2.5 text-xs font-semibold text-black/40 uppercase tracking-widest">
+                  Listings
+                </div>
                 {fitnessListingsMenu.map((item) => (
                   <Link
                     key={item.name}
                     href={item.href}
-                    className="block pl-6 pr-3 py-2 text-sm text-black hover:text-[#0dd5b5] hover:bg-[#0dd5b5] hover:bg-opacity-10 rounded-md"
+                    className="block pl-5 pr-3 py-2 text-sm text-black/60 hover:text-[#0dd5b5] hover:bg-[#0dd5b5]/5 rounded-lg transition-colors"
+                    onClick={() => setMobileMenuOpen(false)}
                   >
                     {item.name}
                   </Link>
                 ))}
               </div>
 
-              {session ? (
-                <>
-                  <Link
-                    href="/dashboard"
-                    className="block px-3 py-2 text-base font-medium text-black hover:text-[#0dd5b5] hover:bg-[#0dd5b5] hover:bg-opacity-10 rounded-md"
-                  >
-                    Dashboard
-                  </Link>
-                  {session.user.role === 'admin' && (
-                    <Link
-                      href="/admin"
-                      className="block px-3 py-2 text-base font-medium text-black hover:text-[#0dd5b5] hover:bg-[#0dd5b5] hover:bg-opacity-10 rounded-md"
+              <div className="pt-3 border-t border-black/8 mt-3 flex flex-col gap-2 px-3">
+                {session ? (
+                  <>
+                    <div className="text-sm font-medium text-black">{session.user.name}</div>
+                    <Link href="/dashboard" className="text-sm text-black/60 hover:text-[#0dd5b5] transition-colors" onClick={() => setMobileMenuOpen(false)}>Dashboard</Link>
+                    {session.user.role === 'admin' && (
+                      <Link href="/admin" className="text-sm text-black/60 hover:text-[#0dd5b5] transition-colors" onClick={() => setMobileMenuOpen(false)}>Admin Panel</Link>
+                    )}
+                    <button
+                      onClick={() => { signOut({ callbackUrl: '/' }); setMobileMenuOpen(false); }}
+                      className="text-left text-sm text-red-500 hover:text-red-600 transition-colors"
                     >
-                      Admin Panel
+                      Sign Out
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      href="/auth/signin"
+                      className="text-center py-2.5 text-sm font-medium text-black border border-black/15 rounded-lg hover:border-black/30 transition-colors"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Sign In
                     </Link>
-                  )}
-                  <button
-                    onClick={() => signOut({ callbackUrl: '/' })}
-                    className="block w-full text-left px-3 py-2 text-base font-medium text-red-600 hover:bg-red-50 rounded-md"
-                  >
-                    Sign Out
-                  </button>
-                </>
-              ) : (
-                <>
-                  <Link
-                    href="/auth/signin"
-                    className="block px-3 py-2 text-base font-medium text-black hover:text-[#f7d656] hover:bg-[#f7d656] hover:bg-opacity-10 rounded-md"
-                  >
-                    Sign In
-                  </Link>
-                  <Link
-                    href="/auth/signup"
-                    className="block px-3 py-2 text-base font-medium bg-[#0dd5b5] text-white hover:bg-[#0bc5a5] rounded-md"
-                  >
-                    Sign Up
-                  </Link>
-                </>
-              )}
+                    <Link
+                      href="/auth/signup"
+                      className="text-center py-2.5 text-sm font-medium bg-black text-white rounded-lg hover:bg-[#0dd5b5] transition-colors"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Join Free
+                    </Link>
+                  </>
+                )}
+              </div>
             </div>
           </div>
         )}
