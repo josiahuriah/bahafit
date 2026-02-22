@@ -20,7 +20,7 @@ export default function Footer() {
               />
             </Link>
             <p className="text-sm text-white/40 mb-5 leading-relaxed max-w-[200px]" style={{ fontFamily: 'var(--font-body)' }}>
-              Connecting the Caribbean fitness community with events, trainers, and wellness resources.
+              Connecting the Bahamian fitness community with events, trainers, and wellness resources.
             </p>
             <div className="flex gap-4">
               <a href="#" aria-label="Facebook" className="text-white/30 hover:text-[#0dd5b5] transition-colors">

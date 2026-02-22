@@ -49,27 +49,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Stats */}
-      <section className="bg-black px-6 md:px-12 lg:px-24">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-2 lg:grid-cols-4 border-t border-white/10">
-            {[
-              { num: '500+', label: 'Fitness Listings', accent: '#0dd5b5' },
-              { num: '100+', label: 'Events Hosted', accent: '#f7d656' },
-              { num: '15+', label: 'Islands Covered', accent: '#0dd5b5' },
-              { num: '10K+', label: 'Community Members', accent: '#f7d656' },
-            ].map((stat, i) => (
-              <div key={i} className="py-14 px-4 md:px-8 border-r border-white/10 last:border-r-0">
-                <div className="text-4xl md:text-5xl lg:text-6xl font-bold mb-3 leading-none" style={{ color: stat.accent }}>
-                  {stat.num}
-                </div>
-                <div className="text-xs text-gray-400 uppercase tracking-widest">{stat.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Values */}
       <section className="py-24 px-6 md:px-12 lg:px-24 bg-white">
         <div className="max-w-7xl mx-auto">
