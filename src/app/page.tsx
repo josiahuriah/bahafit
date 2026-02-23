@@ -3,6 +3,7 @@ import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import Image from 'next/image'
 import ExploreSection from '@/components/ExploreSection'
+import TrainersGymsCarousel from '@/components/TrainersGymsCarousel'
 
 
 export default function Home() {
@@ -36,7 +37,49 @@ export default function Home() {
 
       </section>
 
-      {/* ─── Explore Section (was Quick Links) ─── */}
+      {/* ─── Find and Create Banner ─── */}
+      <section className="relative overflow-hidden bg-black border-t border-white/8">
+        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")' }} />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-12">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="text-center md:text-left">
+              <h2
+                className="text-2xl md:text-3xl font-bold text-white uppercase tracking-tight"
+                style={{ fontFamily: 'var(--font-display)' }}
+              >
+                Find <span className="text-[#0dd5b5]">&amp;</span> Create
+              </h2>
+              <p className="text-sm text-white/50 mt-1.5 max-w-lg" style={{ fontFamily: 'var(--font-body)' }}>
+                Discover events, gyms, and trainers near you — or list your own business and host events for the community.
+              </p>
+            </div>
+            <div className="flex items-center gap-3">
+              <Link
+                href="/events"
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#0dd5b5] text-black text-sm font-semibold rounded-lg hover:bg-[#0dd5b5]/90 transition-colors"
+                style={{ fontFamily: 'var(--font-body)' }}
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                Explore
+              </Link>
+              <Link
+                href="/create-event"
+                className="inline-flex items-center gap-2 px-5 py-2.5 border border-white/20 text-white text-sm font-semibold rounded-lg hover:border-[#f7d656] hover:text-[#f7d656] transition-colors"
+                style={{ fontFamily: 'var(--font-body)' }}
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
+                Create
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── Explore Section ─── */}
       <ExploreSection />
 
       {/* ─── Upcoming Events ─── */}
@@ -151,9 +194,9 @@ export default function Home() {
         <div className="grid grid-cols-1 md:grid-cols-4 md:h-[68vh] min-h-[520px]">
           {[
             { number: '01', title: 'FITNESS CLASSES', image: '/images/fitness-classes.jpg', href: '/listings/classes' },
-            { number: '02', title: 'NUTRITIONAL EATS', image: '/images/nutritional-eats.jpg', href: '/blog/nutrition' },
-            { number: '03', title: 'YOGA CLASSES', image: '/images/yoga-classes.jpg', href: '/listings/studios/yoga' },
-            { number: '04', title: 'FITNESS APPAREL', image: '/images/fitness-apparel.jpg', href: '/listings/apparel' },
+            { number: '02', title: 'GYMS', image: '/images/nutritional-eats.jpg', href: '/listings/gyms' },
+            { number: '03', title: 'EVENTS', image: '/images/yoga-classes.jpg', href: '/events' },
+            { number: '04', title: 'BUSINESSES', image: '/images/fitness-apparel.jpg', href: '/listings' },
           ].map((item, i) => (
             <Link
               key={i}
@@ -187,80 +230,66 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ─── Featured Trainers ─── */}
-      <section className="py-16 md:py-20 bg-black">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-end justify-between mb-10">
+      {/* ─── Host Events & Listings Banner ─── */}
+      <section className="relative overflow-hidden bg-gradient-to-r from-[#0dd5b5] to-[#0bc5a5]">
+        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'40\' height=\'40\' viewBox=\'0 0 40 40\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M0 40L40 0H20L0 20M40 40V20L20 40\' fill=\'%23000\' fill-opacity=\'.08\'/%3E%3C/svg%3E")' }} />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 md:py-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
             <div>
               <h2
-                className="text-3xl md:text-4xl font-bold text-white uppercase tracking-tight"
+                className="text-3xl md:text-4xl font-bold text-black uppercase tracking-tight mb-3"
                 style={{ fontFamily: 'var(--font-display)' }}
               >
-                Featured Trainers
+                Start hosting on Bahafit
               </h2>
-              <p className="text-sm text-white/40 mt-1" style={{ fontFamily: 'var(--font-body)' }}>
-                Certified professionals ready to help you reach your goals
+              <p className="text-base text-black/70 leading-relaxed max-w-lg" style={{ fontFamily: 'var(--font-body)' }}>
+                Whether you run a gym, offer training sessions, or organize fitness events — getting started is simple. Create your account, set up your listing or event, and connect with the Caribbean fitness community.
               </p>
             </div>
-            <Link
-              href="/trainers"
-              className="hidden md:inline-flex items-center text-sm font-medium text-white/40 hover:text-white transition-colors gap-1"
-              style={{ fontFamily: 'var(--font-body)' }}
-            >
-              View all <span aria-hidden>→</span>
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-            {[
-              { name: 'Darius Johnson', specialty: 'Strength Training & Bodybuilding', image: 'trainer1.jpeg' },
-              { name: 'Sarah Williams', specialty: 'Yoga & Flexibility Training', image: 'trainer2.jpeg' },
-              { name: 'Renaldo Rahming', specialty: 'CrossFit & HIIT Workouts', image: 'trainer3.jpeg' },
-              { name: 'James Rodriguez', specialty: 'Nutrition and Weight Management', image: 'trainer4.jpeg' },
-            ].map((trainer, i) => (
-              <Link
-                key={i}
-                href={`/trainers/trainer-${i + 1}`}
-                className="group block bg-white/5 border border-white/8 rounded-2xl overflow-hidden hover:border-[#0dd5b5]/50 hover:bg-white/8 transition-all duration-300"
-              >
-                <div className="aspect-[3/4] overflow-hidden">
-                  <Image
-                    src={`/images/${trainer.image}`}
-                    alt={trainer.name}
-                    width={400}
-                    height={500}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
+            <div className="flex flex-col sm:flex-row gap-4 md:justify-end">
+              <div className="flex items-start gap-4 bg-black/10 rounded-xl p-5 flex-1">
+                <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center flex-shrink-0">
+                  <svg className="w-5 h-5 text-[#f7d656]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
                 </div>
-                <div className="p-4">
-                  <h3
-                    className="text-base font-bold text-white mb-0.5 group-hover:text-[#0dd5b5] transition-colors"
-                    style={{ fontFamily: 'var(--font-display)' }}
+                <div>
+                  <h3 className="text-sm font-bold text-black mb-1" style={{ fontFamily: 'var(--font-display)' }}>Host Events</h3>
+                  <p className="text-xs text-black/60 leading-relaxed mb-2" style={{ fontFamily: 'var(--font-body)' }}>Create and promote fitness events to thousands</p>
+                  <Link
+                    href="/create-event"
+                    className="inline-flex items-center gap-1 text-xs font-semibold text-black hover:gap-2 transition-all"
+                    style={{ fontFamily: 'var(--font-body)' }}
                   >
-                    {trainer.name}
-                  </h3>
-                  <p className="text-xs text-white/40 mb-1" style={{ fontFamily: 'var(--font-body)' }}>
-                    Certified Personal Trainer
-                  </p>
-                  <p className="text-xs text-white/55 leading-relaxed" style={{ fontFamily: 'var(--font-body)' }}>
-                    {trainer.specialty}
-                  </p>
+                    Get started <span aria-hidden>→</span>
+                  </Link>
                 </div>
-              </Link>
-            ))}
-          </div>
-
-          <div className="text-center mt-8 md:hidden">
-            <Link
-              href="/trainers"
-              className="inline-flex items-center gap-2 text-sm font-medium text-[#0dd5b5] hover:text-white transition-colors"
-              style={{ fontFamily: 'var(--font-body)' }}
-            >
-              View all trainers <span aria-hidden>→</span>
-            </Link>
+              </div>
+              <div className="flex items-start gap-4 bg-black/10 rounded-xl p-5 flex-1">
+                <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center flex-shrink-0">
+                  <svg className="w-5 h-5 text-[#0dd5b5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold text-black mb-1" style={{ fontFamily: 'var(--font-display)' }}>List Your Business</h3>
+                  <p className="text-xs text-black/60 leading-relaxed mb-2" style={{ fontFamily: 'var(--font-body)' }}>Add your gym, studio, or service to the directory</p>
+                  <Link
+                    href="/list-your-business"
+                    className="inline-flex items-center gap-1 text-xs font-semibold text-black hover:gap-2 transition-all"
+                    style={{ fontFamily: 'var(--font-body)' }}
+                  >
+                    Get started <span aria-hidden>→</span>
+                  </Link>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
+
+      {/* ─── Gyms & Fitness Trainers Carousel ─── */}
+      <TrainersGymsCarousel />
 
       {/* ─── From Our Blog ─── */}
       <section className="py-16 md:py-20 bg-white border-t border-black/6">
@@ -344,75 +373,6 @@ export default function Home() {
                 </Link>
               ))}
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ─── Gyms and Studios ─── */}
-      <section className="py-16 md:py-20 bg-black/3 border-t border-black/6">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-end justify-between mb-10">
-            <div>
-              <h2
-                className="text-3xl md:text-4xl font-bold text-black uppercase tracking-tight"
-                style={{ fontFamily: 'var(--font-display)' }}
-              >
-                Gyms &amp; Studios
-              </h2>
-              <p className="text-sm text-black/50 mt-1" style={{ fontFamily: 'var(--font-body)' }}>
-                The best fitness facilities in the Bahamas
-              </p>
-            </div>
-            <Link
-              href="/listings/gyms"
-              className="hidden md:inline-flex items-center text-sm font-medium text-black/50 hover:text-black transition-colors gap-1"
-              style={{ fontFamily: 'var(--font-body)' }}
-            >
-              View all <span aria-hidden>→</span>
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-            {[
-              { name: 'Macfit West', image: 'macfit-west.jpeg' },
-              { name: 'Club One', image: 'clubone.jpeg' },
-              { name: 'Macfit East', image: 'macfit-east.jpeg' },
-              { name: 'Empire', image: 'empire.jpeg' },
-            ].map((gym, i) => (
-              <Link
-                key={i}
-                href={`/gyms/gym-${i + 1}`}
-                className="group block bg-white border border-black/8 rounded-2xl overflow-hidden hover:border-black/20 hover:shadow-lg hover:shadow-black/5 transition-all duration-300"
-              >
-                <div className="aspect-square overflow-hidden">
-                  <Image
-                    src={`/images/${gym.image}`}
-                    alt={gym.name}
-                    width={400}
-                    height={400}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                </div>
-                <div className="p-4">
-                  <h3
-                    className="text-base font-bold text-black group-hover:text-[#0dd5b5] transition-colors"
-                    style={{ fontFamily: 'var(--font-display)' }}
-                  >
-                    {gym.name}
-                  </h3>
-                </div>
-              </Link>
-            ))}
-          </div>
-
-          <div className="text-center mt-8 md:hidden">
-            <Link
-              href="/listings/gyms"
-              className="inline-flex items-center gap-2 text-sm font-medium text-[#0dd5b5] hover:text-black transition-colors"
-              style={{ fontFamily: 'var(--font-body)' }}
-            >
-              View all gyms <span aria-hidden>→</span>
-            </Link>
           </div>
         </div>
       </section>

@@ -14,10 +14,8 @@ interface User {
   createdAt: string
 }
 
-const roleColors: Record<UserRole, string> = {
+const roleColors: Record<string, string> = {
   admin: 'bg-purple-100 text-purple-800',
-  business_owner: 'bg-green-100 text-green-800',
-  event_organizer: 'bg-orange-100 text-orange-800',
   user: 'bg-blue-100 text-blue-800',
 }
 
@@ -123,8 +121,6 @@ export default function UsersPage() {
           >
             <option value="all">All Roles</option>
             <option value="admin">Admin</option>
-            <option value="business_owner">Business Owner</option>
-            <option value="event_organizer">Event Organizer</option>
             <option value="user">User</option>
           </select>
         </div>
@@ -191,10 +187,10 @@ export default function UsersPage() {
                         <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                           <span
                             className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${
-                              roleColors[user.role]
+                              roleColors[user.role] || 'bg-gray-100 text-gray-800'
                             }`}
                           >
-                            {user.role.replace('_', ' ')}
+                            {user.role === 'admin' ? 'admin' : 'user'}
                           </span>
                         </td>
                         <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">

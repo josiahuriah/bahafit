@@ -28,7 +28,7 @@ const plans = [
       'Priority support',
     ],
     cta: 'Get Started',
-    href: '/auth/signup?type=business',
+    href: '/auth/signup',
     popular: false,
   },
   {
@@ -51,7 +51,7 @@ const plans = [
       'Priority support',
     ],
     cta: 'Start Free Trial',
-    href: '/auth/signup?type=business&plan=pro',
+    href: '/auth/signup?plan=pro',
     popular: true,
   },
   {

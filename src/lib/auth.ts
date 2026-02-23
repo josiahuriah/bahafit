@@ -118,7 +118,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             name: user.name,
             email: user.email,
             password: '', // OAuth users don't need password
-            role: 'user',
           })
         }
       }
@@ -142,7 +141,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (token.email) {
         const dbUser = await getUserByEmail(token.email)
         if (dbUser) {
-          token.role = dbUser.role
+          // Normalize legacy roles: anything that isn't 'admin' becomes 'user'
+          token.role = dbUser.role === 'admin' ? 'admin' : 'user'
           token.isActive = dbUser.isActive
         }
       }

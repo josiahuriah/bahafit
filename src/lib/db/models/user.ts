@@ -14,7 +14,6 @@ export async function createUser(data: {
   name: string
   email: string
   password: string
-  role?: UserRole
 }): Promise<User> {
   const collection = await getUsersCollection()
 
@@ -31,7 +30,7 @@ export async function createUser(data: {
     name: data.name,
     email: data.email,
     password: hashedPassword,
-    role: data.role || 'user',
+    role: 'user',
     isActive: true,
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -151,6 +150,9 @@ export async function updateUserRole(
   id: string,
   role: UserRole
 ): Promise<User | null> {
+  if (role !== 'user' && role !== 'admin') {
+    throw new Error('Invalid role. Allowed roles: user, admin')
+  }
   return updateUser(id, { role })
 }
 

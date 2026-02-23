@@ -70,7 +70,7 @@ export default function ListYourBusinessPage() {
             Join the Caribbean's premier fitness directory and connect with thousands of health-conscious customers.
           </p>
           <Link
-            href="/auth/signup?type=business"
+            href="/auth/signup"
             className="inline-flex items-center justify-center px-8 py-4 bg-white text-[#0dd5b5] font-semibold rounded-lg hover:bg-gray-100 transition-colors text-lg"
           >
             Get Started Free
@@ -131,7 +131,7 @@ export default function ListYourBusinessPage() {
                   1
                 </div>
                 <h3 className="font-semibold text-gray-900 mb-2">Sign Up</h3>
-                <p className="text-sm text-gray-600">Create a free business account in minutes.</p>
+                <p className="text-sm text-gray-600">Create a free account in minutes.</p>
               </div>
 
               <div className="text-center relative">
@@ -170,7 +170,7 @@ export default function ListYourBusinessPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
-                href="/auth/signup?type=business"
+                href="/auth/signup"
                 className="inline-flex items-center justify-center px-8 py-4 bg-[#0dd5b5] text-white font-semibold rounded-lg hover:bg-[#0bc5a5] transition-colors"
               >
                 Create Free Listing

@@ -13,7 +13,9 @@ async function getStats() {
 
     const usersByRole = users.reduce(
       (acc, user) => {
-        acc[user.role] = (acc[user.role] || 0) + 1
+        // Normalize legacy roles: anything that isn't 'admin' becomes 'user'
+        const normalizedRole = user.role === 'admin' ? 'admin' : 'user'
+        acc[normalizedRole] = (acc[normalizedRole] || 0) + 1
         return acc
       },
       {} as Record<string, number>
@@ -81,21 +83,11 @@ export default async function AdminDashboard() {
         />
 
         <StatsCard
-          title="Business Owners"
-          value={stats.usersByRole.business_owner || 0}
+          title="Users"
+          value={stats.usersByRole.user || 0}
           icon={
-            <svg className="w-6 h-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-            </svg>
-          }
-        />
-
-        <StatsCard
-          title="Event Organizers"
-          value={stats.usersByRole.event_organizer || 0}
-          icon={
-            <svg className="w-6 h-6 text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            <svg className="w-6 h-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
           }
         />

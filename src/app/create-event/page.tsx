@@ -54,7 +54,7 @@ export default function CreateEventPage() {
             Promote your fitness event to thousands of health-conscious individuals across the Caribbean.
           </p>
           <Link
-            href="/auth/signup?type=organizer"
+            href="/auth/signup"
             className="inline-flex items-center justify-center px-8 py-4 bg-gray-900 text-white font-semibold rounded-lg hover:bg-gray-800 transition-colors text-lg"
           >
             Start Creating
@@ -117,7 +117,7 @@ export default function CreateEventPage() {
                   1
                 </div>
                 <h3 className="font-semibold text-gray-900 mb-2">Sign Up or Log In</h3>
-                <p className="text-gray-600">Create an organizer account or log in to your existing business account.</p>
+                <p className="text-gray-600">Create an account or log in to get started.</p>
               </div>
 
               <div className="text-center">
@@ -148,7 +148,7 @@ export default function CreateEventPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
-                href="/auth/signup?type=organizer"
+                href="/auth/signup"
                 className="inline-flex items-center justify-center px-8 py-4 bg-[#f7d656] text-gray-900 font-semibold rounded-lg hover:bg-[#f5cc2f] transition-colors"
               >
                 Create Your Event

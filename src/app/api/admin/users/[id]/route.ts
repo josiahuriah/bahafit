@@ -55,6 +55,14 @@ export async function PATCH(
     // Don't allow updating password through this endpoint
     delete body.password
 
+    // Validate role if being updated
+    if (body.role !== undefined && body.role !== 'user' && body.role !== 'admin') {
+      return NextResponse.json(
+        { error: 'Invalid role. Allowed roles: user, admin' },
+        { status: 400 }
+      )
+    }
+
     const user = await updateUser(id, body)
 
     if (!user) {

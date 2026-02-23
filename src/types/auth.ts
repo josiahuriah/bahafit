@@ -1,4 +1,4 @@
-export type UserRole = 'user' | 'business_owner' | 'event_organizer' | 'admin'
+export type UserRole = 'user' | 'admin'
 
 export interface User {
   _id?: string
@@ -21,22 +21,6 @@ export interface User {
   }
 }
 
-export interface BusinessProfile {
-  userId: string
-  businessName: string
-  businessType: 'gym' | 'club' | 'wellness_center' | 'apparel' | 'equipment'
-  verified: boolean
-  listings: string[] // IDs of listings owned
-  createdAt: Date
-}
-
-export interface OrganizerProfile {
-  userId: string
-  organizationName?: string
-  verified: boolean
-  events: string[] // IDs of events organized
-  createdAt: Date
-}
 
 export interface Registration {
   _id?: string
