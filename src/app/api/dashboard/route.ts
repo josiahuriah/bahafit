@@ -27,12 +27,12 @@ export async function GET() {
         const eventsQuery = `*[_type == "fitnessEvent" && _id in $eventIds] {
           _id,
           title,
-          slug,
+          "slug": slug,
           eventType,
           startDate,
           endDate,
-          isFree,
-          isVirtual,
+          "isFree": coalesce(isFree, true),
+          "isVirtual": coalesce(isVirtual, false),
           "location": location { venueName, city, island },
           "featuredImage": featuredImage.asset->url,
           "pricing": pricing[] { tierName, price, currency }

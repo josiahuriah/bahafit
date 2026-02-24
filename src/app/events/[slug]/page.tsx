@@ -13,17 +13,17 @@ import { formatDate, formatDateTime } from '@/lib/utils'
 interface Event {
   _id: string
   title: string
-  slug: { current: string }
+  slug?: { current: string } | null
   eventType: string
   description: any
   shortDescription?: string
   startDate: string
   endDate?: string
-  isMultiDay: boolean
+  isMultiDay?: boolean
   registrationStartDate?: string
   registrationDeadline?: string
   earlyBirdDeadline?: string
-  isVirtual: boolean
+  isVirtual?: boolean
   virtualEventLink?: string
   virtualEventPlatform?: string
   location?: {
@@ -37,10 +37,10 @@ interface Event {
     directions?: string
   }
   capacity?: number
-  currentRegistrations: number
-  waitlistEnabled: boolean
-  requiresRegistration: boolean
-  isFree: boolean
+  currentRegistrations?: number
+  waitlistEnabled?: boolean
+  requiresRegistration?: boolean
+  isFree?: boolean
   pricing?: Array<{
     tierName: string
     description?: string
@@ -107,12 +107,12 @@ interface Event {
 interface RelatedEvent {
   _id: string
   title: string
-  slug: { current: string }
+  slug?: { current: string } | null
   eventType: string
   startDate: string
   location?: string
   featuredImage?: string
-  isFree: boolean
+  isFree?: boolean
   pricing?: {
     price: number
     currency: string
@@ -217,7 +217,7 @@ export default function EventDetailPage() {
 
     if (!event) return
 
-    if (event.isFree || !event.pricing || event.pricing.length === 0) {
+    if (event.isFree !== false || !event.pricing || event.pricing.length === 0) {
       // Free event — go straight to processing
       submitRegistration(0, 'BSD', 'General')
     } else if (event.pricing.length === 1) {
@@ -332,7 +332,7 @@ export default function EventDetailPage() {
   const isEarlyBird = event.earlyBirdDeadline
     ? new Date(event.earlyBirdDeadline) > new Date()
     : false
-  const spotsLeft = event.capacity ? event.capacity - (event.currentRegistrations || 0) : null
+  const spotsLeft = event.capacity ? event.capacity - (event.currentRegistrations ?? 0) : null
   const isSoldOut = spotsLeft !== null && spotsLeft <= 0
 
   const lowestPrice = event.pricing?.reduce((min, p) => {
@@ -340,6 +340,7 @@ export default function EventDetailPage() {
     return price < min.price ? { price, currency: p.currency } : min
   }, { price: Infinity, currency: 'BSD' })
 
+  const requiresReg = event.requiresRegistration !== false
   const canRegister = isRegistrationOpen && !isSoldOut && !event.externalRegistrationUrl
 
   return (
@@ -425,11 +426,11 @@ export default function EventDetailPage() {
               </div>
               <div className="flex items-center gap-3 flex-shrink-0">
                 <span className="text-lg font-bold text-[#0dd5b5]">
-                  {event.isFree ? 'Free' : lowestPrice && lowestPrice.price !== Infinity
+                  {event.isFree !== false ? 'Free' : lowestPrice && lowestPrice.price !== Infinity
                     ? `From ${lowestPrice.currency} ${lowestPrice.price}`
                     : ''}
                 </span>
-                {event.requiresRegistration && (
+                {requiresReg && (
                   event.externalRegistrationUrl ? (
                     <a
                       href={event.externalRegistrationUrl}
@@ -638,7 +639,7 @@ export default function EventDetailPage() {
                 <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 border-2 border-[#0dd5b5]/20">
                   <h3 className="font-semibold text-gray-900 mb-2">Register for This Event</h3>
                   <p className="text-sm text-gray-500 mb-4">
-                    {event.isFree
+                    {event.isFree !== false
                       ? 'This event is free to attend.'
                       : `Starting from ${lowestPrice?.currency} ${lowestPrice?.price}`}
                   </p>
@@ -646,7 +647,7 @@ export default function EventDetailPage() {
                     onClick={handleRegisterClick}
                     className="w-full bg-[#0dd5b5] text-white py-3 rounded-lg font-semibold hover:bg-[#0bc5a5] transition-colors"
                   >
-                    {event.isFree ? 'Register Free' : 'Register Now'}
+                    {event.isFree !== false ? 'Register Free' : 'Register Now'}
                   </button>
                   {spotsLeft !== null && spotsLeft <= 20 && (
                     <p className="text-xs text-orange-600 text-center mt-2">
@@ -657,7 +658,7 @@ export default function EventDetailPage() {
               )}
 
               {/* Pricing Card */}
-              {!event.isFree && event.pricing && event.pricing.length > 0 && (
+              {event.isFree === false && event.pricing && event.pricing.length > 0 && (
                 <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6">
                   <h3 className="font-semibold text-gray-900 mb-4">Pricing</h3>
                   {isEarlyBird && (
@@ -766,7 +767,7 @@ export default function EventDetailPage() {
                         <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
                           <div
                             className="bg-[#0dd5b5] h-2 rounded-full"
-                            style={{ width: `${Math.min(((event.currentRegistrations || 0) / event.capacity!) * 100, 100)}%` }}
+                            style={{ width: `${Math.min(((event.currentRegistrations ?? 0) / event.capacity!) * 100, 100)}%` }}
                           />
                         </div>
                       </div>
@@ -852,10 +853,10 @@ export default function EventDetailPage() {
           {relatedEvents.length > 0 && (
             <section className="mt-12">
               <Carousel title="Similar Events" showDots={false}>
-                {relatedEvents.map((relEvent) => (
+                {relatedEvents.filter((re) => re.slug?.current).map((relEvent) => (
                   <Link
                     key={relEvent._id}
-                    href={`/events/${relEvent.slug.current}`}
+                    href={`/events/${relEvent.slug!.current}`}
                     className="block bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow overflow-hidden w-[280px]"
                   >
                     <div className="relative h-32 overflow-hidden">
@@ -869,7 +870,7 @@ export default function EventDetailPage() {
                       <h4 className="font-medium text-gray-900 line-clamp-1">{relEvent.title}</h4>
                       <p className="text-sm text-gray-500">{formatDate(relEvent.startDate)}</p>
                       <p className="text-sm text-[#0dd5b5] font-medium mt-1">
-                        {relEvent.isFree ? 'Free' : relEvent.pricing
+                        {relEvent.isFree !== false ? 'Free' : relEvent.pricing
                           ? `${relEvent.pricing.currency} ${relEvent.pricing.price}`
                           : 'See pricing'}
                       </p>

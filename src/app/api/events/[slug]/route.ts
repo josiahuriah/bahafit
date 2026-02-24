@@ -17,11 +17,11 @@ export async function GET(
       shortDescription,
       startDate,
       endDate,
-      isMultiDay,
+      "isMultiDay": coalesce(isMultiDay, false),
       registrationStartDate,
       registrationDeadline,
       earlyBirdDeadline,
-      isVirtual,
+      "isVirtual": coalesce(isVirtual, false),
       virtualEventLink,
       virtualEventPlatform,
       location {
@@ -35,10 +35,10 @@ export async function GET(
         directions
       },
       capacity,
-      currentRegistrations,
-      waitlistEnabled,
-      requiresRegistration,
-      isFree,
+      "currentRegistrations": coalesce(currentRegistrations, 0),
+      "waitlistEnabled": coalesce(waitlistEnabled, false),
+      "requiresRegistration": coalesce(requiresRegistration, true),
+      "isFree": coalesce(isFree, true),
       pricing[] {
         tierName,
         description,
@@ -99,7 +99,7 @@ export async function GET(
       tags,
       "featuredImage": featuredImage.asset->url,
       "images": images[].asset->url,
-      featured
+      "featured": coalesce(featured, false)
     }`
 
     const event = await client.fetch(query, { slug })
@@ -109,7 +109,7 @@ export async function GET(
     }
 
     // Get related events
-    const relatedQuery = `*[_type == "fitnessEvent" && status == "published" && slug.current != $slug && eventType == $eventType] | order(startDate asc) [0...4] {
+    const relatedQuery = `*[_type == "fitnessEvent" && status == "published" && defined(slug.current) && slug.current != $slug && eventType == $eventType] | order(startDate asc) [0...4] {
       _id,
       title,
       slug,
@@ -117,7 +117,7 @@ export async function GET(
       startDate,
       "location": location.city,
       "featuredImage": featuredImage.asset->url,
-      isFree,
+      "isFree": coalesce(isFree, true),
       "pricing": pricing[0] {
         price,
         currency

@@ -11,16 +11,16 @@ import { formatDate } from '@/lib/utils'
 interface Event {
   _id: string
   title: string
-  slug: { current: string }
+  slug?: { current: string } | null
   eventType: string
   shortDescription?: string
   startDate: string
   endDate?: string
-  isVirtual: boolean
-  isFree: boolean
-  featured: boolean
+  isVirtual?: boolean
+  isFree?: boolean
+  featured?: boolean
   capacity?: number
-  currentRegistrations: number
+  currentRegistrations?: number
   location?: {
     venueName?: string
     city?: string
@@ -89,9 +89,12 @@ function EventCard({ event }: { event: Event }) {
     return price < min.price ? { price, currency: p.currency } : min
   }, { price: Infinity, currency: 'BSD' })
 
+  const slug = event.slug?.current
+  if (!slug) return null
+
   return (
     <Link
-      href={`/events/${event.slug.current}`}
+      href={`/events/${slug}`}
       className="block bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group w-[280px] sm:w-[320px]"
     >
       <div className="relative h-40 sm:h-48 overflow-hidden">
@@ -144,15 +147,15 @@ function EventCard({ event }: { event: Event }) {
         </div>
         <div className="flex items-center justify-between">
           <span className="text-[#0dd5b5] font-bold">
-            {event.isFree ? 'Free' : lowestPrice && lowestPrice.price !== Infinity
+            {event.isFree !== false ? 'Free' : lowestPrice && lowestPrice.price !== Infinity
               ? `From ${lowestPrice.currency} ${lowestPrice.price}`
               : 'See pricing'}
           </span>
-          {event.capacity && (
+          {event.capacity ? (
             <span className="text-xs text-gray-500">
-              {event.currentRegistrations || 0}/{event.capacity} spots
+              {event.currentRegistrations ?? 0}/{event.capacity} spots
             </span>
-          )}
+          ) : null}
         </div>
       </div>
     </Link>

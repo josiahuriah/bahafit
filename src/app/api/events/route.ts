@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
     const upcoming = searchParams.get('upcoming')
     const limit = searchParams.get('limit')
 
-    let filter = '_type == "fitnessEvent" && status == "published"'
+    let filter = '_type == "fitnessEvent" && status == "published" && defined(slug.current)'
     const params: Record<string, string> = {}
 
     if (eventType && eventType !== 'all') {
@@ -41,11 +41,11 @@ export async function GET(req: NextRequest) {
       shortDescription,
       startDate,
       endDate,
-      isVirtual,
-      isFree,
-      featured,
+      "isVirtual": coalesce(isVirtual, false),
+      "isFree": coalesce(isFree, true),
+      "featured": coalesce(featured, false),
       capacity,
-      currentRegistrations,
+      "currentRegistrations": coalesce(currentRegistrations, 0),
       "location": location {
         venueName,
         city,
@@ -66,7 +66,7 @@ export async function GET(req: NextRequest) {
 
     // Get event type counts for filters
     const typesQuery = `{
-      "types": *[_type == "fitnessEvent" && status == "published"] {
+      "types": *[_type == "fitnessEvent" && status == "published" && defined(slug.current)] {
         eventType
       }
     }`
