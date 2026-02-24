@@ -262,6 +262,12 @@ export default function EventDetailPage() {
 
       const data = await response.json()
 
+      if (response.status === 409) {
+        // Already registered — treat as success
+        setRegStep('success')
+        return
+      }
+
       if (!response.ok) {
         setRegError(data.error || 'Registration failed')
         setRegStep(price > 0 ? 'payment' : 'closed')

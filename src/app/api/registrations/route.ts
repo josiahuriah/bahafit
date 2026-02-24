@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
-import { createRegistration, getRegistrationsByEvent } from '@/lib/db/models/registration'
+import { createRegistration, getExistingRegistration } from '@/lib/db/models/registration'
 import { getUserById } from '@/lib/db/models/user'
 
 export async function POST(req: NextRequest) {
@@ -19,13 +19,13 @@ export async function POST(req: NextRequest) {
     }
 
     // Check if user is already registered for this event
-    const existingRegistrations = await getRegistrationsByEvent(eventId)
-    const alreadyRegistered = existingRegistrations.find(
-      (r) => r.userId === session.user.id && r.status !== 'cancelled'
-    )
+    const alreadyRegistered = await getExistingRegistration(eventId, session.user.id)
 
     if (alreadyRegistered) {
-      return NextResponse.json({ error: 'You are already registered for this event' }, { status: 409 })
+      return NextResponse.json(
+        { error: 'already_registered', registration: alreadyRegistered },
+        { status: 409 }
+      )
     }
 
     // Get user details

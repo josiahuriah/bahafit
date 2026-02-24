@@ -52,6 +52,21 @@ export async function getRegistrationsByEvent(eventId: string): Promise<Registra
   }))
 }
 
+export async function getExistingRegistration(
+  eventId: string,
+  userId: string
+): Promise<Registration | null> {
+  const collection = await getRegistrationsCollection()
+  const registration = await collection.findOne({
+    eventId,
+    userId,
+    status: { $ne: 'cancelled' },
+  })
+
+  if (!registration) return null
+  return { ...registration, _id: registration._id?.toString() }
+}
+
 export async function getRegistrationsByUser(userId: string): Promise<Registration[]> {
   const collection = await getRegistrationsCollection()
   const registrations = await collection
