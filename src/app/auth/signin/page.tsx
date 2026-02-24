@@ -55,7 +55,7 @@ function SignInForm() {
           <p className="mt-2 text-center text-sm text-gray-600">
             Or{' '}
             <Link
-              href="/auth/signup"
+              href={callbackUrl !== '/' ? `/auth/signup?callbackUrl=${encodeURIComponent(callbackUrl)}` : '/auth/signup'}
               className="font-medium text-indigo-600 hover:text-indigo-500"
             >
               create a new account

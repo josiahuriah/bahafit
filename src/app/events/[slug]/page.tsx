@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
+import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import Image from 'next/image'
 import Header from '@/components/layout/Header'
@@ -156,14 +157,30 @@ const amenityLabels: Record<string, string> = {
   certificate: 'Certificate',
 }
 
+type RegistrationStep = 'closed' | 'select-tier' | 'payment' | 'processing' | 'success'
+
 export default function EventDetailPage() {
   const params = useParams()
   const router = useRouter()
+  const { data: session, status: authStatus } = useSession()
   const [event, setEvent] = useState<Event | null>(null)
   const [relatedEvents, setRelatedEvents] = useState<RelatedEvent[]>([])
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState<'details' | 'schedule' | 'faq'>('details')
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
+
+  // Registration state
+  const [regStep, setRegStep] = useState<RegistrationStep>('closed')
+  const [selectedTier, setSelectedTier] = useState<number>(0)
+  const [regError, setRegError] = useState('')
+
+  // Payment form state
+  const [paymentForm, setPaymentForm] = useState({
+    cardName: '',
+    cardNumber: '',
+    expiry: '',
+    cvv: '',
+  })
 
   useEffect(() => {
     if (params.slug) {
@@ -186,6 +203,98 @@ export default function EventDetailPage() {
     } finally {
       setLoading(false)
     }
+  }
+
+  const handleRegisterClick = () => {
+    if (authStatus === 'loading') return
+
+    if (!session) {
+      // Redirect to sign in with callback
+      const callbackUrl = encodeURIComponent(`/events/${params.slug}?register=true`)
+      router.push(`/auth/signin?callbackUrl=${callbackUrl}`)
+      return
+    }
+
+    if (!event) return
+
+    if (event.isFree || !event.pricing || event.pricing.length === 0) {
+      // Free event — go straight to processing
+      submitRegistration(0, 'BSD', 'General')
+    } else if (event.pricing.length === 1) {
+      // Single tier — go to payment
+      setSelectedTier(0)
+      setRegStep('payment')
+    } else {
+      // Multiple tiers — let user select
+      setRegStep('select-tier')
+    }
+  }
+
+  // Auto-open registration if redirected back from auth
+  useEffect(() => {
+    if (typeof window !== 'undefined' && event && session) {
+      const urlParams = new URLSearchParams(window.location.search)
+      if (urlParams.get('register') === 'true') {
+        // Clean URL
+        window.history.replaceState({}, '', `/events/${params.slug}`)
+        handleRegisterClick()
+      }
+    }
+  }, [event, session])
+
+  const submitRegistration = async (price: number, currency: string, ticketType: string) => {
+    if (!event) return
+    setRegStep('processing')
+    setRegError('')
+
+    try {
+      const response = await fetch('/api/registrations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          eventId: event._id,
+          eventTitle: event.title,
+          ticketType,
+          price,
+          currency,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        setRegError(data.error || 'Registration failed')
+        setRegStep(price > 0 ? 'payment' : 'closed')
+        return
+      }
+
+      setRegStep('success')
+    } catch {
+      setRegError('An unexpected error occurred')
+      setRegStep('closed')
+    }
+  }
+
+  const handlePaymentSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!event?.pricing) return
+
+    const tier = event.pricing[selectedTier]
+    const isEB = event.earlyBirdDeadline && new Date(event.earlyBirdDeadline) > new Date()
+    const price = isEB && tier.earlyBirdPrice ? tier.earlyBirdPrice : tier.price
+
+    submitRegistration(price, tier.currency, tier.tierName)
+  }
+
+  const handleTierSelect = (index: number) => {
+    setSelectedTier(index)
+    setRegStep('payment')
+  }
+
+  const closeModal = () => {
+    setRegStep('closed')
+    setRegError('')
+    setPaymentForm({ cardName: '', cardNumber: '', expiry: '', cvv: '' })
   }
 
   if (loading) {
@@ -230,6 +339,8 @@ export default function EventDetailPage() {
     const price = isEarlyBird && p.earlyBirdPrice ? p.earlyBirdPrice : p.price
     return price < min.price ? { price, currency: p.currency } : min
   }, { price: Infinity, currency: 'BSD' })
+
+  const canRegister = isRegistrationOpen && !isSoldOut && !event.externalRegistrationUrl
 
   return (
     <>
@@ -334,13 +445,15 @@ export default function EventDetailPage() {
                     </a>
                   ) : (
                     <button
+                      onClick={handleRegisterClick}
+                      disabled={isSoldOut || !isRegistrationOpen}
                       className={`px-4 sm:px-6 py-2 rounded-full font-semibold text-sm transition-colors ${
-                        isSoldOut
+                        isSoldOut || !isRegistrationOpen
                           ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                           : 'bg-[#0dd5b5] text-white hover:bg-[#0bc5a5]'
                       }`}
                     >
-                      {isSoldOut ? 'Sold Out' : 'Register Now'}
+                      {isSoldOut ? 'Sold Out' : !isRegistrationOpen ? 'Registration Closed' : 'Register Now'}
                     </button>
                   )
                 )}
@@ -520,6 +633,29 @@ export default function EventDetailPage() {
 
             {/* Sidebar */}
             <div className="space-y-6">
+              {/* Registration CTA Card */}
+              {event.requiresRegistration && canRegister && (
+                <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 border-2 border-[#0dd5b5]/20">
+                  <h3 className="font-semibold text-gray-900 mb-2">Register for This Event</h3>
+                  <p className="text-sm text-gray-500 mb-4">
+                    {event.isFree
+                      ? 'This event is free to attend.'
+                      : `Starting from ${lowestPrice?.currency} ${lowestPrice?.price}`}
+                  </p>
+                  <button
+                    onClick={handleRegisterClick}
+                    className="w-full bg-[#0dd5b5] text-white py-3 rounded-lg font-semibold hover:bg-[#0bc5a5] transition-colors"
+                  >
+                    {event.isFree ? 'Register Free' : 'Register Now'}
+                  </button>
+                  {spotsLeft !== null && spotsLeft <= 20 && (
+                    <p className="text-xs text-orange-600 text-center mt-2">
+                      Only {spotsLeft} spots remaining!
+                    </p>
+                  )}
+                </div>
+              )}
+
               {/* Pricing Card */}
               {!event.isFree && event.pricing && event.pricing.length > 0 && (
                 <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6">
@@ -745,6 +881,214 @@ export default function EventDetailPage() {
           )}
         </div>
       </main>
+
+      {/* Registration Modal Overlay */}
+      {regStep !== 'closed' && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+            {/* Tier Selection */}
+            {regStep === 'select-tier' && event.pricing && (
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-xl font-bold text-gray-900">Select a Ticket</h2>
+                  <button onClick={closeModal} className="text-gray-400 hover:text-gray-600">
+                    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+                <div className="space-y-3">
+                  {event.pricing.map((tier, i) => {
+                    const price = isEarlyBird && tier.earlyBirdPrice ? tier.earlyBirdPrice : tier.price
+                    return (
+                      <button
+                        key={i}
+                        onClick={() => handleTierSelect(i)}
+                        className="w-full text-left border-2 border-gray-200 hover:border-[#0dd5b5] rounded-xl p-4 transition-colors"
+                      >
+                        <div className="flex justify-between items-center">
+                          <div>
+                            <p className="font-semibold text-gray-900">{tier.tierName}</p>
+                            {tier.description && (
+                              <p className="text-sm text-gray-500 mt-0.5">{tier.description}</p>
+                            )}
+                          </div>
+                          <div className="text-right">
+                            <p className="text-lg font-bold text-[#0dd5b5]">{tier.currency} {price}</p>
+                            {isEarlyBird && tier.earlyBirdPrice && (
+                              <p className="text-xs text-gray-400 line-through">{tier.currency} {tier.price}</p>
+                            )}
+                          </div>
+                        </div>
+                        {tier.includes && tier.includes.length > 0 && (
+                          <div className="mt-2 flex flex-wrap gap-1">
+                            {tier.includes.map((inc, j) => (
+                              <span key={j} className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">{inc}</span>
+                            ))}
+                          </div>
+                        )}
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Payment Form */}
+            {regStep === 'payment' && event.pricing && (
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <div>
+                    <h2 className="text-xl font-bold text-gray-900">Payment</h2>
+                    <p className="text-sm text-gray-500">
+                      {event.pricing[selectedTier].tierName} &mdash;{' '}
+                      {event.pricing[selectedTier].currency}{' '}
+                      {isEarlyBird && event.pricing[selectedTier].earlyBirdPrice
+                        ? event.pricing[selectedTier].earlyBirdPrice
+                        : event.pricing[selectedTier].price}
+                    </p>
+                  </div>
+                  <button onClick={closeModal} className="text-gray-400 hover:text-gray-600">
+                    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+
+                {regError && (
+                  <div className="mb-4 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg p-3">
+                    {regError}
+                  </div>
+                )}
+
+                <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-5">
+                  <p className="text-amber-800 text-xs font-medium">
+                    Demo Mode: Enter any information below. No real charges will be made.
+                  </p>
+                </div>
+
+                <form onSubmit={handlePaymentSubmit} className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Name on Card</label>
+                    <input
+                      type="text"
+                      required
+                      value={paymentForm.cardName}
+                      onChange={(e) => setPaymentForm({ ...paymentForm, cardName: e.target.value })}
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#0dd5b5] focus:border-transparent"
+                      placeholder="John Doe"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Card Number</label>
+                    <input
+                      type="text"
+                      required
+                      maxLength={19}
+                      value={paymentForm.cardNumber}
+                      onChange={(e) => {
+                        const v = e.target.value.replace(/\D/g, '').replace(/(.{4})/g, '$1 ').trim()
+                        setPaymentForm({ ...paymentForm, cardNumber: v })
+                      }}
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#0dd5b5] focus:border-transparent font-mono"
+                      placeholder="4242 4242 4242 4242"
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Expiry</label>
+                      <input
+                        type="text"
+                        required
+                        maxLength={5}
+                        value={paymentForm.expiry}
+                        onChange={(e) => {
+                          let v = e.target.value.replace(/\D/g, '')
+                          if (v.length >= 2) v = v.slice(0, 2) + '/' + v.slice(2)
+                          setPaymentForm({ ...paymentForm, expiry: v.slice(0, 5) })
+                        }}
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#0dd5b5] focus:border-transparent font-mono"
+                        placeholder="MM/YY"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">CVV</label>
+                      <input
+                        type="text"
+                        required
+                        maxLength={4}
+                        value={paymentForm.cvv}
+                        onChange={(e) => setPaymentForm({ ...paymentForm, cvv: e.target.value.replace(/\D/g, '') })}
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#0dd5b5] focus:border-transparent font-mono"
+                        placeholder="123"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="pt-2 space-y-2">
+                    <button
+                      type="submit"
+                      className="w-full bg-[#0dd5b5] text-white py-3 rounded-lg font-semibold hover:bg-[#0bc5a5] transition-colors"
+                    >
+                      Pay {event.pricing[selectedTier].currency}{' '}
+                      {isEarlyBird && event.pricing[selectedTier].earlyBirdPrice
+                        ? event.pricing[selectedTier].earlyBirdPrice
+                        : event.pricing[selectedTier].price}
+                    </button>
+                    {event.pricing.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => setRegStep('select-tier')}
+                        className="w-full text-gray-500 text-sm hover:text-gray-700 py-2"
+                      >
+                        Change ticket type
+                      </button>
+                    )}
+                  </div>
+                </form>
+              </div>
+            )}
+
+            {/* Processing */}
+            {regStep === 'processing' && (
+              <div className="p-6 text-center py-16">
+                <div className="animate-spin rounded-full h-12 w-12 border-4 border-[#0dd5b5] border-t-transparent mx-auto mb-4"></div>
+                <p className="text-gray-600 font-medium">Processing your registration...</p>
+              </div>
+            )}
+
+            {/* Success */}
+            {regStep === 'success' && (
+              <div className="p-6 text-center py-12">
+                <div className="w-16 h-16 bg-[#0dd5b5]/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-8 h-8 text-[#0dd5b5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <h2 className="text-xl font-bold text-gray-900 mb-2">You're Registered!</h2>
+                <p className="text-gray-600 mb-6">
+                  You've been successfully registered for <strong>{event.title}</strong>.
+                  Check your dashboard to view your registrations.
+                </p>
+                <div className="space-y-2">
+                  <Link
+                    href="/dashboard"
+                    className="block w-full bg-[#0dd5b5] text-white py-3 rounded-lg font-semibold hover:bg-[#0bc5a5] transition-colors text-center"
+                  >
+                    Go to Dashboard
+                  </Link>
+                  <button
+                    onClick={closeModal}
+                    className="block w-full text-gray-500 text-sm hover:text-gray-700 py-2"
+                  >
+                    Stay on this page
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Image Modal */}
       {selectedImage && (

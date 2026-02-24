@@ -1,11 +1,14 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
 import { signIn } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-export default function SignUpPage() {
+
+function SignUpForm() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const callbackUrl = searchParams.get('callbackUrl') || '/'
 
   const [formData, setFormData] = useState({
     name: '',
@@ -70,7 +73,7 @@ export default function SignUpPage() {
         setError('Account created but sign in failed. Please sign in manually.')
         setTimeout(() => router.push('/auth/signin'), 2000)
       } else {
-        router.push('/')
+        router.push(callbackUrl)
         router.refresh()
       }
     } catch (err) {
@@ -79,6 +82,10 @@ export default function SignUpPage() {
       setLoading(false)
     }
   }
+
+  const signInHref = callbackUrl !== '/'
+    ? `/auth/signin?callbackUrl=${encodeURIComponent(callbackUrl)}`
+    : '/auth/signin'
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -90,7 +97,7 @@ export default function SignUpPage() {
           <p className="mt-2 text-center text-sm text-gray-600">
             Already have an account?{' '}
             <Link
-              href="/auth/signin"
+              href={signInHref}
               className="font-medium text-indigo-600 hover:text-indigo-500"
             >
               Sign in
@@ -190,5 +197,17 @@ export default function SignUpPage() {
         </form>
       </div>
     </div>
+  )
+}
+
+export default function SignUpPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-gray-600">Loading...</div>
+      </div>
+    }>
+      <SignUpForm />
+    </Suspense>
   )
 }
