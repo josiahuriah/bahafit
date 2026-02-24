@@ -1,8 +1,8 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 import { useSession } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import Header from '@/components/layout/Header'
@@ -42,13 +42,16 @@ interface AttendingEvent {
 
 type DashboardTab = 'attending' | 'hosting'
 
-export default function DashboardPage() {
+function DashboardContent() {
   const { data: session, status: authStatus } = useSession()
   const router = useRouter()
-  const [activeTab, setActiveTab] = useState<DashboardTab>('attending')
+  const searchParams = useSearchParams()
+  const justCreated = searchParams.get('created') === '1'
+  const [activeTab, setActiveTab] = useState<DashboardTab>(justCreated ? 'hosting' : 'attending')
   const [attending, setAttending] = useState<AttendingEvent[]>([])
   const [hosting, setHosting] = useState<EventSummary[]>([])
   const [loading, setLoading] = useState(true)
+  const [showCreatedBanner, setShowCreatedBanner] = useState(justCreated)
 
   useEffect(() => {
     if (authStatus === 'unauthenticated') {
@@ -128,7 +131,7 @@ export default function DashboardPage() {
                 <p className="text-gray-500 mt-1">Manage your events and registrations</p>
               </div>
               <Link
-                href="/create-event"
+                href="/events/new"
                 className="inline-flex items-center gap-2 bg-[#0dd5b5] text-white px-5 py-2.5 rounded-lg font-semibold hover:bg-[#0bc5a5] transition-colors text-sm"
               >
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -137,6 +140,23 @@ export default function DashboardPage() {
                 Create Event
               </Link>
             </div>
+
+            {/* Success banner after event creation */}
+            {showCreatedBanner && (
+              <div className="mt-5 flex items-center justify-between gap-3 bg-[#0dd5b5]/10 border border-[#0dd5b5]/30 text-[#0a8a76] rounded-xl px-4 py-3 text-sm font-medium">
+                <div className="flex items-center gap-2">
+                  <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Your event has been published successfully!
+                </div>
+                <button onClick={() => setShowCreatedBanner(false)} className="text-[#0a8a76]/60 hover:text-[#0a8a76]">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            )}
 
             {/* Tabs */}
             <div className="flex gap-1 mt-6 border-b -mb-px">
@@ -237,7 +257,7 @@ export default function DashboardPage() {
                   <h3 className="text-lg font-semibold text-gray-900 mb-1">No events hosted</h3>
                   <p className="text-gray-500 mb-6">Ready to host your own fitness event? Get started today.</p>
                   <Link
-                    href="/create-event"
+                    href="/events/new"
                     className="inline-flex items-center gap-2 bg-[#0dd5b5] text-white px-6 py-2.5 rounded-lg font-semibold hover:bg-[#0bc5a5] transition-colors"
                   >
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -260,6 +280,18 @@ export default function DashboardPage() {
 
       <Footer />
     </>
+  )
+}
+
+export default function DashboardPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="animate-spin rounded-full h-12 w-12 border-4 border-[#0dd5b5] border-t-transparent" />
+      </div>
+    }>
+      <DashboardContent />
+    </Suspense>
   )
 }
 
