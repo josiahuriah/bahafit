@@ -39,6 +39,7 @@ export async function GET(
       "waitlistEnabled": coalesce(waitlistEnabled, false),
       "requiresRegistration": coalesce(requiresRegistration, true),
       "isFree": coalesce(isFree, true),
+      price,
       pricing[] {
         tierName,
         description,

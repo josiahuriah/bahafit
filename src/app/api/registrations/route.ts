@@ -1,26 +1,32 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@/lib/auth'
+import { auth, requireAuth } from '@/lib/auth'
 import { createRegistration, getExistingRegistration } from '@/lib/db/models/registration'
-import { getUserById } from '@/lib/db/models/user'
+import { generateFygaroPaymentLink } from '@/lib/fygaro'
 
 export async function POST(req: NextRequest) {
   try {
     const session = await auth()
-
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
-    }
+    const user = await requireAuth(session)
 
     const body = await req.json()
     const { eventId, eventTitle, ticketType, price, currency } = body
 
-    if (!eventId) {
-      return NextResponse.json({ error: 'Event ID is required' }, { status: 400 })
+    if (!eventId || !eventTitle || price == null || !currency) {
+      return NextResponse.json(
+        { error: 'Missing required fields: eventId, eventTitle, price, currency' },
+        { status: 400 }
+      )
+    }
+
+    if (typeof price !== 'number' || price < 0) {
+      return NextResponse.json(
+        { error: 'Price must be a non-negative number' },
+        { status: 400 }
+      )
     }
 
     // Check if user is already registered for this event
-    const alreadyRegistered = await getExistingRegistration(eventId, session.user.id)
-
+    const alreadyRegistered = await getExistingRegistration(eventId, user.id || (user as any)._id || '')
     if (alreadyRegistered) {
       return NextResponse.json(
         { error: 'already_registered', registration: alreadyRegistered },
@@ -28,33 +34,37 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    // Get user details
-    const user = await getUserById(session.user.id)
-    if (!user) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 })
-    }
-
-    const isFree = !price || price === 0
-
     const registration = await createRegistration({
       eventId,
-      userId: session.user.id,
+      eventTitle,
+      userId: user.id || (user as any)._id || '',
       userName: user.name,
       userEmail: user.email,
-      ticketType: ticketType || 'General',
-      price: price || 0,
-      currency: currency || 'BSD',
-      status: 'confirmed',
-      paymentStatus: isFree ? 'paid' : 'paid', // Dummy payment always succeeds
-      paymentId: isFree ? undefined : `dummy_${Date.now()}`,
-      metadata: {
-        eventTitle,
-      },
+      ticketType,
+      price,
+      currency,
+      status: 'pending',
+      paymentStatus: 'pending',
     })
 
-    return NextResponse.json({ registration }, { status: 201 })
+    const paymentUrl = generateFygaroPaymentLink({
+      registrationId: registration._id || '',
+      amount: price,
+      currency,
+      eventTitle,
+      customerEmail: user.email,
+      customerName: user.name,
+    })
+
+    return NextResponse.json({
+      registration,
+      paymentUrl,
+    })
   } catch (error: any) {
-    console.error('Registration error:', error)
+    if (error.message === 'Unauthorized' || error.message === 'Account is inactive') {
+      return NextResponse.json({ error: error.message }, { status: 401 })
+    }
+    console.error('Failed to create registration:', error)
     return NextResponse.json(
       { error: 'Failed to create registration' },
       { status: 500 }
