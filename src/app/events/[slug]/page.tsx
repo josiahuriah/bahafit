@@ -40,6 +40,7 @@ interface Event {
   waitlistEnabled: boolean
   requiresRegistration: boolean
   isFree: boolean
+  price?: number
   pricing?: Array<{
     tierName: string
     description?: string
@@ -332,16 +333,17 @@ export default function EventDetailPage() {
                     >
                       {isSoldOut ? 'Sold Out' : 'Register Now'}
                     </a>
+                  ) : isSoldOut ? (
+                    <span className="px-4 sm:px-6 py-2 rounded-full font-semibold text-sm bg-gray-300 text-gray-500 cursor-not-allowed">
+                      Sold Out
+                    </span>
                   ) : (
-                    <button
-                      className={`px-4 sm:px-6 py-2 rounded-full font-semibold text-sm transition-colors ${
-                        isSoldOut
-                          ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                          : 'bg-[#0dd5b5] text-white hover:bg-[#0bc5a5]'
-                      }`}
+                    <Link
+                      href={`/events/${event.slug.current}/checkout`}
+                      className="px-4 sm:px-6 py-2 rounded-full font-semibold text-sm transition-colors bg-[#0dd5b5] text-white hover:bg-[#0bc5a5]"
                     >
-                      {isSoldOut ? 'Sold Out' : 'Register Now'}
-                    </button>
+                      Register Now
+                    </Link>
                   )
                 )}
               </div>

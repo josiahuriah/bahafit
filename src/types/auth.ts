@@ -25,6 +25,7 @@ export interface User {
 export interface Registration {
   _id?: string
   eventId: string
+  eventTitle: string
   userId: string
   userName: string
   userEmail: string

@@ -39,6 +39,7 @@ export async function GET(
       waitlistEnabled,
       requiresRegistration,
       isFree,
+      price,
       pricing[] {
         tierName,
         description,
