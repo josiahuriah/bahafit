@@ -1,12 +1,13 @@
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
-import Link from 'next/link'
+// import Link from 'next/link'
 
 export const metadata = {
   title: 'Help Center | Bahafit',
   description: 'Get help with your Bahafit account, listings, events, and more.',
 }
 
+/*
 const helpCategories = [
   {
     title: 'Account & Profile',
@@ -83,43 +84,64 @@ const popularArticles = [
   { title: 'Responding to customer reviews', views: '1.2K views' },
   { title: 'Upgrading your subscription', views: '980 views' },
 ]
+*/
 
 export default function HelpPage() {
   return (
     <>
       <Header />
 
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-[#0dd5b5] to-[#0bc5a5] py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl sm:text-5xl font-bold text-white mb-6">
-            Help Center
+      {/* Coming Soon */}
+      <main
+        className="relative min-h-[calc(100vh-80px)] bg-black flex flex-col items-center justify-center overflow-hidden px-6"
+        style={{ fontFamily: 'var(--font-body)' }}
+      >
+        <div
+          className="absolute inset-0 opacity-[0.04]"
+          style={{
+            backgroundImage:
+              'linear-gradient(#0dd5b5 1px, transparent 1px), linear-gradient(to right, #0dd5b5 1px, transparent 1px)',
+            backgroundSize: '60px 60px',
+          }}
+        />
+        <div
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full pointer-events-none"
+          style={{ background: 'radial-gradient(circle, rgba(13,213,181,0.07) 0%, transparent 70%)' }}
+        />
+        <div className="relative z-10 text-center max-w-lg mx-auto">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 border border-[#0dd5b5]/30 rounded-full mb-8">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#0dd5b5] animate-pulse" />
+            <span className="text-[#0dd5b5] text-xs font-semibold tracking-widest uppercase">Help Center</span>
+          </div>
+          <h1
+            className="text-4xl sm:text-5xl md:text-6xl font-bold text-white uppercase tracking-tight mb-6 leading-tight"
+            style={{ fontFamily: 'var(--font-display)' }}
+          >
+            Coming <span style={{ color: '#f7d656' }}>Soon</span>
           </h1>
-          <p className="text-xl text-white/90 max-w-3xl mx-auto mb-8">
-            Find answers to your questions and get the support you need.
+          <p className="text-white/50 text-base leading-relaxed mb-10">
+            Our Help Center is on its way. In the meantime, feel free to reach out to us directly with any questions.
           </p>
-
-          {/* Search Box */}
-          <div className="max-w-xl mx-auto">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search for help articles..."
-                className="w-full px-6 py-4 rounded-full text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-white"
-              />
-              <button className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-[#0dd5b5] text-white p-2 rounded-full hover:bg-[#0bc5a5] transition-colors">
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-              </button>
-            </div>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <a
+              href="/contact"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-[#0dd5b5] text-black text-sm font-bold rounded-lg hover:bg-[#0dd5b5]/90 transition-all"
+            >
+              Contact Us
+            </a>
+            <a
+              href="/"
+              className="inline-flex items-center gap-2 px-6 py-3 border border-white/15 text-white text-sm font-semibold rounded-lg hover:border-[#0dd5b5]/50 hover:text-[#0dd5b5] transition-all"
+            >
+              ← Back to Home
+            </a>
           </div>
         </div>
-      </section>
+      </main>
 
+      {/*
       <main className="bg-gray-50 py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Popular Articles */}
           <section className="mb-16">
             <h2 className="text-2xl font-bold text-gray-900 mb-6">Popular Articles</h2>
             <div className="bg-white rounded-xl shadow-sm divide-y">
@@ -132,7 +154,6 @@ export default function HelpPage() {
             </div>
           </section>
 
-          {/* Help Categories */}
           <section className="mb-16">
             <h2 className="text-2xl font-bold text-gray-900 mb-6">Browse by Category</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -158,7 +179,6 @@ export default function HelpPage() {
             </div>
           </section>
 
-          {/* Still Need Help */}
           <section className="bg-white rounded-xl shadow-sm p-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="text-center p-6 border rounded-xl">
@@ -190,6 +210,7 @@ export default function HelpPage() {
           </section>
         </div>
       </main>
+      */}
 
       <Footer />
     </>

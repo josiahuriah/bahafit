@@ -5,8 +5,58 @@ import Image from 'next/image'
 import ExploreSection from '@/components/ExploreSection'
 import TrainersGymsCarousel from '@/components/TrainersGymsCarousel'
 
+interface SanityEvent {
+  _id: string
+  title: string
+  slug: { current: string }
+  eventType: string
+  shortDescription?: string
+  startDate: string
+  isVirtual: boolean
+  location?: {
+    venueName?: string
+    city?: string
+    island?: string
+  }
+  featuredImage?: string
+}
 
-export default function Home() {
+async function getUpcomingEvents(): Promise<SanityEvent[]> {
+  try {
+    // Dynamic import to avoid crashing if Sanity env vars are not configured
+    const { client } = await import('@/sanity/lib/client')
+    const query = `*[_type == "fitnessEvent" && status == "published" && defined(slug.current) && startDate > now()] | order(startDate asc) [0...3] {
+      _id,
+      title,
+      slug,
+      eventType,
+      shortDescription,
+      startDate,
+      "isVirtual": coalesce(isVirtual, false),
+      "location": location { venueName, city, island },
+      "featuredImage": featuredImage.asset->url
+    }`
+    return await client.fetch(query, {}, { next: { revalidate: 300 } })
+  } catch {
+    return []
+  }
+}
+
+function formatEventDate(dateStr: string): string {
+  try {
+    return new Date(dateStr).toLocaleDateString('en-US', {
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric',
+    })
+  } catch {
+    return dateStr
+  }
+}
+
+export default async function Home() {
+  const upcomingEvents = await getUpcomingEvents()
+
   return (
     <>
       <Header />
@@ -107,64 +157,73 @@ export default function Home() {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[
-              {
-                src: '/images/event1.jpeg',
-                date: 'December 15, 2025',
-                title: 'Caribbean Marathon 2025',
-                description: 'Join hundreds of runners for the annual Caribbean Marathon in Nassau',
-                href: '/events/caribbean-marathon',
-              },
-              {
-                src: '/images/event4.jpg',
-                date: 'January 8, 2026',
-                title: 'Wellness & Fitness Expo',
-                description: 'Discover the latest in health, wellness, and fitness innovations',
-                href: '/events/wellness-expo',
-              },
-              {
-                src: '/images/event2.jpeg',
-                date: 'February 20, 2026',
-                title: 'Caribbean Fitness Challenge',
-                description: 'Test your strength and endurance in this ultimate fitness competition',
-                href: '/events/fitness-challenge',
-              },
-            ].map((event, i) => (
-              <Link
-                key={i}
-                href={event.href}
-                className="group block bg-white border border-black/8 rounded-2xl overflow-hidden hover:border-black/20 hover:shadow-lg hover:shadow-black/5 transition-all duration-300"
-              >
-                <div className="h-56 flex items-center justify-center overflow-hidden bg-black/3">
-                  <Image
-                    src={event.src}
-                    alt={event.title}
-                    width={600}
-                    height={400}
-                    className="h-56 w-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                </div>
-                <div className="p-5">
-                  <div className="flex items-center gap-1.5 text-xs text-black/40 mb-2.5" style={{ fontFamily: 'var(--font-body)' }}>
-                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    {event.date}
+          {upcomingEvents.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {upcomingEvents.map((event) => (
+                <Link
+                  key={event._id}
+                  href={`/events/${event.slug.current}`}
+                  className="group block bg-white border border-black/8 rounded-2xl overflow-hidden hover:border-black/20 hover:shadow-lg hover:shadow-black/5 transition-all duration-300"
+                >
+                  <div className="h-56 flex items-center justify-center overflow-hidden bg-black/3">
+                    {event.featuredImage ? (
+                      <Image
+                        src={event.featuredImage}
+                        alt={event.title}
+                        width={600}
+                        height={400}
+                        className="h-56 w-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    ) : (
+                      <div className="h-56 w-full bg-gradient-to-br from-[#0dd5b5]/20 to-black/10 flex items-center justify-center group-hover:scale-105 transition-transform duration-500">
+                        <svg className="w-12 h-12 text-[#0dd5b5]/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                      </div>
+                    )}
                   </div>
-                  <h3
-                    className="text-lg font-bold text-black mb-1.5 group-hover:text-[#0dd5b5] transition-colors"
-                    style={{ fontFamily: 'var(--font-display)' }}
-                  >
-                    {event.title}
-                  </h3>
-                  <p className="text-sm text-black/55 leading-relaxed" style={{ fontFamily: 'var(--font-body)' }}>
-                    {event.description}
-                  </p>
-                </div>
+                  <div className="p-5">
+                    <div className="flex items-center gap-1.5 text-xs text-black/40 mb-2.5" style={{ fontFamily: 'var(--font-body)' }}>
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                      {formatEventDate(event.startDate)}
+                    </div>
+                    <h3
+                      className="text-lg font-bold text-black mb-1.5 group-hover:text-[#0dd5b5] transition-colors"
+                      style={{ fontFamily: 'var(--font-display)' }}
+                    >
+                      {event.title}
+                    </h3>
+                    {event.shortDescription && (
+                      <p className="text-sm text-black/55 leading-relaxed line-clamp-2" style={{ fontFamily: 'var(--font-body)' }}>
+                        {event.shortDescription}
+                      </p>
+                    )}
+                    {event.location && (event.location.city || event.location.island) && (
+                      <div className="flex items-center gap-1 mt-2 text-xs text-black/40" style={{ fontFamily: 'var(--font-body)' }}>
+                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        {[event.location.city, event.location.island].filter(Boolean).join(', ')}
+                      </div>
+                    )}
+                  </div>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-16 border border-dashed border-black/10 rounded-2xl">
+              <svg className="w-10 h-10 text-black/20 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              <p className="text-black/40 text-sm" style={{ fontFamily: 'var(--font-body)' }}>No upcoming events at the moment.</p>
+              <Link href="/events" className="inline-flex items-center gap-1 mt-3 text-sm font-medium text-[#0dd5b5] hover:text-black transition-colors" style={{ fontFamily: 'var(--font-body)' }}>
+                Browse all events <span aria-hidden>→</span>
               </Link>
-            ))}
-          </div>
+            </div>
+          )}
 
           <div className="text-center mt-8 md:hidden">
             <Link
@@ -194,8 +253,8 @@ export default function Home() {
         <div className="grid grid-cols-1 md:grid-cols-4 md:h-[68vh] min-h-[520px]">
           {[
             { number: '01', title: 'FITNESS CLASSES', image: '/images/fitness-classes.jpg', href: '/listings/classes' },
-            { number: '02', title: 'GYMS', image: '/images/nutritional-eats.jpg', href: '/listings/gyms' },
-            { number: '03', title: 'EVENTS', image: '/images/yoga-classes.jpg', href: '/events' },
+            { number: '02', title: 'GYMS', image: '/images/gym.jpg', href: '/listings/gyms' },
+            { number: '03', title: 'EVENTS', image: '/images/fitness-events.jpg', href: '/events' },
             { number: '04', title: 'BUSINESSES', image: '/images/fitness-apparel.jpg', href: '/listings' },
           ].map((item, i) => (
             <Link
@@ -314,7 +373,7 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-14 items-start">
             {/* Featured post */}
             <div>
-              <Link href="/blog/getting-started-fitness-bahafit-way" className="group block">
+              <Link href="/blog" className="group block">
                 <div className="relative h-64 rounded-2xl overflow-hidden mb-5">
                   <img
                     src="/images/blog-featured.jpg"
@@ -349,14 +408,14 @@ export default function Home() {
             {/* Recent posts */}
             <div className="flex flex-col divide-y divide-black/6">
               {[
-                { title: 'Top 5 Gyms in Nassau for Strength Training', author: 'Michael Brown', date: 'November 10, 2025', slug: 'top-5-gyms-nassau-strength-training' },
-                { title: 'Healthy Eating Guide: Best Meal Prep Services', author: 'Jessica Williams', date: 'November 5, 2025', slug: 'healthy-eating-guide-meal-prep-services' },
-                { title: 'How to Stay Consistent with Your Fitness Goals', author: 'David Thompson', date: 'October 28, 2025', slug: 'stay-consistent-fitness-goals' },
-                { title: 'Best Running Routes in the Bahamas', author: 'Marcus Thompson', date: 'October 20, 2025', slug: 'best-running-routes-bahamas' },
+                { title: 'Top 5 Gyms in Nassau for Strength Training', author: 'Michael Brown', date: 'November 10, 2025' },
+                { title: 'Healthy Eating Guide: Best Meal Prep Services', author: 'Jessica Williams', date: 'November 5, 2025' },
+                { title: 'How to Stay Consistent with Your Fitness Goals', author: 'David Thompson', date: 'October 28, 2025' },
+                { title: 'Best Running Routes in the Bahamas', author: 'Marcus Thompson', date: 'October 20, 2025' },
               ].map((post, i) => (
                 <Link
                   key={i}
-                  href={`/blog/${post.slug}`}
+                  href="/blog"
                   className="group py-5 first:pt-0 last:pb-0 block"
                 >
                   <h4

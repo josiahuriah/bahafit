@@ -1,12 +1,13 @@
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
-import Link from 'next/link'
+// import Link from 'next/link'
 
 export const metadata = {
   title: 'Resources | Bahafit',
   description: 'Guides, tips, and resources to help fitness businesses succeed on Bahafit.',
 }
 
+/*
 const resources = [
   {
     category: 'Getting Started',
@@ -40,27 +41,56 @@ const guides = [
   { title: 'Marketing Best Practices', description: 'Tips for promoting your fitness business', icon: '🚀' },
   { title: 'Customer Service Tips', description: 'How to respond to reviews and inquiries', icon: '💬' },
 ]
+*/
 
 export default function ResourcesPage() {
   return (
     <>
       <Header />
 
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-[#0dd5b5] to-[#0bc5a5] py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl sm:text-5xl font-bold text-white mb-6">
-            Business Resources
+      {/* Coming Soon */}
+      <main
+        className="relative min-h-[calc(100vh-80px)] bg-black flex flex-col items-center justify-center overflow-hidden px-6"
+        style={{ fontFamily: 'var(--font-body)' }}
+      >
+        <div
+          className="absolute inset-0 opacity-[0.04]"
+          style={{
+            backgroundImage:
+              'linear-gradient(#0dd5b5 1px, transparent 1px), linear-gradient(to right, #0dd5b5 1px, transparent 1px)',
+            backgroundSize: '60px 60px',
+          }}
+        />
+        <div
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full pointer-events-none"
+          style={{ background: 'radial-gradient(circle, rgba(13,213,181,0.07) 0%, transparent 70%)' }}
+        />
+        <div className="relative z-10 text-center max-w-lg mx-auto">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 border border-[#0dd5b5]/30 rounded-full mb-8">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#0dd5b5] animate-pulse" />
+            <span className="text-[#0dd5b5] text-xs font-semibold tracking-widest uppercase">Resources</span>
+          </div>
+          <h1
+            className="text-4xl sm:text-5xl md:text-6xl font-bold text-white uppercase tracking-tight mb-6 leading-tight"
+            style={{ fontFamily: 'var(--font-display)' }}
+          >
+            Coming <span style={{ color: '#f7d656' }}>Soon</span>
           </h1>
-          <p className="text-xl text-white/90 max-w-3xl mx-auto">
-            Guides, tips, and tools to help your fitness business succeed on Bahafit.
+          <p className="text-white/50 text-base leading-relaxed mb-10">
+            We&apos;re building a comprehensive library of guides and resources to help fitness businesses thrive. Check back soon.
           </p>
+          <a
+            href="/"
+            className="inline-flex items-center gap-2 px-6 py-3 border border-white/15 text-white text-sm font-semibold rounded-lg hover:border-[#0dd5b5]/50 hover:text-[#0dd5b5] transition-all"
+          >
+            ← Back to Home
+          </a>
         </div>
-      </section>
+      </main>
 
+      {/*
       <main className="bg-gray-50 py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Featured Guides */}
           <section className="mb-16">
             <h2 className="text-2xl font-bold text-gray-900 mb-8">Featured Guides</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -74,7 +104,6 @@ export default function ResourcesPage() {
             </div>
           </section>
 
-          {/* Resource Categories */}
           {resources.map((category, index) => (
             <section key={index} className="mb-12">
               <h2 className="text-2xl font-bold text-gray-900 mb-6">{category.category}</h2>
@@ -94,7 +123,6 @@ export default function ResourcesPage() {
             </section>
           ))}
 
-          {/* Video Tutorials */}
           <section className="bg-white rounded-xl shadow-sm p-8 mb-12">
             <h2 className="text-2xl font-bold text-gray-900 mb-6">Video Tutorials</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -118,7 +146,6 @@ export default function ResourcesPage() {
             <p className="text-center text-gray-500 mt-6">Coming Soon!</p>
           </section>
 
-          {/* Need Help */}
           <section className="bg-gray-900 text-white rounded-xl p-8 text-center">
             <h2 className="text-2xl font-bold mb-4">Need More Help?</h2>
             <p className="text-gray-300 mb-6 max-w-2xl mx-auto">
@@ -141,6 +168,7 @@ export default function ResourcesPage() {
           </section>
         </div>
       </main>
+      */}
 
       <Footer />
     </>

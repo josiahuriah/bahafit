@@ -1,12 +1,13 @@
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
-import Link from 'next/link'
+// import Link from 'next/link'
 
 export const metadata = {
   title: 'Pricing | Bahafit',
   description: 'Simple, transparent pricing for fitness businesses on Bahafit.',
 }
 
+/*
 const plans = [
   {
     name: 'Basic',
@@ -99,26 +100,55 @@ const faqs = [
     answer: 'Yes! Save 20% when you choose annual billing. Contact our sales team for more information.',
   },
 ]
+*/
 
 export default function PricingPage() {
   return (
     <>
       <Header />
 
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-[#0dd5b5] to-[#0bc5a5] py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl sm:text-5xl font-bold text-white mb-6">
-            Simple, Transparent Pricing
+      {/* Coming Soon */}
+      <main
+        className="relative min-h-[calc(100vh-80px)] bg-black flex flex-col items-center justify-center overflow-hidden px-6"
+        style={{ fontFamily: 'var(--font-body)' }}
+      >
+        <div
+          className="absolute inset-0 opacity-[0.04]"
+          style={{
+            backgroundImage:
+              'linear-gradient(#0dd5b5 1px, transparent 1px), linear-gradient(to right, #0dd5b5 1px, transparent 1px)',
+            backgroundSize: '60px 60px',
+          }}
+        />
+        <div
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full pointer-events-none"
+          style={{ background: 'radial-gradient(circle, rgba(13,213,181,0.07) 0%, transparent 70%)' }}
+        />
+        <div className="relative z-10 text-center max-w-lg mx-auto">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 border border-[#0dd5b5]/30 rounded-full mb-8">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#0dd5b5] animate-pulse" />
+            <span className="text-[#0dd5b5] text-xs font-semibold tracking-widest uppercase">Pricing</span>
+          </div>
+          <h1
+            className="text-4xl sm:text-5xl md:text-6xl font-bold text-white uppercase tracking-tight mb-6 leading-tight"
+            style={{ fontFamily: 'var(--font-display)' }}
+          >
+            Coming <span style={{ color: '#f7d656' }}>Soon</span>
           </h1>
-          <p className="text-xl text-white/90 max-w-3xl mx-auto">
-            Choose the plan that fits your business. No hidden fees, cancel anytime.
+          <p className="text-white/50 text-base leading-relaxed mb-10">
+            We&apos;re putting the finishing touches on our pricing plans. Check back soon to find the perfect plan for your fitness business.
           </p>
+          <a
+            href="/"
+            className="inline-flex items-center gap-2 px-6 py-3 border border-white/15 text-white text-sm font-semibold rounded-lg hover:border-[#0dd5b5]/50 hover:text-[#0dd5b5] transition-all"
+          >
+            ← Back to Home
+          </a>
         </div>
-      </section>
+      </main>
 
+      {/*
       <main className="bg-gray-50">
-        {/* Pricing Cards */}
         <section className="py-16 -mt-8">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -181,11 +211,9 @@ export default function PricingPage() {
           </div>
         </section>
 
-        {/* FAQ Section */}
         <section className="py-16 bg-white">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">Frequently Asked Questions</h2>
-
             <div className="space-y-4">
               {faqs.map((faq, index) => (
                 <details key={index} className="group bg-gray-50 rounded-lg">
@@ -204,7 +232,6 @@ export default function PricingPage() {
           </div>
         </section>
 
-        {/* CTA */}
         <section className="py-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 className="text-3xl font-bold text-gray-900 mb-6">Still Have Questions?</h2>
@@ -220,6 +247,7 @@ export default function PricingPage() {
           </div>
         </section>
       </main>
+      */}
 
       <Footer />
     </>

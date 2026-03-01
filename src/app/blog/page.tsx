@@ -56,7 +56,8 @@ export default function BlogPage() {
         {/* Featured Post */}
         <section className="border-b border-gray-100">
           <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-24 py-16 md:py-20">
-            <Link href={`/blog/${featured.slug}`} className="group block">
+            {/* Featured post links to /blog (individual pages not yet live) */}
+            <Link href="/blog" className="group block">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                 <div className="aspect-[4/3] bg-gray-100 relative overflow-hidden">
                   <div className="absolute inset-0 bg-gradient-to-br from-[#0dd5b5]/20 to-black/5" />
@@ -76,10 +77,13 @@ export default function BlogPage() {
                     {featured.title}
                   </h2>
                   <p className="text-gray-500 text-base leading-relaxed mb-8">{featured.excerpt}</p>
-                  <span className="inline-flex items-center gap-3 text-sm font-semibold text-black group-hover:text-[#0dd5b5] transition-colors duration-300">
-                    Read Article
-                    <span className="group-hover:translate-x-1 transition-transform inline-block">&#8594;</span>
-                  </span>
+                  <div className="flex items-center gap-3">
+                    <span className="inline-flex items-center gap-3 text-sm font-semibold text-black group-hover:text-[#0dd5b5] transition-colors duration-300">
+                      Read Article
+                      <span className="group-hover:translate-x-1 transition-transform inline-block">&#8594;</span>
+                    </span>
+                    <span className="text-xs text-gray-400 bg-gray-100 px-2 py-1 rounded">Coming Soon</span>
+                  </div>
                 </div>
               </div>
             </Link>
@@ -103,13 +107,17 @@ export default function BlogPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
             {posts.map((post) => (
               <article key={post.id}>
-                <Link href={`/blog/${post.slug}`} className="group block">
+                {/* Individual blog pages not yet live — links point to /blog */}
+                <Link href="/blog" className="group block">
                   <div className="aspect-[4/3] bg-gray-100 mb-6 relative overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-br from-[#0dd5b5]/10 to-transparent" />
                     <div className="absolute top-4 left-4">
                       <span className="text-xs font-bold tracking-widest uppercase px-2.5 py-1" style={{ background: categoryAccent[post.category] || '#0dd5b5', color: '#000' }}>
                         {post.category}
                       </span>
+                    </div>
+                    <div className="absolute bottom-4 right-4">
+                      <span className="text-xs text-white bg-black/50 px-2 py-0.5 rounded backdrop-blur-sm">Coming Soon</span>
                     </div>
                   </div>
                   <div className="flex items-center gap-3 text-xs text-gray-400 tracking-widest uppercase mb-3">

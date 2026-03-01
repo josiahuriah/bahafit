@@ -1,12 +1,13 @@
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
-import Link from 'next/link'
+// import Link from 'next/link'
 
 export const metadata = {
   title: 'FAQ | Bahafit',
   description: 'Frequently asked questions about Bahafit - the Caribbean fitness directory.',
 }
 
+/*
 const faqCategories = [
   {
     title: 'General Questions',
@@ -85,24 +86,62 @@ const faqCategories = [
     ],
   },
 ]
+*/
 
 export default function FAQPage() {
   return (
     <>
       <Header />
 
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-[#0dd5b5] to-[#0bc5a5] py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl sm:text-5xl font-bold text-white mb-6">
-            Frequently Asked Questions
+      {/* Coming Soon */}
+      <main
+        className="relative min-h-[calc(100vh-80px)] bg-black flex flex-col items-center justify-center overflow-hidden px-6"
+        style={{ fontFamily: 'var(--font-body)' }}
+      >
+        <div
+          className="absolute inset-0 opacity-[0.04]"
+          style={{
+            backgroundImage:
+              'linear-gradient(#0dd5b5 1px, transparent 1px), linear-gradient(to right, #0dd5b5 1px, transparent 1px)',
+            backgroundSize: '60px 60px',
+          }}
+        />
+        <div
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full pointer-events-none"
+          style={{ background: 'radial-gradient(circle, rgba(13,213,181,0.07) 0%, transparent 70%)' }}
+        />
+        <div className="relative z-10 text-center max-w-lg mx-auto">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 border border-[#0dd5b5]/30 rounded-full mb-8">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#0dd5b5] animate-pulse" />
+            <span className="text-[#0dd5b5] text-xs font-semibold tracking-widest uppercase">FAQ</span>
+          </div>
+          <h1
+            className="text-4xl sm:text-5xl md:text-6xl font-bold text-white uppercase tracking-tight mb-6 leading-tight"
+            style={{ fontFamily: 'var(--font-display)' }}
+          >
+            Coming <span style={{ color: '#f7d656' }}>Soon</span>
           </h1>
-          <p className="text-xl text-white/90 max-w-3xl mx-auto">
-            Find quick answers to common questions about Bahafit.
+          <p className="text-white/50 text-base leading-relaxed mb-10">
+            We&apos;re compiling answers to the most frequently asked questions. Have a question in the meantime? Contact us directly.
           </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <a
+              href="/contact"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-[#0dd5b5] text-black text-sm font-bold rounded-lg hover:bg-[#0dd5b5]/90 transition-all"
+            >
+              Ask a Question
+            </a>
+            <a
+              href="/"
+              className="inline-flex items-center gap-2 px-6 py-3 border border-white/15 text-white text-sm font-semibold rounded-lg hover:border-[#0dd5b5]/50 hover:text-[#0dd5b5] transition-all"
+            >
+              ← Back to Home
+            </a>
+          </div>
         </div>
-      </section>
+      </main>
 
+      {/*
       <main className="bg-gray-50 py-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           {faqCategories.map((category, categoryIndex) => (
@@ -126,7 +165,6 @@ export default function FAQPage() {
             </section>
           ))}
 
-          {/* Still Have Questions */}
           <section className="bg-gray-900 text-white rounded-xl p-8 text-center">
             <h2 className="text-2xl font-bold mb-4">Still Have Questions?</h2>
             <p className="text-gray-300 mb-6">
@@ -149,6 +187,7 @@ export default function FAQPage() {
           </section>
         </div>
       </main>
+      */}
 
       <Footer />
     </>
