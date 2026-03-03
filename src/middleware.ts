@@ -39,6 +39,15 @@ export async function middleware(request: NextRequest) {
     }
   }
 
+  // Protect blog creation route
+  if (pathname.startsWith('/blog/create')) {
+    if (!sessionToken) {
+      const signInUrl = new URL('/auth/signin', request.url)
+      signInUrl.searchParams.set('callbackUrl', pathname)
+      return NextResponse.redirect(signInUrl)
+    }
+  }
+
   return NextResponse.next()
 }
 
