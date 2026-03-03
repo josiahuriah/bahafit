@@ -81,7 +81,6 @@ export default function CheckoutPage() {
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [agreedToTerms, setAgreedToTerms] = useState(false)
-  const [agreedToCancellation, setAgreedToCancellation] = useState(false)
   const [selectedTierIndex, setSelectedTierIndex] = useState(0)
 
   // Redirect to sign-in if not authenticated
@@ -142,7 +141,7 @@ export default function CheckoutPage() {
   const currency = getCurrency()
 
   const handleCheckout = async () => {
-    if (!agreedToTerms || !agreedToCancellation || !event || !session) return
+    if (!agreedToTerms || !event || !session) return
 
     setSubmitting(true)
     setError(null)
@@ -250,7 +249,7 @@ export default function CheckoutPage() {
     )
   }
 
-  const canProceed = agreedToTerms && agreedToCancellation && !submitting
+  const canProceed = agreedToTerms && !submitting
 
   return (
     <>
@@ -410,48 +409,6 @@ export default function CheckoutPage() {
                 )}
               </div>
 
-              {/* Cancellation / Refund Policy — RBC #8 */}
-              <div className="bg-white rounded-xl shadow-sm p-5 sm:p-6">
-                <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">
-                  Cancellation &amp; Refund Policy
-                </h2>
-                <div className="text-sm text-gray-600 space-y-2 mb-4">
-                  <p>
-                    <strong className="text-gray-800">No Refunds:</strong> All ticket sales are
-                    final. Refunds will not be issued for cancellations made by the attendee after
-                    registration is complete.
-                  </p>
-                  <p>
-                    <strong className="text-gray-800">Event Cancellation:</strong> If an event is
-                    cancelled by the organizer, registered attendees will be notified by email and
-                    a full refund will be processed within 7&ndash;10 business days.
-                  </p>
-                  <p>
-                    <strong className="text-gray-800">Transfers:</strong> Ticket transfers to
-                    another person may be permitted at the organizer&apos;s discretion. Please
-                    contact the event organizer directly.
-                  </p>
-                  <p>
-                    <strong className="text-gray-800">Billing:</strong> Your card will be charged
-                    immediately upon completing this checkout. A confirmation email with your
-                    registration details will be sent to{' '}
-                    <span className="font-medium text-gray-800">{session?.user?.email}</span>{' '}
-                    within minutes of payment.
-                  </p>
-                </div>
-                <label className="flex items-start gap-3 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={agreedToCancellation}
-                    onChange={(e) => setAgreedToCancellation(e.target.checked)}
-                    className="w-4 h-4 mt-0.5 rounded border-gray-300 text-[#0dd5b5] accent-[#0dd5b5] flex-shrink-0"
-                  />
-                  <span className="text-sm text-gray-600 leading-snug">
-                    I have read and understood the cancellation and refund policy.
-                  </span>
-                </label>
-              </div>
-
               {/* Event Contact Info — RBC #11 */}
               {event.contactInfo && (event.contactInfo.email || event.contactInfo.phone) && (
                 <div className="bg-white rounded-xl shadow-sm p-5 sm:p-6">
@@ -478,35 +435,6 @@ export default function CheckoutPage() {
                   </div>
                 </div>
               )}
-
-              {/* Bahafit Support — RBC #11, #12 */}
-              <div className="bg-white rounded-xl shadow-sm p-5 sm:p-6">
-                <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">
-                  Bahafit Customer Support
-                </h2>
-                <div className="space-y-2 text-sm text-gray-600">
-                  <div className="flex items-center gap-2">
-                    <svg className="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                    </svg>
-                    <a href="mailto:support@bahafit.com" className="hover:text-[#0dd5b5] transition-colors">
-                      support@bahafit.com
-                    </a>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <svg className="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                    </svg>
-                    <span>Nassau, The Bahamas</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <svg className="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <span>Mon &ndash; Fri, 9:00 AM &ndash; 5:00 PM (EST)</span>
-                  </div>
-                </div>
-              </div>
 
             </div>
 
