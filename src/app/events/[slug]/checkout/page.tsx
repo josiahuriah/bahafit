@@ -264,8 +264,7 @@ export default function CheckoutPage() {
               Bahafit &mdash; Nassau, The Bahamas
             </span>
             <span className="text-gray-500">
-              All transactions processed in{' '}
-              <strong className="text-gray-700">BSD (Bahamian Dollars)</strong>
+              Secure checkout
             </span>
           </div>
         </div>
@@ -493,9 +492,6 @@ export default function CheckoutPage() {
                       <span className="font-bold text-lg text-gray-900">
                         {event.isFree ? 'Free' : `${currency} ${price.toFixed(2)}`}
                       </span>
-                      {!event.isFree && (
-                        <p className="text-xs text-gray-400">Bahamian Dollars (BSD)</p>
-                      )}
                     </div>
                   </div>
                 </div>
@@ -602,12 +598,6 @@ export default function CheckoutPage() {
                           className="object-contain"
                         />
                       </div>
-                    </div>
-                    <div className="flex items-center justify-center gap-1.5 mt-3">
-                      <svg className="w-3.5 h-3.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                      </svg>
-                      <span className="text-xs text-gray-400">SSL encrypted &mdash; secured by Fygaro</span>
                     </div>
                   </div>
                 )}

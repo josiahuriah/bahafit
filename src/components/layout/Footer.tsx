@@ -19,8 +19,11 @@ export default function Footer() {
                 className="h-8 w-auto brightness-0 invert opacity-90"
               />
             </Link>
-            <p className="text-sm text-white/40 mb-5 leading-relaxed max-w-[200px]" style={{ fontFamily: 'var(--font-body)' }}>
+            <p className="text-sm text-white/40 mb-3 leading-relaxed max-w-[200px]" style={{ fontFamily: 'var(--font-body)' }}>
               Connecting the Bahamian fitness community with events, trainers, and wellness resources.
+            </p>
+            <p className="text-xs text-white/30 mb-5 leading-relaxed" style={{ fontFamily: 'var(--font-body)' }}>
+              Nassau, Bahamas
             </p>
             <div className="flex gap-4">
               <a href="#" aria-label="Facebook" className="text-white/30 hover:text-[#0dd5b5] transition-colors">

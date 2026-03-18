@@ -18,7 +18,7 @@ export default function PrivacyPolicyPage() {
             Privacy Policy
           </h1>
           <p className="text-gray-400 text-sm max-w-2xl mx-auto">
-            <strong className="text-gray-300">Effective Date:</strong> [INSERT DATE] &nbsp;·&nbsp; <strong className="text-gray-300">Last Updated:</strong> [INSERT DATE]
+            Your privacy matters to us. Learn how we collect, use, and protect your information.
           </p>
         </div>
       </section>
@@ -32,24 +32,19 @@ export default function PrivacyPolicyPage() {
               <h2 className="text-2xl font-bold text-gray-900 mb-4">Who We Are</h2>
               <p className="text-gray-600 leading-relaxed">
                 Bahafit (<strong>&ldquo;Bahafit,&rdquo; &ldquo;we,&rdquo; &ldquo;our,&rdquo;</strong> or <strong>&ldquo;us&rdquo;</strong>) is a Caribbean fitness community platform operated by{' '}
-                <strong>[LEGAL BUSINESS ENTITY NAME]</strong>, a company registered in the Commonwealth of the Bahamas, with its principal place of business at{' '}
-                <strong>[REGISTERED BUSINESS ADDRESS], The Bahamas</strong>.
+                <strong>Bahafit</strong>, located in Nassau, Commonwealth of the Bahamas.
               </p>
               <p className="text-gray-600 leading-relaxed mt-3">
-                Bahafit connects fitness enthusiasts, event organizers, gym owners, coaches, and wellness businesses across the Caribbean. Our platform allows users to discover fitness events and services, register for events, and connect with the regional fitness community.
+                Bahafit connects fitness enthusiasts, event organizers, gym owners, coaches, and wellness businesses across the Caribbean. Our platform allows users to post fitness events and listings either for free or for a cost, and users can also purchase access to those events or listings through our platform.
               </p>
               <p className="text-gray-600 leading-relaxed mt-3">
                 For questions about this Privacy Policy or our data practices, please contact us:
               </p>
               <ul className="list-none pl-0 mt-2 space-y-1 text-gray-600">
                 <li><strong>Email:</strong> <a href="mailto:support@bahafit.com" className="text-[#0dd5b5] hover:underline">support@bahafit.com</a></li>
-                <li><strong>Phone:</strong> [CUSTOMER SERVICE PHONE NUMBER]</li>
-                <li><strong>Hours:</strong> [CUSTOMER SERVICE HOURS, e.g., Monday–Friday, 9:00 AM – 5:00 PM AST]</li>
-                <li><strong>Mailing Address:</strong> [REGISTERED BUSINESS ADDRESS], The Bahamas</li>
+                <li><strong>Phone:</strong> (242) 815-8001</li>
+                <li><strong>Hours:</strong> Monday–Friday, 9:00 AM – 5:00 PM</li>
               </ul>
-              <div className="mt-5 p-4 bg-blue-50 border-l-4 border-blue-400 rounded-r-lg text-sm text-blue-800">
-                <strong>RBC Compliance Note (Item 7, 11, 12):</strong> This policy fulfills the RBC e-commerce requirement for a clear privacy statement disclosing what information is collected, tracked, and with whom it is shared. Merchant name, address, and customer service contact are disclosed above and at checkout.
-              </div>
             </section>
 
             <hr className="border-gray-100 my-8" />
@@ -124,9 +119,6 @@ export default function PrivacyPolicyPage() {
               <p className="text-gray-600 leading-relaxed mt-3">
                 You are encouraged to review Fygaro&apos;s privacy policy before completing your payment. A link to Fygaro&apos;s privacy policy is available at their website.
               </p>
-              <div className="mt-5 p-4 bg-blue-50 border-l-4 border-blue-400 rounded-r-lg text-sm text-blue-800">
-                <strong>RBC Compliance Note (Items 13, 14, 16):</strong> Payments are processed through a PCI DSS-compliant hosted payment provider. Payment data transmission uses SSL/TLS encryption (HTTPS). Bahafit does not store cardholder data.
-              </div>
             </section>
 
             <hr className="border-gray-100 my-8" />
@@ -138,70 +130,17 @@ export default function PrivacyPolicyPage() {
                 We do not sell your personal information. We may share your information with the following categories of third parties, only as necessary to operate the platform:
               </p>
 
-              <h3 className="text-lg font-semibold text-gray-900 mt-6 mb-3">4.1 Service Providers</h3>
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm text-left border-collapse">
-                  <thead>
-                    <tr className="bg-gray-50">
-                      <th className="border border-gray-200 px-4 py-3 font-semibold text-gray-900 w-1/4">Third Party</th>
-                      <th className="border border-gray-200 px-4 py-3 font-semibold text-gray-900 w-2/5">Purpose</th>
-                      <th className="border border-gray-200 px-4 py-3 font-semibold text-gray-900">Data Shared</th>
-                    </tr>
-                  </thead>
-                  <tbody className="text-gray-600">
-                    <tr>
-                      <td className="border border-gray-200 px-4 py-3 font-medium text-gray-800">Fygaro</td>
-                      <td className="border border-gray-200 px-4 py-3">Payment processing for event registrations</td>
-                      <td className="border border-gray-200 px-4 py-3">Name, email, event details (payment page redirect)</td>
-                    </tr>
-                    <tr className="bg-gray-50/50">
-                      <td className="border border-gray-200 px-4 py-3 font-medium text-gray-800">MongoDB Atlas</td>
-                      <td className="border border-gray-200 px-4 py-3">Cloud database hosting — stores user accounts and registration records</td>
-                      <td className="border border-gray-200 px-4 py-3">User account data, registration records</td>
-                    </tr>
-                    <tr>
-                      <td className="border border-gray-200 px-4 py-3 font-medium text-gray-800">Sanity.io</td>
-                      <td className="border border-gray-200 px-4 py-3">Headless content management system — stores event and listing content</td>
-                      <td className="border border-gray-200 px-4 py-3">Event and listing content submitted by organizers</td>
-                    </tr>
-                    <tr className="bg-gray-50/50">
-                      <td className="border border-gray-200 px-4 py-3 font-medium text-gray-800">Vercel</td>
-                      <td className="border border-gray-200 px-4 py-3">Website hosting and deployment infrastructure</td>
-                      <td className="border border-gray-200 px-4 py-3">Log data, IP addresses (standard server infrastructure)</td>
-                    </tr>
-                    <tr>
-                      <td className="border border-gray-200 px-4 py-3 font-medium text-gray-800">Google</td>
-                      <td className="border border-gray-200 px-4 py-3">OAuth sign-in provider; Google Fonts (typography)</td>
-                      <td className="border border-gray-200 px-4 py-3">Name and email (if Google sign-in used); font file requests (no PII transmitted for fonts)</td>
-                    </tr>
-                    <tr className="bg-gray-50/50">
-                      <td className="border border-gray-200 px-4 py-3 font-medium text-gray-800">Meta (Facebook)</td>
-                      <td className="border border-gray-200 px-4 py-3">OAuth sign-in provider</td>
-                      <td className="border border-gray-200 px-4 py-3">Name and email (if Facebook login used)</td>
-                    </tr>
-                    <tr>
-                      <td className="border border-gray-200 px-4 py-3 font-medium text-gray-800">NextAuth.js</td>
-                      <td className="border border-gray-200 px-4 py-3">Open-source authentication framework (self-hosted)</td>
-                      <td className="border border-gray-200 px-4 py-3">Session tokens (processed locally; no external data sharing)</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <p className="text-gray-600 leading-relaxed mt-4">
-                We require all third-party service providers to maintain appropriate security standards and to use your data only for the purposes we specify.
-              </p>
-
-              <h3 className="text-lg font-semibold text-gray-900 mt-6 mb-2">4.2 Legal Requirements</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mt-6 mb-2">4.1 Legal Requirements</h3>
               <p className="text-gray-600 leading-relaxed">
                 We may disclose your information if required to do so by law, regulation, court order, or governmental authority, or if we believe in good faith that such disclosure is necessary to protect the rights, property, or safety of Bahafit, our users, or the public.
               </p>
 
-              <h3 className="text-lg font-semibold text-gray-900 mt-6 mb-2">4.3 Business Transfers</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mt-6 mb-2">4.2 Business Transfers</h3>
               <p className="text-gray-600 leading-relaxed">
                 In the event of a merger, acquisition, or sale of all or a portion of our assets, your personal information may be transferred as part of that transaction. We will notify you via email and/or prominent notice on the platform in advance of any such transfer.
               </p>
 
-              <h3 className="text-lg font-semibold text-gray-900 mt-6 mb-2">4.4 With Your Consent</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mt-6 mb-2">4.3 With Your Consent</h3>
               <p className="text-gray-600 leading-relaxed">
                 We may share your information with other parties where you have given us your explicit consent to do so.
               </p>
@@ -263,9 +202,6 @@ export default function PrivacyPolicyPage() {
                 <li><strong>Transaction Records:</strong> Retained for a minimum of <strong>5 years</strong> for financial record-keeping and compliance purposes.</li>
                 <li><strong>Log Data:</strong> Retained for up to <strong>90 days</strong> unless required for security investigations.</li>
               </ul>
-              <div className="mt-5 p-4 bg-blue-50 border-l-4 border-blue-400 rounded-r-lg text-sm text-blue-800">
-                <strong>RBC Compliance Note (Best Practices):</strong> Transaction date and transaction amount are available to registered users for a minimum of 120 days from the date of the transaction.
-              </div>
             </section>
 
             <hr className="border-gray-100 my-8" />
@@ -360,15 +296,14 @@ export default function PrivacyPolicyPage() {
                 If you have any questions, concerns, or requests regarding this Privacy Policy or our data practices, please contact us:
               </p>
               <div className="mt-4 p-5 bg-gray-50 border border-gray-200 rounded-lg text-gray-700 space-y-1">
-                <p className="font-semibold text-gray-900">[LEGAL BUSINESS ENTITY NAME] (Bahafit)</p>
-                <p>[REGISTERED BUSINESS ADDRESS]</p>
-                <p>The Bahamas</p>
+                <p className="font-semibold text-gray-900">Bahafit</p>
+                <p>Nassau, Bahamas</p>
                 <p className="pt-2">
                   <strong>Email:</strong>{' '}
                   <a href="mailto:support@bahafit.com" className="text-[#0dd5b5] hover:underline">support@bahafit.com</a>
                 </p>
-                <p><strong>Phone:</strong> [CUSTOMER SERVICE PHONE NUMBER]</p>
-                <p><strong>Hours:</strong> [CUSTOMER SERVICE HOURS]</p>
+                <p><strong>Phone:</strong> (242) 815-8001</p>
+                <p><strong>Hours:</strong> Monday–Friday, 9:00 AM – 5:00 PM</p>
               </div>
             </section>
 
