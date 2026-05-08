@@ -152,6 +152,7 @@ export default function CheckoutPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           eventId: event._id,
+          eventSlug: event.slug.current,
           eventTitle: event.title,
           ticketType: selectedTier?.tierName,
           price,
@@ -561,7 +562,7 @@ export default function CheckoutPage() {
                 {/* Retain copy notice — RBC #9 */}
                 {!event.isFree && (
                   <p className="text-xs text-gray-400 text-center mt-3">
-                    You will be redirected to Fygaro to complete payment securely.
+                    You will be redirected to our secure payment partner to complete your purchase.
                   </p>
                 )}
                 <p className="text-xs text-gray-400 text-center mt-2">

@@ -255,6 +255,35 @@ npm run build
 npm run lint
 ```
 
+## Payment Processing
+
+Paid event checkouts are processed by [Fygaro](https://www.fygaro.com/) using signed payment buttons (HMAC-SHA256 / JWT) so the amount and reference cannot be tampered with by the customer.
+
+The flow:
+
+1. The user submits the checkout form. `POST /api/registrations` creates a `pending` registration and signs a JWT carrying the registration id, amount, and currency.
+2. The user is redirected to the hosted Fygaro payment page with the signed JWT attached.
+3. Fygaro processes the card and posts a signed delivery to `POST /api/webhooks/fygaro`.
+4. The webhook handler verifies the `Fygaro-Signature` HMAC against the raw body and a 300-second timestamp window, then marks the registration `paid` / `confirmed`.
+5. The user is returned to `/events/<slug>/checkout/confirmation`, which renders the receipt as soon as the webhook lands.
+
+### Environment variables
+
+These must be **server-only** — never prefixed with `NEXT_PUBLIC_`.
+
+- `FYGARO_API_KEY` — JWT `kid` value, identifies which credential signed the token.
+- `FYGARO_API_SECRET` — HMAC-SHA256 signing key.
+- `FYGARO_PAYMENT_BUTTON_URL` — the public payment-button URL configured in your Fygaro dashboard.
+- `FYGARO_WEBHOOK_SECRET` — optional override for verifying inbound webhooks; defaults to `FYGARO_API_SECRET`.
+- `NEXT_PUBLIC_APP_URL` — the canonical site URL, used to build `return_url` and `cancel_url` parameters.
+
+### Fygaro dashboard configuration
+
+For each payment button you use:
+
+1. **Advanced Settings → JWT** — enable JWT signing using the same key/secret pair you set in environment variables.
+2. **Advanced Settings → Webhook** — point the webhook to `https://<your-domain>/api/webhooks/fygaro`.
+
 ## Deployment
 
 ### Vercel (Recommended)

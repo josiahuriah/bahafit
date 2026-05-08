@@ -9,11 +9,11 @@ export async function POST(req: NextRequest) {
     const user = await requireAuth(session)
 
     const body = await req.json()
-    const { eventId, eventTitle, ticketType, price, currency } = body
+    const { eventId, eventSlug, eventTitle, ticketType, price, currency } = body
 
-    if (!eventId || !eventTitle || price == null || !currency) {
+    if (!eventId || !eventSlug || !eventTitle || price == null || !currency) {
       return NextResponse.json(
-        { error: 'Missing required fields: eventId, eventTitle, price, currency' },
+        { error: 'Missing required fields: eventId, eventSlug, eventTitle, price, currency' },
         { status: 400 }
       )
     }
@@ -47,14 +47,18 @@ export async function POST(req: NextRequest) {
       paymentStatus: 'pending',
     })
 
-    const paymentUrl = generateFygaroPaymentLink({
-      registrationId: registration._id || '',
-      amount: price,
-      currency,
-      eventTitle,
-      customerEmail: user.email,
-      customerName: user.name,
-    })
+    const paymentUrl =
+      price > 0
+        ? generateFygaroPaymentLink({
+            registrationId: registration._id || '',
+            amount: price,
+            currency,
+            eventTitle,
+            eventSlug,
+            customerEmail: user.email,
+            customerName: user.name,
+          })
+        : null
 
     return NextResponse.json({
       registration,
