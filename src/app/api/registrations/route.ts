@@ -25,27 +25,38 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    // Check if user is already registered for this event
-    const alreadyRegistered = await getExistingRegistration(eventId, user.id || (user as any)._id || '')
-    if (alreadyRegistered) {
+    const userId = user.id || user._id || ''
+
+    // If the user already has a non-cancelled registration for this event,
+    // there are three cases:
+    //   - paid / confirmed → block with 409 (genuinely already registered).
+    //   - pending payment   → reuse the same registration and re-issue a
+    //                          fresh signed payment link so they can resume
+    //                          their checkout.
+    //   - any other status  → reuse and continue.
+    const existing = await getExistingRegistration(eventId, userId)
+
+    if (existing && existing.paymentStatus === 'paid') {
       return NextResponse.json(
-        { error: 'already_registered', registration: alreadyRegistered },
+        { error: 'already_registered', registration: existing },
         { status: 409 }
       )
     }
 
-    const registration = await createRegistration({
-      eventId,
-      eventTitle,
-      userId: user.id || (user as any)._id || '',
-      userName: user.name,
-      userEmail: user.email,
-      ticketType,
-      price,
-      currency,
-      status: 'pending',
-      paymentStatus: 'pending',
-    })
+    const registration =
+      existing ??
+      (await createRegistration({
+        eventId,
+        eventTitle,
+        userId,
+        userName: user.name,
+        userEmail: user.email,
+        ticketType,
+        price,
+        currency,
+        status: 'pending',
+        paymentStatus: 'pending',
+      }))
 
     const paymentUrl =
       price > 0
@@ -63,6 +74,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       registration,
       paymentUrl,
+      resumed: Boolean(existing),
     })
   } catch (error: any) {
     if (error.message === 'Unauthorized' || error.message === 'Account is inactive') {

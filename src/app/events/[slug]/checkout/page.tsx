@@ -162,6 +162,15 @@ export default function CheckoutPage() {
 
       const data = await response.json()
 
+      // 409 = already paid for this event. Send them to their existing
+      // confirmation page rather than showing a hard error.
+      if (response.status === 409 && data.registration?._id) {
+        router.push(
+          `/events/${event.slug.current}/checkout/confirmation?registrationId=${data.registration._id}`
+        )
+        return
+      }
+
       if (!response.ok) {
         throw new Error(data.error || 'Failed to create registration')
       }
@@ -173,7 +182,7 @@ export default function CheckoutPage() {
       }
 
       if (data.paymentUrl) {
-        // Redirect to Fygaro payment link
+        // Redirect to the secure payment page
         window.location.href = data.paymentUrl
       } else {
         setError(
