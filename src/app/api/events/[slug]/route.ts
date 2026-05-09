@@ -38,7 +38,7 @@ export async function GET(
       "currentRegistrations": coalesce(currentRegistrations, 0),
       "waitlistEnabled": coalesce(waitlistEnabled, false),
       "requiresRegistration": coalesce(requiresRegistration, true),
-      "isFree": coalesce(isFree, true),
+      "isFree": coalesce(isFree, false),
       price,
       pricing[] {
         tierName,
@@ -118,7 +118,7 @@ export async function GET(
       startDate,
       "location": location.city,
       "featuredImage": featuredImage.asset->url,
-      "isFree": coalesce(isFree, true),
+      "isFree": coalesce(isFree, false),
       "pricing": pricing[0] {
         price,
         currency

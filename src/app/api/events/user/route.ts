@@ -71,7 +71,7 @@ export async function POST(req: NextRequest) {
       location,
       capacity: capacity ? Number(capacity) : undefined,
       requiresRegistration: requiresRegistration ?? true,
-      isFree: isFree ?? true,
+      isFree: isFree ?? false,
       pricing: isFree ? [] : pricing || [],
       requirements: requirements || [],
       amenities: amenities || [],

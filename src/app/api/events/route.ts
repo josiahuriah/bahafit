@@ -42,7 +42,7 @@ export async function GET(req: NextRequest) {
       startDate,
       endDate,
       "isVirtual": coalesce(isVirtual, false),
-      "isFree": coalesce(isFree, true),
+      "isFree": coalesce(isFree, false),
       "featured": coalesce(featured, false),
       capacity,
       "currentRegistrations": coalesce(currentRegistrations, 0),
