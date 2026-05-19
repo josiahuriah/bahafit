@@ -1,18 +1,18 @@
 import type { Metadata } from "next";
-import { Syne, DM_Sans } from "next/font/google";
+import { Lato, Roboto } from "next/font/google";
 import SessionProvider from "@/components/providers/SessionProvider";
 import "./globals.css";
 
-const syne = Syne({
-  variable: "--font-syne",
+const lato = Lato({
+  variable: "--font-lato",
   subsets: ["latin"],
-  weight: ["400", "600", "700", "800"],
+  weight: ["400", "700", "900"],
 });
 
-const dmSans = DM_Sans({
-  variable: "--font-dm-sans",
+const roboto = Roboto({
+  variable: "--font-roboto",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600"],
+  weight: ["400", "500", "700", "900"],
 });
 
 export const metadata: Metadata = {
@@ -27,7 +27,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${syne.variable} ${dmSans.variable} antialiased`}>
+      <body className={`${lato.variable} ${roboto.variable} antialiased`}>
         <SessionProvider>
           {children}
         </SessionProvider>

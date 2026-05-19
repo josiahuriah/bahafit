@@ -1,528 +1,347 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
-import Image from 'next/image'
-import ExploreSection from '@/components/ExploreSection'
-import TrainersGymsCarousel from '@/components/TrainersGymsCarousel'
+import {
+  seedEvents,
+  seedListings,
+  heroImage,
+  type SeedEvent,
+  type SeedListing,
+  type EventTagTone,
+} from '@/data/seed'
+import {
+  CalendarIcon,
+  StoreIcon,
+  TicketIcon,
+  UsersIcon,
+  DumbbellIcon,
+  UserIcon,
+  LotusIcon,
+  MoreIcon,
+  RunIcon,
+  GroupIcon,
+  StudioIcon,
+  ClassesIcon,
+  PinIcon,
+  HeartIcon,
+  StarIcon,
+} from '@/components/home/icons'
 
-interface SanityEvent {
-  _id: string
+const heroBullets = [
+  { Icon: CalendarIcon, text: 'Discover fitness events, businesses' },
+  { Icon: StoreIcon, text: 'List your events and businesses' },
+  { Icon: TicketIcon, text: 'Buy or sell tickets here' },
+  { Icon: UsersIcon, text: 'Connect with others through community' },
+]
+
+const quickActions = [
+  { label: 'Events', Icon: CalendarIcon, href: '/events' },
+  { label: 'Gyms', Icon: DumbbellIcon, href: '/listings/gyms' },
+  { label: 'Trainers', Icon: UserIcon, href: '/listings' },
+  { label: 'Wellness', Icon: LotusIcon, href: '/listings/wellness' },
+  { label: 'More', Icon: MoreIcon, href: '/listings' },
+]
+
+const categories = [
+  { label: 'Runs', Icon: RunIcon, href: '/events/races' },
+  { label: 'Clubs', Icon: GroupIcon, href: '/listings/clubs' },
+  { label: 'Studios', Icon: StudioIcon, href: '/listings/wellness' },
+  { label: 'Gyms', Icon: DumbbellIcon, href: '/listings/gyms' },
+  { label: 'Classes', Icon: ClassesIcon, href: '/listings/gyms' },
+  { label: 'More', Icon: MoreIcon, href: '/listings' },
+]
+
+const tagTone: Record<EventTagTone, string> = {
+  trending: 'bg-[#f7d656] text-[#3a2a00]',
+  popular: 'bg-[#3170d6] text-white',
+  new: 'bg-[#2ead6b] text-white',
+}
+
+function HeartBubble({ small }: { small?: boolean }) {
+  return (
+    <span
+      className={`flex items-center justify-center rounded-full bg-white shadow-sm shadow-black/15 ${
+        small ? 'h-7 w-7' : 'h-8 w-8'
+      }`}
+    >
+      <HeartIcon className={small ? 'h-3.5 w-3.5 text-black/40' : 'h-4 w-4 text-black/40'} />
+    </span>
+  )
+}
+
+function SectionHead({
+  title,
+  link,
+  linkLabel,
+}: {
   title: string
-  slug: { current: string }
-  eventType: string
-  shortDescription?: string
-  startDate: string
-  isVirtual: boolean
-  location?: {
-    venueName?: string
-    city?: string
-    island?: string
-  }
-  featuredImage?: string
+  link: string
+  linkLabel: string
+}) {
+  return (
+    <div className="mb-6 flex items-baseline justify-between">
+      <h2 className="text-2xl font-bold tracking-tight text-[#13191f] md:text-[26px]">{title}</h2>
+      <Link
+        href={link}
+        className="text-sm font-semibold text-[#0dd5b5] transition-colors hover:text-[#0bc4a6]"
+      >
+        {linkLabel}
+      </Link>
+    </div>
+  )
 }
 
-async function getUpcomingEvents(): Promise<SanityEvent[]> {
-  try {
-    // Dynamic import to avoid crashing if Sanity env vars are not configured
-    const { client } = await import('@/sanity/lib/client')
-    const query = `*[_type == "fitnessEvent" && status == "published" && defined(slug.current) && startDate > now()] | order(startDate asc) [0...3] {
-      _id,
-      title,
-      slug,
-      eventType,
-      shortDescription,
-      startDate,
-      "isVirtual": coalesce(isVirtual, false),
-      "location": location { venueName, city, island },
-      "featuredImage": featuredImage.asset->url
-    }`
-    return await client.fetch(query, {}, { next: { revalidate: 300 } })
-  } catch {
-    return []
-  }
+function EventCard({ event }: { event: SeedEvent }) {
+  return (
+    <div className="group flex flex-col overflow-hidden rounded-2xl border border-black/8 bg-white transition-all duration-300 hover:border-black/20 hover:shadow-lg hover:shadow-black/5">
+      <Link href={event.href} className="block">
+        <div className="relative aspect-[16/10] overflow-hidden bg-[#0dd5b5]/10">
+          <Image
+            src={event.image}
+            alt={event.title}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+          <span
+            className={`absolute left-3 top-3 rounded-full px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider ${tagTone[event.tagTone]}`}
+          >
+            {event.tag}
+          </span>
+          <span className="absolute right-3 top-3">
+            <HeartBubble />
+          </span>
+        </div>
+      </Link>
+      <div className="flex flex-1 flex-col p-4">
+        <Link href={event.href}>
+          <h3 className="text-[17px] font-bold text-[#13191f] transition-colors group-hover:text-[#0dd5b5]">
+            {event.title}
+          </h3>
+        </Link>
+        <div className="mt-1.5 flex items-center gap-1.5 text-[13px] text-black/55">
+          <PinIcon className="h-3.5 w-3.5 shrink-0" />
+          <span>{event.location}</span>
+        </div>
+        <div className="mt-1 flex items-center gap-1.5 text-[13px] text-black/55">
+          <CalendarIcon className="h-3.5 w-3.5 shrink-0" />
+          <span>{event.date}</span>
+        </div>
+        <div className="mt-2 text-lg font-bold text-[#13191f]">{event.price}</div>
+        <Link
+          href={event.href}
+          className="mt-3 rounded-lg bg-[#f7d656] px-4 py-2.5 text-center text-sm font-semibold text-[#3a2a00] transition-colors hover:bg-[#f7d656]/85"
+        >
+          Get Tickets
+        </Link>
+      </div>
+    </div>
+  )
 }
 
-function formatEventDate(dateStr: string): string {
-  try {
-    return new Date(dateStr).toLocaleDateString('en-US', {
-      month: 'long',
-      day: 'numeric',
-      year: 'numeric',
-    })
-  } catch {
-    return dateStr
-  }
+function ListingCard({ listing }: { listing: SeedListing }) {
+  return (
+    <Link
+      href={listing.href}
+      className="group block overflow-hidden rounded-2xl border border-black/8 bg-white transition-all duration-300 hover:border-black/20 hover:shadow-lg hover:shadow-black/5"
+    >
+      <div className="relative aspect-[5/4] overflow-hidden bg-[#0dd5b5]/10">
+        <Image
+          src={listing.image}
+          alt={listing.name}
+          fill
+          sizes="(max-width: 768px) 50vw, 25vw"
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
+        />
+        <span className="absolute right-2 top-2">
+          <HeartBubble small />
+        </span>
+        <span className="absolute bottom-2 left-2 rounded-full bg-white/90 px-2 py-0.5 text-[11px] font-semibold text-[#13191f]">
+          {listing.distance}
+        </span>
+        {listing.verified && (
+          <span className="absolute bottom-2 right-2 rounded-full bg-[#0dd5b5] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-black">
+            Verified
+          </span>
+        )}
+      </div>
+      <div className="p-3">
+        <h4 className="truncate text-sm font-bold text-[#13191f] transition-colors group-hover:text-[#0dd5b5]">
+          {listing.name}
+        </h4>
+        <div className="mt-1.5 flex items-center gap-1.5 text-xs text-black/55">
+          <StarIcon className="h-3.5 w-3.5 text-[#f7d656]" />
+          <span className="font-bold text-[#13191f]">{listing.rating.toFixed(1)}</span>
+          <span>({listing.reviews})</span>
+          <span className="text-black/15">|</span>
+          <span className="font-bold text-[#13191f]">{listing.priceLevel}</span>
+          <span className="text-black/15">·</span>
+          <span className="truncate">{listing.category}</span>
+        </div>
+      </div>
+    </Link>
+  )
 }
 
-export default async function Home() {
-  const upcomingEvents = await getUpcomingEvents()
-
+export default function Home() {
   return (
     <>
       <Header />
 
-      {/* ─── Hero Section ─── */}
-      <section className="relative h-screen w-full overflow-hidden bg-black">
-        {/* Video Background — Desktop */}
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="hidden md:block absolute inset-0 w-full h-full object-cover"
-        >
-          <source src="/videos/hero-video.mp4" type="video/mp4" />
-        </video>
-
-        {/* Video Background — Mobile */}
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="md:hidden absolute inset-0 w-full h-full object-cover"
-        >
-          <source src="/videos/hero-video2.mp4" type="video/mp4" />
-        </video>
-
-      </section>
-
-      {/* ─── Find and Create Banner ─── */}
-      <section className="relative overflow-hidden bg-black border-t border-white/8">
-        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")' }} />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-12">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="text-center md:text-left">
-              <h2
-                className="text-2xl md:text-3xl font-bold text-white uppercase tracking-tight"
-                style={{ fontFamily: 'var(--font-display)' }}
-              >
-                Find <span className="text-[#0dd5b5]">&amp;</span> Create
-              </h2>
-              <p className="text-sm text-white/50 mt-1.5 max-w-lg" style={{ fontFamily: 'var(--font-body)' }}>
-                Discover events, gyms, and trainers near you — or list your own business and host events for the community.
-              </p>
-            </div>
-            <div className="flex items-center gap-3">
-              <Link
-                href="/events"
-                className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#0dd5b5] text-black text-sm font-semibold rounded-lg hover:bg-[#0dd5b5]/90 transition-colors"
-                style={{ fontFamily: 'var(--font-body)' }}
-              >
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-                Explore
-              </Link>
-              <Link
-                href="/create-event"
-                className="inline-flex items-center gap-2 px-5 py-2.5 border border-white/20 text-white text-sm font-semibold rounded-lg hover:border-[#f7d656] hover:text-[#f7d656] transition-colors"
-                style={{ fontFamily: 'var(--font-body)' }}
-              >
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                </svg>
-                Create
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ─── Explore Section ─── */}
-      <ExploreSection />
-
-      {/* ─── Upcoming Events ─── */}
-      <section className="py-16 md:py-20 bg-white border-t border-black/6">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-          <div className="flex items-end justify-between mb-10">
-            <div>
-              <h2
-                className="text-3xl md:text-4xl font-bold text-black uppercase tracking-tight"
-                style={{ fontFamily: 'var(--font-display)' }}
-              >
-                Upcoming Events
-              </h2>
-              <p className="text-sm text-black/50 mt-1" style={{ fontFamily: 'var(--font-body)' }}>
-                The most exciting fitness events in the Caribbean
-              </p>
-            </div>
-            <Link
-              href="/events"
-              className="hidden md:inline-flex items-center text-sm font-medium text-black/50 hover:text-black transition-colors gap-1"
-              style={{ fontFamily: 'var(--font-body)' }}
-            >
-              View all <span aria-hidden>→</span>
-            </Link>
-          </div>
-
-          {upcomingEvents.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {upcomingEvents.map((event) => (
-                <Link
-                  key={event._id}
-                  href={`/events/${event.slug.current}`}
-                  className="group block bg-white border border-black/8 rounded-2xl overflow-hidden hover:border-black/20 hover:shadow-lg hover:shadow-black/5 transition-all duration-300"
-                >
-                  <div className="h-56 flex items-center justify-center overflow-hidden bg-black/3">
-                    {event.featuredImage ? (
-                      <Image
-                        src={event.featuredImage}
-                        alt={event.title}
-                        width={600}
-                        height={400}
-                        className="h-56 w-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      />
-                    ) : (
-                      <div className="h-56 w-full bg-gradient-to-br from-[#0dd5b5]/20 to-black/10 flex items-center justify-center group-hover:scale-105 transition-transform duration-500">
-                        <svg className="w-12 h-12 text-[#0dd5b5]/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
-                      </div>
-                    )}
-                  </div>
-                  <div className="p-5">
-                    <div className="flex items-center gap-1.5 text-xs text-black/40 mb-2.5" style={{ fontFamily: 'var(--font-body)' }}>
-                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                      </svg>
-                      {formatEventDate(event.startDate)}
-                    </div>
-                    <h3
-                      className="text-lg font-bold text-black mb-1.5 group-hover:text-[#0dd5b5] transition-colors"
-                      style={{ fontFamily: 'var(--font-display)' }}
-                    >
-                      {event.title}
-                    </h3>
-                    {event.shortDescription && (
-                      <p className="text-sm text-black/55 leading-relaxed line-clamp-2" style={{ fontFamily: 'var(--font-body)' }}>
-                        {event.shortDescription}
-                      </p>
-                    )}
-                    {event.location && (event.location.city || event.location.island) && (
-                      <div className="flex items-center gap-1 mt-2 text-xs text-black/40" style={{ fontFamily: 'var(--font-body)' }}>
-                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
-                        {[event.location.city, event.location.island].filter(Boolean).join(', ')}
-                      </div>
-                    )}
-                  </div>
-                </Link>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-16 border border-dashed border-black/10 rounded-2xl">
-              <svg className="w-10 h-10 text-black/20 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-              <p className="text-black/40 text-sm" style={{ fontFamily: 'var(--font-body)' }}>No upcoming events at the moment.</p>
-              <Link href="/events" className="inline-flex items-center gap-1 mt-3 text-sm font-medium text-[#0dd5b5] hover:text-black transition-colors" style={{ fontFamily: 'var(--font-body)' }}>
-                Browse all events <span aria-hidden>→</span>
-              </Link>
-            </div>
-          )}
-
-          <div className="text-center mt-8 md:hidden">
-            <Link
-              href="/events"
-              className="inline-flex items-center gap-2 text-sm font-medium text-[#0dd5b5] hover:text-black transition-colors"
-              style={{ fontFamily: 'var(--font-body)' }}
-            >
-              View all events <span aria-hidden>→</span>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ─── Find Everything ─── */}
-      <section className="flex flex-col bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8">
-          <h2
-            className="text-4xl md:text-5xl lg:text-6xl font-bold text-black uppercase tracking-tight text-center"
-            style={{ fontFamily: 'var(--font-display)' }}
-          >
-            Find everything
-            <br />
-            <span className="text-[#0dd5b5]">you&apos;re looking for</span>
-          </h2>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-4 md:h-[68vh] min-h-[520px]">
-          {[
-            { number: '01', title: 'FITNESS CLASSES', image: '/images/fitness-classes.jpg', href: '/listings/classes' },
-            { number: '02', title: 'GYMS', image: '/images/gym.jpg', href: '/listings/gyms' },
-            { number: '03', title: 'EVENTS', image: '/images/fitness-events.jpg', href: '/events' },
-            { number: '04', title: 'BUSINESSES', image: '/images/fitness-apparel.jpg', href: '/listings' },
-          ].map((item, i) => (
-            <Link
-              key={i}
-              href={item.href}
-              className="relative overflow-hidden group cursor-pointer block"
-              style={{
-                backgroundImage: `url(${item.image})`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-              }}
-            >
-              <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-colors duration-300" />
-              <div className="relative h-full min-h-[260px] md:min-h-0 flex flex-col justify-end p-7 md:p-8">
-                <div>
-                  <span
-                    className="text-5xl md:text-6xl font-bold block mb-2"
-                    style={{ color: '#f7d656', fontFamily: 'var(--font-display)' }}
+      <main>
+        {/* ─── Hero ─── */}
+        <section className="bg-gradient-to-b from-white to-[#eef9f6]">
+          <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 md:py-16 lg:px-8">
+            <div className="grid grid-cols-1 items-center gap-10 md:grid-cols-[1.05fr_1fr] md:gap-12">
+              <div>
+                <h1 className="text-4xl leading-[1.05] tracking-tight md:text-6xl">
+                  <span className="font-bold text-[#13191f]">One Platform.</span>
+                  <br />
+                  <span className="font-bold text-[#0dd5b5]">All Things Fitness.</span>
+                </h1>
+                <ul className="mt-7 flex flex-col gap-3.5 md:mt-8">
+                  {heroBullets.map(({ Icon, text }) => (
+                    <li key={text} className="flex items-center gap-3.5">
+                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#0dd5b5] text-black">
+                        <Icon className="h-5 w-5" />
+                      </span>
+                      <span className="text-base text-[#13191f] md:text-[17px]">{text}</span>
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                  <Link
+                    href="/events"
+                    className="rounded-lg bg-[#0dd5b5] px-6 py-3.5 text-center text-[15px] font-semibold text-black transition-colors hover:bg-[#0bc4a6]"
                   >
-                    {item.number}
+                    Find Events
+                  </Link>
+                  <Link
+                    href="/listings"
+                    className="rounded-lg border-[1.5px] border-[#0dd5b5] bg-white px-6 py-3.5 text-center text-[15px] font-semibold text-[#0dd5b5] transition-colors hover:bg-[#0dd5b5]/5"
+                  >
+                    Find Listings
+                  </Link>
+                </div>
+              </div>
+              <div className="relative aspect-[4/5] overflow-hidden rounded-3xl bg-[#0dd5b5]/10">
+                <Image
+                  src={heroImage}
+                  alt="Fitness in the Bahamas"
+                  fill
+                  priority
+                  sizes="(max-width: 768px) 100vw, 45vw"
+                  className="object-cover"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ─── Quick actions strip ─── */}
+        <section className="bg-[#eef9f6] pb-10 md:pb-14">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="relative -mt-8 grid grid-cols-5 gap-2 rounded-2xl border border-black/8 bg-white p-5 shadow-[0_8px_24px_rgba(20,40,40,0.06)] md:gap-3 md:p-6">
+              {quickActions.map(({ label, Icon, href }) => (
+                <Link
+                  key={label}
+                  href={href}
+                  className="group flex flex-col items-center gap-2.5"
+                >
+                  <span className="flex h-12 w-12 items-center justify-center rounded-full bg-[#0dd5b5] text-black transition-transform group-hover:scale-105 md:h-14 md:w-14">
+                    <Icon className="h-5 w-5 md:h-6 md:w-6" />
                   </span>
-                  <h4
-                    className="text-white text-xl md:text-2xl font-bold tracking-wide leading-tight"
-                    style={{ fontFamily: 'var(--font-display)' }}
-                  >
-                    {item.title}
-                  </h4>
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      {/* ─── Host Events & Listings Banner ─── */}
-      <section className="relative overflow-hidden bg-gradient-to-r from-[#0dd5b5] to-[#0bc5a5]">
-        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'40\' height=\'40\' viewBox=\'0 0 40 40\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M0 40L40 0H20L0 20M40 40V20L20 40\' fill=\'%23000\' fill-opacity=\'.08\'/%3E%3C/svg%3E")' }} />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 md:py-16">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-            <div>
-              <h2
-                className="text-3xl md:text-4xl font-bold text-black uppercase tracking-tight mb-3"
-                style={{ fontFamily: 'var(--font-display)' }}
-              >
-                Start hosting on Bahafit
-              </h2>
-              <p className="text-base text-black/70 leading-relaxed max-w-lg" style={{ fontFamily: 'var(--font-body)' }}>
-                Whether you run a gym, offer training sessions, or organize fitness events — getting started is simple. Create your account, set up your listing or event, and connect with the Caribbean fitness community.
-              </p>
-            </div>
-            <div className="flex flex-col sm:flex-row gap-4 md:justify-end">
-              <div className="flex items-start gap-4 bg-black/10 rounded-xl p-5 flex-1">
-                <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center flex-shrink-0">
-                  <svg className="w-5 h-5 text-[#f7d656]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 className="text-sm font-bold text-black mb-1" style={{ fontFamily: 'var(--font-display)' }}>Host Events</h3>
-                  <p className="text-xs text-black/60 leading-relaxed mb-2" style={{ fontFamily: 'var(--font-body)' }}>Create and promote fitness events to thousands</p>
-                  <Link
-                    href="/create-event"
-                    className="inline-flex items-center gap-1 text-xs font-semibold text-black hover:gap-2 transition-all"
-                    style={{ fontFamily: 'var(--font-body)' }}
-                  >
-                    Get started <span aria-hidden>→</span>
-                  </Link>
-                </div>
-              </div>
-              <div className="flex items-start gap-4 bg-black/10 rounded-xl p-5 flex-1">
-                <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center flex-shrink-0">
-                  <svg className="w-5 h-5 text-[#0dd5b5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 className="text-sm font-bold text-black mb-1" style={{ fontFamily: 'var(--font-display)' }}>List Your Business</h3>
-                  <p className="text-xs text-black/60 leading-relaxed mb-2" style={{ fontFamily: 'var(--font-body)' }}>Add your gym, studio, or service to the directory</p>
-                  <Link
-                    href="/list-your-business"
-                    className="inline-flex items-center gap-1 text-xs font-semibold text-black hover:gap-2 transition-all"
-                    style={{ fontFamily: 'var(--font-body)' }}
-                  >
-                    Get started <span aria-hidden>→</span>
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ─── Gyms & Fitness Trainers Carousel ─── */}
-      <TrainersGymsCarousel />
-
-      {/* ─── From Our Blog ─── */}
-      <section className="py-16 md:py-20 bg-white border-t border-black/6">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-          <div className="flex items-end justify-between mb-10">
-            <h2
-              className="text-3xl md:text-4xl font-bold text-black uppercase tracking-tight"
-              style={{ fontFamily: 'var(--font-display)' }}
-            >
-              From the Blog
-            </h2>
-            <Link
-              href="/blog"
-              className="hidden md:inline-flex items-center text-sm font-medium text-black/50 hover:text-black transition-colors gap-1"
-              style={{ fontFamily: 'var(--font-body)' }}
-            >
-              View all <span aria-hidden>→</span>
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-14 items-start">
-            {/* Featured post */}
-            <div>
-              <Link href="/blog" className="group block">
-                <div className="relative h-64 rounded-2xl overflow-hidden mb-5">
-                  <img
-                    src="/images/blog-featured.jpg"
-                    alt="Getting started in fitness"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                </div>
-                <div className="flex items-center gap-3 text-xs text-black/40 mb-3" style={{ fontFamily: 'var(--font-body)' }}>
-                  <span>By Dorisser Johnson</span>
-                  <span>·</span>
-                  <span>November 15, 2025</span>
-                </div>
-                <h3
-                  className="text-2xl md:text-3xl font-bold text-black mb-3 group-hover:text-[#0dd5b5] transition-colors leading-tight"
-                  style={{ fontFamily: 'var(--font-display)' }}
-                >
-                  Getting started in fitness, the Bahafit way
-                </h3>
-                <p className="text-sm text-black/60 leading-relaxed mb-4" style={{ fontFamily: 'var(--font-body)' }}>
-                  Starting your fitness journey can feel overwhelming, but it doesn&apos;t have to be.
-                  Discover how Bahafit makes it easy to find the right gym, trainer, and community to support your goals.
-                </p>
-                <span
-                  className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#0dd5b5] group-hover:gap-2.5 transition-all"
-                  style={{ fontFamily: 'var(--font-body)' }}
-                >
-                  Read More <span aria-hidden>→</span>
-                </span>
-              </Link>
-            </div>
-
-            {/* Recent posts */}
-            <div className="flex flex-col divide-y divide-black/6">
-              {[
-                { title: 'Top 5 Gyms in Nassau for Strength Training', author: 'Michael Brown', date: 'November 10, 2025' },
-                { title: 'Healthy Eating Guide: Best Meal Prep Services', author: 'Jessica Williams', date: 'November 5, 2025' },
-                { title: 'How to Stay Consistent with Your Fitness Goals', author: 'David Thompson', date: 'October 28, 2025' },
-                { title: 'Best Running Routes in the Bahamas', author: 'Marcus Thompson', date: 'October 20, 2025' },
-              ].map((post, i) => (
-                <Link
-                  key={i}
-                  href="/blog"
-                  className="group py-5 first:pt-0 last:pb-0 block"
-                >
-                  <h4
-                    className="text-base font-bold text-black mb-1.5 group-hover:text-[#0dd5b5] transition-colors leading-tight"
-                    style={{ fontFamily: 'var(--font-display)' }}
-                  >
-                    {post.title}
-                  </h4>
-                  <div className="flex items-center gap-2 text-xs text-black/40" style={{ fontFamily: 'var(--font-body)' }}>
-                    <span>By {post.author}</span>
-                    <span>·</span>
-                    <span>{post.date}</span>
-                  </div>
+                  <span className="text-xs font-semibold text-[#13191f] md:text-sm">
+                    {label}
+                  </span>
                 </Link>
               ))}
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* ─── CTA Section ─── */}
-      <section
-        className="relative py-24 md:py-32 bg-fixed bg-cover bg-center"
-        style={{ backgroundImage: "url('/images/cta-background.jpg')" }}
-      >
-        <div className="absolute inset-0 bg-black/65" />
-
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-center">
-
-            {/* Left — Tagline */}
-            <div>
-              <h2
-                className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 uppercase leading-tight"
-                style={{ fontFamily: 'var(--font-display)' }}
-              >
-                Ready to join a true{' '}
-                <span style={{ color: '#f7d656' }}>fitness community</span>?
-              </h2>
-              <p className="text-base text-white/60 leading-relaxed" style={{ fontFamily: 'var(--font-body)' }}>
-                Connect with trainers, gyms, events, and fellow fitness enthusiasts across the Bahamas.
-              </p>
-            </div>
-
-            {/* Right — Signup form */}
-            <div className="bg-white rounded-2xl p-7 md:p-8 shadow-2xl shadow-black/30">
-              <h3
-                className="text-2xl font-bold text-black mb-6 uppercase"
-                style={{ fontFamily: 'var(--font-display)' }}
-              >
-                Get Started Today
-              </h3>
-              <form className="space-y-4">
-                <div>
-                  <label htmlFor="name" className="block text-xs font-semibold text-black/50 mb-1.5 uppercase tracking-wide" style={{ fontFamily: 'var(--font-body)' }}>
-                    Full Name
-                  </label>
-                  <input
-                    type="text"
-                    id="name"
-                    className="w-full px-4 py-3 border border-black/12 rounded-lg text-sm focus:ring-2 focus:ring-[#0dd5b5]/30 focus:border-[#0dd5b5] outline-none transition-all"
-                    placeholder="Enter your name"
-                    style={{ fontFamily: 'var(--font-body)' }}
-                  />
-                </div>
-                <div>
-                  <label htmlFor="email" className="block text-xs font-semibold text-black/50 mb-1.5 uppercase tracking-wide" style={{ fontFamily: 'var(--font-body)' }}>
-                    Email Address
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    className="w-full px-4 py-3 border border-black/12 rounded-lg text-sm focus:ring-2 focus:ring-[#0dd5b5]/30 focus:border-[#0dd5b5] outline-none transition-all"
-                    placeholder="Enter your email"
-                    style={{ fontFamily: 'var(--font-body)' }}
-                  />
-                </div>
-                <div>
-                  <label htmlFor="password" className="block text-xs font-semibold text-black/50 mb-1.5 uppercase tracking-wide" style={{ fontFamily: 'var(--font-body)' }}>
-                    Password
-                  </label>
-                  <input
-                    type="password"
-                    id="password"
-                    className="w-full px-4 py-3 border border-black/12 rounded-lg text-sm focus:ring-2 focus:ring-[#0dd5b5]/30 focus:border-[#0dd5b5] outline-none transition-all"
-                    placeholder="Create a password"
-                    style={{ fontFamily: 'var(--font-body)' }}
-                  />
-                </div>
-                <button
-                  type="submit"
-                  className="w-full bg-black text-white hover:bg-[#0dd5b5] hover:text-black px-6 py-3.5 rounded-lg font-semibold transition-all text-sm"
-                  style={{ fontFamily: 'var(--font-body)' }}
+        {/* ─── Explore Categories ─── */}
+        <section className="bg-white pt-12 pb-10 md:pt-16 md:pb-14">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <SectionHead title="Explore Categories" link="/listings" linkLabel="See all" />
+            <div className="grid grid-cols-3 gap-6 md:grid-cols-6">
+              {categories.map(({ label, Icon, href }) => (
+                <Link
+                  key={label}
+                  href={href}
+                  className="group flex flex-col items-center gap-2.5"
                 >
-                  Create Account
-                </button>
-                <p className="text-xs text-black/50 text-center" style={{ fontFamily: 'var(--font-body)' }}>
-                  Already have an account?{' '}
-                  <Link href="/auth/signin" className="text-[#0dd5b5] hover:text-black font-semibold transition-colors">
-                    Sign In
-                  </Link>
-                </p>
-              </form>
+                  <span className="flex h-20 w-20 items-center justify-center rounded-full border-[1.8px] border-[#0dd5b5] bg-white text-[#0dd5b5] transition-colors group-hover:bg-[#0dd5b5]/5 md:h-[84px] md:w-[84px]">
+                    <Icon className="h-9 w-9 md:h-10 md:w-10" />
+                  </span>
+                  <span className="text-sm font-semibold text-[#13191f]">{label}</span>
+                </Link>
+              ))}
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+
+        {/* ─── Featured Events ─── */}
+        <section className="bg-white pb-10 md:pb-14">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <SectionHead
+              title="Featured Events"
+              link="/events"
+              linkLabel="See all events"
+            />
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+              {seedEvents.map((event) => (
+                <EventCard key={event.id} event={event} />
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ─── Explore Listings ─── */}
+        <section className="bg-white pb-10 md:pb-14">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <SectionHead
+              title="Explore Listings"
+              link="/listings"
+              linkLabel="See all listings"
+            />
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-5">
+              {seedListings.map((listing) => (
+                <ListingCard key={listing.id} listing={listing} />
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ─── Community banner ─── */}
+        <section className="bg-white pb-16 md:pb-20">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col items-center gap-5 rounded-2xl bg-[#0dd5b5]/10 p-6 text-center sm:flex-row sm:text-left md:p-7">
+              <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-[#0dd5b5]/20 text-[#0a6e70] md:h-16 md:w-16">
+                <UsersIcon className="h-8 w-8" />
+              </span>
+              <div className="flex-1">
+                <h3 className="text-xl font-bold text-[#13191f] md:text-2xl">
+                  Connect. Share. Grow Together.
+                </h3>
+                <p className="mt-1 text-sm text-black/55 md:text-base">
+                  Join a community that inspires and supports your fitness journey.
+                </p>
+              </div>
+              <div className="flex flex-col items-center gap-1">
+                <Link
+                  href="/auth/signup"
+                  className="rounded-lg bg-[#0dd5b5] px-5 py-2.5 text-sm font-semibold text-black transition-colors hover:bg-[#0bc4a6]"
+                >
+                  Join Community
+                </Link>
+                <span className="text-[11px] text-black/40">Coming Soon</span>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
 
       <Footer />
     </>
