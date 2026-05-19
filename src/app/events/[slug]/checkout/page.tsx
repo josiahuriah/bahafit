@@ -7,7 +7,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
-import { formatDate, formatCurrency } from '@/lib/utils'
+import { formatDate, formatCurrency, computeCheckoutFees } from '@/lib/utils'
 
 interface CheckoutEvent {
   _id: string
@@ -139,6 +139,7 @@ export default function CheckoutPage() {
 
   const price = getPrice()
   const currency = getCurrency()
+  const fees = computeCheckoutFees(event?.isFree ? 0 : price)
 
   const handleCheckout = async () => {
     if (!agreedToTerms || !event || !session) return
@@ -155,7 +156,10 @@ export default function CheckoutPage() {
           eventSlug: event.slug.current,
           eventTitle: event.title,
           ticketType: selectedTier?.tierName,
-          price,
+          price: fees.total,
+          subtotal: fees.subtotal,
+          vendorFee: fees.vendorFee,
+          processingFee: fees.processingFee,
           currency,
         }),
       })
@@ -484,7 +488,7 @@ export default function CheckoutPage() {
                             : 'Event Registration'}
                       </span>
                       <span className="text-gray-900">
-                        {event.isFree ? 'Free' : `${currency} ${price.toFixed(2)}`}
+                        {event.isFree ? 'Free' : `${currency} ${fees.subtotal.toFixed(2)}`}
                       </span>
                     </div>
                     {isEarlyBird && selectedTier?.earlyBirdPrice && (
@@ -495,12 +499,28 @@ export default function CheckoutPage() {
                         </span>
                       </div>
                     )}
+                    {!event.isFree && fees.subtotal > 0 && (
+                      <>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-600">Vendor fee (9%)</span>
+                          <span className="text-gray-900">
+                            {currency} {fees.vendorFee.toFixed(2)}
+                          </span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-600">Processing fee (1%)</span>
+                          <span className="text-gray-900">
+                            {currency} {fees.processingFee.toFixed(2)}
+                          </span>
+                        </div>
+                      </>
+                    )}
                   </div>
                   <div className="flex justify-between mt-3 pt-3 border-t border-dashed">
                     <span className="font-semibold text-gray-900">Total</span>
                     <div className="text-right">
                       <span className="font-bold text-lg text-gray-900">
-                        {event.isFree ? 'Free' : `${currency} ${price.toFixed(2)}`}
+                        {event.isFree ? 'Free' : `${currency} ${fees.total.toFixed(2)}`}
                       </span>
                     </div>
                   </div>
@@ -564,7 +584,7 @@ export default function CheckoutPage() {
                   ) : event.isFree ? (
                     'Complete Registration'
                   ) : (
-                    `Pay ${currency} ${price.toFixed(2)}`
+                    `Pay ${currency} ${fees.total.toFixed(2)}`
                   )}
                 </button>
 

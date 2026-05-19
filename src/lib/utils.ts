@@ -31,3 +31,29 @@ export function formatCurrency(amount: number, currency: string = 'USD'): string
     currency,
   }).format(amount)
 }
+
+export const VENDOR_FEE_RATE = 0.09
+export const PROCESSING_FEE_RATE = 0.01
+
+export interface CheckoutFees {
+  subtotal: number
+  vendorFee: number
+  processingFee: number
+  total: number
+}
+
+// Round to cents to avoid float drift between the displayed breakdown
+// and the amount we sign for Fygaro.
+const round2 = (n: number) => Math.round(n * 100) / 100
+
+export function computeCheckoutFees(subtotal: number): CheckoutFees {
+  const safe = subtotal > 0 ? subtotal : 0
+  const vendorFee = round2(safe * VENDOR_FEE_RATE)
+  const processingFee = round2(safe * PROCESSING_FEE_RATE)
+  return {
+    subtotal: round2(safe),
+    vendorFee,
+    processingFee,
+    total: round2(safe + vendorFee + processingFee),
+  }
+}

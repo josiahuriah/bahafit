@@ -170,7 +170,7 @@ export default function ListYourBusinessPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
-                href="/auth/signup"
+                href="/listings/new"
                 className="inline-flex items-center justify-center px-8 py-4 bg-[#0dd5b5] text-white font-semibold rounded-lg hover:bg-[#0bc5a5] transition-colors"
               >
                 Create Free Listing

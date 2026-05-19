@@ -31,6 +31,9 @@ export interface Registration {
   userEmail: string
   ticketType?: string
   price: number
+  subtotal?: number
+  vendorFee?: number
+  processingFee?: number
   currency: string
   status: 'pending' | 'confirmed' | 'cancelled' | 'checked_in'
   paymentStatus: 'pending' | 'paid' | 'refunded'

@@ -9,7 +9,17 @@ export async function POST(req: NextRequest) {
     const user = await requireAuth(session)
 
     const body = await req.json()
-    const { eventId, eventSlug, eventTitle, ticketType, price, currency } = body
+    const {
+      eventId,
+      eventSlug,
+      eventTitle,
+      ticketType,
+      price,
+      subtotal,
+      vendorFee,
+      processingFee,
+      currency,
+    } = body
 
     if (!eventId || !eventSlug || !eventTitle || price == null || !currency) {
       return NextResponse.json(
@@ -53,6 +63,9 @@ export async function POST(req: NextRequest) {
         userEmail: user.email,
         ticketType,
         price,
+        subtotal: typeof subtotal === 'number' ? subtotal : undefined,
+        vendorFee: typeof vendorFee === 'number' ? vendorFee : undefined,
+        processingFee: typeof processingFee === 'number' ? processingFee : undefined,
         currency,
         status: 'pending',
         paymentStatus: 'pending',

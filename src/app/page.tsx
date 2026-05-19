@@ -3,13 +3,12 @@ import Image from 'next/image'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import {
-  seedEvents,
-  seedListings,
   heroImage,
   type SeedEvent,
   type SeedListing,
   type EventTagTone,
 } from '@/data/seed'
+import { getHomepageEvents, getHomepageListings } from '@/data/homepage'
 import {
   CalendarIcon,
   StoreIcon,
@@ -35,19 +34,14 @@ const heroBullets = [
   { Icon: UsersIcon, text: 'Connect with others through community' },
 ]
 
-const quickActions = [
-  { label: 'Events', Icon: CalendarIcon, href: '/events' },
-  { label: 'Gyms', Icon: DumbbellIcon, href: '/listings/gyms' },
-  { label: 'Trainers', Icon: UserIcon, href: '/listings' },
-  { label: 'Wellness', Icon: LotusIcon, href: '/listings/wellness' },
-  { label: 'More', Icon: MoreIcon, href: '/listings' },
-]
-
 const categories = [
+  { label: 'Events', Icon: CalendarIcon, href: '/events' },
   { label: 'Runs', Icon: RunIcon, href: '/events/races' },
   { label: 'Clubs', Icon: GroupIcon, href: '/listings/clubs' },
+  { label: 'Trainers', Icon: UserIcon, href: '/listings' },
   { label: 'Studios', Icon: StudioIcon, href: '/listings/wellness' },
   { label: 'Gyms', Icon: DumbbellIcon, href: '/listings/gyms' },
+  { label: 'Wellness', Icon: LotusIcon, href: '/listings/wellness' },
   { label: 'Classes', Icon: ClassesIcon, href: '/listings/gyms' },
   { label: 'More', Icon: MoreIcon, href: '/listings' },
 ]
@@ -184,79 +178,61 @@ function ListingCard({ listing }: { listing: SeedListing }) {
   )
 }
 
-export default function Home() {
+export default async function Home() {
+  const [featuredEvents, featuredListings] = await Promise.all([
+    getHomepageEvents(),
+    getHomepageListings(),
+  ])
+
   return (
     <>
       <Header />
 
       <main>
         {/* ─── Hero ─── */}
-        <section className="bg-gradient-to-b from-white to-[#eef9f6]">
-          <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 md:py-16 lg:px-8">
-            <div className="grid grid-cols-1 items-center gap-10 md:grid-cols-[1.05fr_1fr] md:gap-12">
-              <div>
-                <h1 className="text-4xl leading-[1.05] tracking-tight md:text-6xl">
-                  <span className="font-bold text-[#13191f]">One Platform.</span>
-                  <br />
-                  <span className="font-bold text-[#0dd5b5]">All Things Fitness.</span>
-                </h1>
-                <ul className="mt-7 flex flex-col gap-3.5 md:mt-8">
-                  {heroBullets.map(({ Icon, text }) => (
-                    <li key={text} className="flex items-center gap-3.5">
-                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#0dd5b5] text-black">
-                        <Icon className="h-5 w-5" />
-                      </span>
-                      <span className="text-base text-[#13191f] md:text-[17px]">{text}</span>
-                    </li>
-                  ))}
-                </ul>
-                <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                  <Link
-                    href="/events"
-                    className="rounded-lg bg-[#0dd5b5] px-6 py-3.5 text-center text-[15px] font-semibold text-black transition-colors hover:bg-[#0bc4a6]"
-                  >
-                    Find Events
-                  </Link>
-                  <Link
-                    href="/listings"
-                    className="rounded-lg border-[1.5px] border-[#0dd5b5] bg-white px-6 py-3.5 text-center text-[15px] font-semibold text-[#0dd5b5] transition-colors hover:bg-[#0dd5b5]/5"
-                  >
-                    Find Listings
-                  </Link>
-                </div>
-              </div>
-              <div className="relative aspect-[4/5] overflow-hidden rounded-3xl bg-[#0dd5b5]/10">
-                <Image
-                  src={heroImage}
-                  alt="Fitness in the Bahamas"
-                  fill
-                  priority
-                  sizes="(max-width: 768px) 100vw, 45vw"
-                  className="object-cover"
-                />
-              </div>
-            </div>
+        <section className="relative overflow-hidden bg-[#eef9f6]">
+          <div className="absolute inset-0">
+            <Image
+              src={heroImage}
+              alt="Fitness in the Bahamas"
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover object-right"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-white via-white/90 to-transparent md:from-white md:via-white/80 md:to-transparent" />
           </div>
-        </section>
-
-        {/* ─── Quick actions strip ─── */}
-        <section className="bg-[#eef9f6] pb-10 md:pb-14">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="relative -mt-8 grid grid-cols-5 gap-2 rounded-2xl border border-black/8 bg-white p-5 shadow-[0_8px_24px_rgba(20,40,40,0.06)] md:gap-3 md:p-6">
-              {quickActions.map(({ label, Icon, href }) => (
+          <div className="relative mx-auto max-w-7xl px-4 py-14 sm:px-6 md:py-24 lg:px-8">
+            <div className="max-w-lg md:max-w-xl">
+              <h1 className="text-4xl leading-[1.05] tracking-tight md:text-6xl">
+                <span className="font-bold text-[#13191f]">One Platform.</span>
+                <br />
+                <span className="font-bold text-[#0dd5b5]">All Things Fitness.</span>
+              </h1>
+              <ul className="mt-7 flex flex-col gap-3.5 md:mt-8">
+                {heroBullets.map(({ Icon, text }) => (
+                  <li key={text} className="flex items-center gap-3.5">
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#0dd5b5] text-black">
+                      <Icon className="h-5 w-5" />
+                    </span>
+                    <span className="text-base text-[#13191f] md:text-[17px]">{text}</span>
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <Link
-                  key={label}
-                  href={href}
-                  className="group flex flex-col items-center gap-2.5"
+                  href="/events"
+                  className="rounded-lg bg-[#0dd5b5] px-6 py-3.5 text-center text-[15px] font-semibold text-black transition-colors hover:bg-[#0bc4a6]"
                 >
-                  <span className="flex h-12 w-12 items-center justify-center rounded-full bg-[#0dd5b5] text-black transition-transform group-hover:scale-105 md:h-14 md:w-14">
-                    <Icon className="h-5 w-5 md:h-6 md:w-6" />
-                  </span>
-                  <span className="text-xs font-semibold text-[#13191f] md:text-sm">
-                    {label}
-                  </span>
+                  Find Events
                 </Link>
-              ))}
+                <Link
+                  href="/listings"
+                  className="rounded-lg border-[1.5px] border-[#0dd5b5] bg-white px-6 py-3.5 text-center text-[15px] font-semibold text-[#0dd5b5] transition-colors hover:bg-[#0dd5b5]/5"
+                >
+                  Find Listings
+                </Link>
+              </div>
             </div>
           </div>
         </section>
@@ -265,15 +241,15 @@ export default function Home() {
         <section className="bg-white pt-12 pb-10 md:pt-16 md:pb-14">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <SectionHead title="Explore Categories" link="/listings" linkLabel="See all" />
-            <div className="grid grid-cols-3 gap-6 md:grid-cols-6">
+            <div className="grid grid-cols-3 gap-x-4 gap-y-6 md:grid-cols-5 md:gap-x-3">
               {categories.map(({ label, Icon, href }) => (
                 <Link
                   key={label}
                   href={href}
                   className="group flex flex-col items-center gap-2.5"
                 >
-                  <span className="flex h-20 w-20 items-center justify-center rounded-full border-[1.8px] border-[#0dd5b5] bg-white text-[#0dd5b5] transition-colors group-hover:bg-[#0dd5b5]/5 md:h-[84px] md:w-[84px]">
-                    <Icon className="h-9 w-9 md:h-10 md:w-10" />
+                  <span className="flex h-12 w-12 items-center justify-center rounded-full border-[1.8px] border-[#0dd5b5] bg-white text-[#0dd5b5] transition-colors group-hover:bg-[#0dd5b5]/5 md:h-14 md:w-14">
+                    <Icon className="h-5 w-5 md:h-6 md:w-6" />
                   </span>
                   <span className="text-sm font-semibold text-[#13191f]">{label}</span>
                 </Link>
@@ -291,7 +267,7 @@ export default function Home() {
               linkLabel="See all events"
             />
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-              {seedEvents.map((event) => (
+              {featuredEvents.map((event) => (
                 <EventCard key={event.id} event={event} />
               ))}
             </div>
@@ -307,7 +283,7 @@ export default function Home() {
               linkLabel="See all listings"
             />
             <div className="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-5">
-              {seedListings.map((listing) => (
+              {featuredListings.map((listing) => (
                 <ListingCard key={listing.id} listing={listing} />
               ))}
             </div>
