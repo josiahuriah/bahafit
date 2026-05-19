@@ -28,7 +28,7 @@ export interface SeedListing {
   href: string
 }
 
-export const heroImage = '/seed1.jpg'
+export const heroImage = '/images/seed1.jpg'
 
 export const seedEvents: SeedEvent[] = [
   {
@@ -39,7 +39,7 @@ export const seedEvents: SeedEvent[] = [
     price: '$20.00',
     tag: 'Trending',
     tagTone: 'trending',
-    image: '/seed2.jpg',
+    image: '/images/seed2.jpg',
     href: '/events',
   },
   {
@@ -50,7 +50,7 @@ export const seedEvents: SeedEvent[] = [
     price: '$30.00',
     tag: 'Popular',
     tagTone: 'popular',
-    image: '/seed3.jpg',
+    image: '/images/seed3.jpg',
     href: '/events',
   },
   {
@@ -61,7 +61,7 @@ export const seedEvents: SeedEvent[] = [
     price: '$25.00',
     tag: 'New',
     tagTone: 'new',
-    image: '/seed4.jpg',
+    image: '/images/seed4.jpg',
     href: '/events',
   },
   {
@@ -72,7 +72,7 @@ export const seedEvents: SeedEvent[] = [
     price: '$18.00',
     tag: 'New',
     tagTone: 'new',
-    image: '/seed5.jpg',
+    image: '/images/seed5.jpg',
     href: '/events',
   },
 ]
@@ -87,7 +87,7 @@ export const seedListings: SeedListing[] = [
     reviews: 120,
     priceLevel: '$$',
     verified: true,
-    image: '/seed6.jpg',
+    image: '/images/seed6.jpg',
     href: '/listings/gyms',
   },
   {
@@ -99,7 +99,7 @@ export const seedListings: SeedListing[] = [
     reviews: 85,
     priceLevel: '$$$',
     verified: true,
-    image: '/seed7.jpg',
+    image: '/images/seed7.jpg',
     href: '/listings',
   },
   {
@@ -111,7 +111,7 @@ export const seedListings: SeedListing[] = [
     reviews: 60,
     priceLevel: '$$',
     verified: true,
-    image: '/seed8.jpg',
+    image: '/images/seed8.jpg',
     href: '/listings/wellness',
   },
   {
@@ -123,7 +123,7 @@ export const seedListings: SeedListing[] = [
     reviews: 40,
     priceLevel: '$$',
     verified: false,
-    image: '/seed9.jpg',
+    image: '/images/seed9.jpg',
     href: '/listings',
   },
 ]
