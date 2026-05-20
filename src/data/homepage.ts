@@ -9,8 +9,8 @@ import {
   type EventTagTone,
 } from './seed'
 
-const FEATURED_EVENT_COUNT = 4
-const FEATURED_LISTING_COUNT = 4
+const FEATURED_EVENT_COUNT = 8
+const FEATURED_LISTING_COUNT = 8
 
 interface SanityEvent {
   _id: string
