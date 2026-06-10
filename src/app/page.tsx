@@ -330,39 +330,25 @@ export default async function Home() {
                 />
                 <span
                   aria-hidden
-                  className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/55 via-black/15 to-transparent"
+                  className="absolute inset-x-0 bottom-0 h-[60%] bg-gradient-to-t from-black/75 via-black/40 to-transparent"
                 />
-                <div className="absolute inset-x-3 bottom-3 flex items-center gap-3 rounded-2xl border border-white/40 bg-white/92 p-3 backdrop-blur">
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#0dd5b5] text-black">
-                    <UsersIcon className="h-5 w-5" />
-                  </span>
-                  <div className="flex-1">
-                    <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#0a6e70]">
-                      A community built for you
+                <div className="absolute inset-x-3 bottom-3 grid grid-cols-2 gap-2">
+                  {heroBulletsCompact.map(({ Icon, text }) => (
+                    <div
+                      key={text}
+                      className="flex items-center gap-2 rounded-xl bg-black/45 px-2.5 py-2 backdrop-blur-sm"
+                    >
+                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#0dd5b5] text-black">
+                        <Icon className="h-3.5 w-3.5" />
+                      </span>
+                      <span className="text-[12px] font-semibold leading-tight text-white">
+                        {text}
+                      </span>
                     </div>
-                    <div className="text-sm font-bold text-[#13191f]">
-                      Coaches, gyms, runs &amp; more
-                    </div>
-                  </div>
+                  ))}
                 </div>
               </div>
             </div>
-
-            <ul className="mt-6 grid grid-cols-2 gap-2.5">
-              {heroBulletsCompact.map(({ Icon, text }) => (
-                <li
-                  key={text}
-                  className="flex items-center gap-2.5 rounded-xl border border-black/5 bg-white p-3 shadow-sm shadow-black/[0.03]"
-                >
-                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#0dd5b5]/15 text-[#0a6e70]">
-                    <Icon className="h-4 w-4" />
-                  </span>
-                  <span className="text-[13px] font-semibold leading-tight text-[#13191f]">
-                    {text}
-                  </span>
-                </li>
-              ))}
-            </ul>
 
             <div className="mt-6 grid grid-cols-2 gap-3">
               <Link
@@ -385,17 +371,17 @@ export default async function Home() {
         <section className="bg-white pt-12 pb-10 md:pt-16 md:pb-14">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <SectionHead title="Explore Categories" link="/listings" linkLabel="See all" />
-            <div className="grid grid-cols-3 gap-x-4 gap-y-6 md:grid-cols-5 md:gap-x-3">
+            <div className="grid grid-cols-5 gap-x-2 gap-y-5 md:gap-x-3">
               {categories.map(({ label, Icon, href }) => (
                 <Link
                   key={label}
                   href={href}
                   className="group flex flex-col items-center gap-2.5"
                 >
-                  <span className="flex h-12 w-12 items-center justify-center rounded-full border-[1.8px] border-[#0dd5b5] bg-white text-[#0dd5b5] transition-colors group-hover:bg-[#0dd5b5]/5 md:h-14 md:w-14">
-                    <Icon className="h-5 w-5 md:h-6 md:w-6" />
+                  <span className="flex h-11 w-11 items-center justify-center rounded-full border-[1.8px] border-[#0dd5b5] bg-white text-[#0dd5b5] transition-colors group-hover:bg-[#0dd5b5]/5 md:h-14 md:w-14">
+                    <Icon className="h-4 w-4 md:h-6 md:w-6" />
                   </span>
-                  <span className="text-sm font-semibold text-[#13191f]">{label}</span>
+                  <span className="text-[11px] font-semibold text-[#13191f] md:text-sm">{label}</span>
                 </Link>
               ))}
             </div>
