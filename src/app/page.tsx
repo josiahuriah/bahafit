@@ -11,8 +11,6 @@ import {
 import { getHomepageEvents, getHomepageListings } from '@/data/homepage'
 import {
   CalendarIcon,
-  StoreIcon,
-  TicketIcon,
   UsersIcon,
   DumbbellIcon,
   UserIcon,
@@ -26,21 +24,70 @@ import {
   HeartIcon,
   StarIcon,
   ArrowRightIcon,
-  SparkleIcon,
 } from '@/components/home/icons'
 
-const heroBullets = [
-  { Icon: CalendarIcon, text: 'Discover fitness events, businesses' },
-  { Icon: StoreIcon, text: 'List your events and businesses' },
-  { Icon: TicketIcon, text: 'Buy or sell tickets here' },
-  { Icon: UsersIcon, text: 'Connect with others through community' },
-]
+// ─── Immersive hero icons (stroke style, viewBox 0 0 24 24, exact design paths) ───
+type HeroIconProps = { className?: string }
 
-const heroBulletsCompact = [
-  { Icon: CalendarIcon, text: 'Discover events' },
-  { Icon: StoreIcon, text: 'List your business' },
-  { Icon: TicketIcon, text: 'Buy & sell tickets' },
-  { Icon: UsersIcon, text: 'Connect community' },
+function HeroEventsIcon({ className }: HeroIconProps) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3.5" y="5" width="17" height="15" rx="2" />
+      <path d="M3.5 10h17M8 3v4M16 3v4" />
+    </svg>
+  )
+}
+
+function HeroClassesIcon({ className }: HeroIconProps) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="6.5" cy="6" r="1.6" />
+      <circle cx="12" cy="5" r="1.6" />
+      <circle cx="17.5" cy="6" r="1.6" />
+      <path d="M5 16l1.5-7 2 3h6.5l2-3L19 16" />
+      <path d="M5 16l1 4M19 16l-1 4" />
+    </svg>
+  )
+}
+
+function HeroClubsIcon({ className }: HeroIconProps) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="7" r="2.2" />
+      <circle cx="6" cy="9" r="1.8" />
+      <circle cx="18" cy="9" r="1.8" />
+      <path d="M4 17c.4-2 1.8-3.2 3.5-3.5" />
+      <path d="M20 17c-.4-2-1.8-3.2-3.5-3.5" />
+      <path d="M8 19c.5-2.5 2-3.8 4-3.8S15.5 16.5 16 19" />
+    </svg>
+  )
+}
+
+function HeroRunsIcon({ className }: HeroIconProps) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="14.5" cy="5.5" r="1.8" />
+      <path d="M7 21l3-5 2-3-3-2-1 3-3 1" />
+      <path d="M12 13l3 2 2 4" />
+      <path d="M15 10l3-1 2 2" />
+    </svg>
+  )
+}
+
+function HeroArrowIcon({ className }: HeroIconProps) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.1} strokeLinecap="round" strokeLinejoin="round">
+      <path d="M5 12h14M13 6l6 6-6 6" />
+    </svg>
+  )
+}
+
+// Floating category shortcuts shared across both breakpoints
+const heroCategories = [
+  { label: 'Events', Icon: HeroEventsIcon, href: '/events' },
+  { label: 'Classes', Icon: HeroClassesIcon, href: '/listings/gyms' },
+  { label: 'Clubs', Icon: HeroClubsIcon, href: '/listings/clubs' },
+  { label: 'Runs', Icon: HeroRunsIcon, href: '/events/races' },
 ]
 
 const categories = [
@@ -240,128 +287,138 @@ export default async function Home() {
       <Header />
 
       <main>
-        {/* ─── Hero (desktop) ─── */}
-        <section className="relative hidden overflow-hidden bg-[#eef9f6] md:block">
-          <div className="absolute inset-0">
-            <Image
-              src={heroImage}
-              alt="Fitness in the Bahamas"
-              fill
-              priority
-              sizes="100vw"
-              className="object-cover object-right"
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-white via-white/80 to-transparent" />
-          </div>
-          <div className="relative mx-auto max-w-7xl px-6 py-24 lg:px-8">
-            <div className="max-w-xl">
-              <h1 className="text-6xl leading-[1.05] tracking-tight">
-                <span className="font-bold text-[#13191f]">One Platform.</span>
-                <br />
-                <span className="font-bold text-[#0dd5b5]">All Things Fitness.</span>
-              </h1>
-              <ul className="mt-8 flex flex-col gap-3.5">
-                {heroBullets.map(({ Icon, text }) => (
-                  <li key={text} className="flex items-center gap-3.5">
-                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#0dd5b5] text-black">
-                      <Icon className="h-5 w-5" />
-                    </span>
-                    <span className="text-[17px] text-[#13191f]">{text}</span>
-                  </li>
-                ))}
-              </ul>
-              <div className="mt-8 flex gap-3">
+        {/* ─── Immersive hero (desktop ≥ md) — full-bleed photo ─── */}
+        <section className="relative hidden h-[calc(100vh-60px)] min-h-[600px] w-full overflow-hidden bg-black md:block">
+          <Image
+            src={heroImage}
+            alt="Fitness in the Bahamas"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-[75%_center]"
+          />
+          {/* Directional scrim — darkens the left for legibility */}
+          <div
+            aria-hidden
+            className="absolute inset-0"
+            style={{
+              background:
+                'linear-gradient(100deg, rgba(0,0,0,.78) 0%, rgba(0,0,0,.5) 38%, rgba(0,0,0,.12) 72%, rgba(0,0,0,.32) 100%)',
+            }}
+          />
+          {/* Vertical vignette */}
+          <div
+            aria-hidden
+            className="absolute inset-0"
+            style={{
+              background:
+                'linear-gradient(180deg, rgba(0,0,0,.28) 0%, rgba(0,0,0,0) 22%, rgba(0,0,0,0) 70%, rgba(0,0,0,.4) 100%)',
+            }}
+          />
+
+          {/* Hero content block */}
+          <div className="absolute inset-x-[52px] bottom-[56px]">
+            <h1 className="font-extrabold leading-[.98] tracking-[-.02em] text-white [text-shadow:0_4px_34px_rgba(0,0,0,.45)] text-[clamp(2.4rem,6vw,4.875rem)]">
+              One Platform.
+              <br />
+              All Things <span className="text-[#F5BE2E]">Fitness.</span>
+            </h1>
+            <p className="mt-5 max-w-[520px] text-[19px] leading-[1.5] text-white/90 [text-shadow:0_1px_12px_rgba(0,0,0,.5)]">
+              Discover events, gyms, trainers &amp; classes across the islands — buy &amp; sell
+              tickets and connect with the community, all in one place.
+            </p>
+
+            {/* Category chips */}
+            <div className="mt-[30px] mb-[26px] flex gap-3">
+              {heroCategories.map(({ label, Icon, href }) => (
                 <Link
-                  href="/events"
-                  className="rounded-lg bg-[#0dd5b5] px-6 py-3.5 text-[15px] font-semibold text-black transition-colors hover:bg-[#0bc4a6]"
+                  key={label}
+                  href={href}
+                  className="flex w-32 flex-col items-center gap-[9px] rounded-[18px] border border-white/[.26] bg-white/[.13] px-1.5 py-4 backdrop-blur-md transition-[background,transform] duration-200 hover:-translate-y-[3px] hover:bg-white/[.26]"
                 >
-                  Find Events
+                  <Icon className="h-7 w-7 text-white" />
+                  <span className="text-sm font-semibold text-white">{label}</span>
                 </Link>
-                <Link
-                  href="/listings"
-                  className="rounded-lg border-[1.5px] border-[#0dd5b5] bg-white px-6 py-3.5 text-[15px] font-semibold text-[#0dd5b5] transition-colors hover:bg-[#0dd5b5]/5"
-                >
-                  Find Listings
-                </Link>
-              </div>
+              ))}
+            </div>
+
+            {/* CTAs */}
+            <div className="flex gap-3.5">
+              <Link
+                href="/events"
+                className="inline-flex items-center justify-center gap-2 rounded-[13px] bg-[#F5BE2E] px-[30px] py-4 text-base font-bold text-[#3a2a00] transition-transform duration-150 hover:-translate-y-[2px]"
+              >
+                Find Events
+                <HeroArrowIcon className="h-[19px] w-[19px]" />
+              </Link>
+              <Link
+                href="/listings"
+                className="inline-flex items-center justify-center rounded-[13px] border border-white/50 bg-white/[.15] px-[30px] py-4 text-base font-semibold text-white backdrop-blur-[6px] transition-colors duration-200 hover:bg-white/[.26]"
+              >
+                Find Listings
+              </Link>
             </div>
           </div>
         </section>
 
-        {/* ─── Hero (mobile) — image-forward, editorial ─── */}
-        <section className="relative overflow-hidden bg-[#eef9f6] md:hidden">
-          <span
-            aria-hidden
-            className="absolute inset-0 bg-gradient-to-b from-white via-[#eef9f6]/40 to-[#eef9f6]"
+        {/* ─── Immersive hero (mobile < md) — full-bleed photo, bottom-pinned ─── */}
+        <section className="relative flex h-[calc(100svh-60px)] min-h-[560px] w-full flex-col overflow-hidden bg-black md:hidden">
+          <Image
+            src={heroImage}
+            alt="Fitness in the Bahamas"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-[75%_center]"
           />
-          <span
+          <div
             aria-hidden
-            className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-[#0dd5b5]/15 blur-3xl"
-          />
-          <span
-            aria-hidden
-            className="absolute -left-24 top-72 h-64 w-64 rounded-full bg-[#f7d656]/20 blur-3xl"
+            className="absolute inset-0"
+            style={{
+              background:
+                'linear-gradient(180deg, rgba(0,0,0,.5) 0%, rgba(0,0,0,.08) 24%, rgba(0,0,0,.12) 48%, rgba(0,0,0,.88) 100%)',
+            }}
           />
 
-          <div className="relative px-4 pt-6 pb-10 sm:px-6">
-            <h1 className="mt-3 text-[2.6rem] leading-[0.95] tracking-tight">
-              <span className="block font-bold text-[#13191f]">One Platform.</span>
-              <span className="block font-bold text-[#0dd5b5]">All Things</span>
-              <span className="block font-bold text-[#13191f]">
-                Fitness<span className="text-[#f7d656]">.</span>
-              </span>
+          {/* Bottom-pinned content */}
+          <div className="relative mt-auto px-6 pb-[30px]">
+            <h1 className="text-[38px] font-extrabold leading-[1.03] tracking-[-.02em] text-white [text-shadow:0_2px_24px_rgba(0,0,0,.5)]">
+              One Platform.
+              <br />
+              All Things <span className="text-[#F5BE2E]">Fitness.</span>
             </h1>
+            <p className="mt-[13px] max-w-[310px] text-[14.5px] leading-[1.5] text-white/90 [text-shadow:0_1px_10px_rgba(0,0,0,.5)]">
+              Events, gyms, trainers &amp; classes across the islands — all in one place.
+            </p>
 
-            <div className="relative mt-7">
-              <span
-                aria-hidden
-                className="absolute -left-1 -top-3 z-20 flex h-12 w-12 -rotate-12 items-center justify-center rounded-2xl bg-[#f7d656] text-[#3a2a00] shadow-lg shadow-black/15 ring-4 ring-white"
-              >
-                <SparkleIcon className="h-6 w-6" />
-              </span>
-              <div className="relative aspect-[5/4] overflow-hidden rounded-3xl bg-[#0dd5b5]/15 shadow-xl shadow-[#0a6e70]/25 ring-1 ring-black/5">
-                <Image
-                  src={heroImage}
-                  alt="Fitness in the Bahamas"
-                  fill
-                  priority
-                  sizes="100vw"
-                  className="object-cover object-right"
-                />
-                <span
-                  aria-hidden
-                  className="absolute inset-x-0 bottom-0 h-[60%] bg-gradient-to-t from-black/75 via-black/40 to-transparent"
-                />
-                <div className="absolute inset-x-3 bottom-3 grid grid-cols-2 gap-2">
-                  {heroBulletsCompact.map(({ Icon, text }) => (
-                    <div
-                      key={text}
-                      className="flex items-center gap-2 rounded-xl bg-black/45 px-2.5 py-2 backdrop-blur-sm"
-                    >
-                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#0dd5b5] text-black">
-                        <Icon className="h-3.5 w-3.5" />
-                      </span>
-                      <span className="text-[12px] font-semibold leading-tight text-white">
-                        {text}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
+            {/* Category chips — equal-width */}
+            <div className="mt-[22px] mb-[18px] flex gap-[9px]">
+              {heroCategories.map(({ label, Icon, href }) => (
+                <Link
+                  key={label}
+                  href={href}
+                  className="flex flex-1 flex-col items-center gap-2 rounded-[17px] border border-white/[.28] bg-white/[.14] px-[3px] py-[13px] backdrop-blur-md transition-colors duration-200 hover:bg-white/[.28]"
+                >
+                  <Icon className="h-6 w-6 text-white" />
+                  <span className="text-[11.5px] font-semibold text-white">{label}</span>
+                </Link>
+              ))}
             </div>
 
-            <div className="mt-6 grid grid-cols-2 gap-3">
+            {/* CTAs */}
+            <div className="flex gap-[11px]">
               <Link
                 href="/events"
-                className="rounded-xl bg-[#0dd5b5] py-3.5 text-center text-sm font-bold text-black shadow-sm shadow-[#0dd5b5]/30 transition-all hover:bg-[#0bc4a6] active:scale-[0.98]"
+                className="flex flex-1 items-center justify-center gap-2 rounded-[13px] bg-[#F5BE2E] px-4 py-[15px] text-[15px] font-bold text-[#3a2a00] active:scale-[0.98]"
               >
                 Find Events
+                <HeroArrowIcon className="h-[18px] w-[18px]" />
               </Link>
               <Link
                 href="/listings"
-                className="rounded-xl border-2 border-[#13191f] bg-white py-3.5 text-center text-sm font-bold text-[#13191f] transition-all hover:bg-[#13191f] hover:text-white active:scale-[0.98]"
+                className="flex items-center justify-center rounded-[13px] border border-white/50 bg-white/[.15] px-5 py-[15px] text-[15px] font-semibold text-white backdrop-blur-[6px] active:scale-[0.98]"
               >
-                Find Listings
+                Listings
               </Link>
             </div>
           </div>
