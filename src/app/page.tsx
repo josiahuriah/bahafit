@@ -111,11 +111,11 @@ const tagTone: Record<EventTagTone, string> = {
 function HeartBubble({ small }: { small?: boolean }) {
   return (
     <span
-      className={`flex items-center justify-center rounded-full bg-white shadow-sm shadow-black/15 ${
+      className={`flex items-center justify-center rounded-full bg-white dark:bg-[#1a1e26] shadow-sm shadow-black/15 ${
         small ? 'h-7 w-7' : 'h-8 w-8'
       }`}
     >
-      <HeartIcon className={small ? 'h-3.5 w-3.5 text-black/40' : 'h-4 w-4 text-black/40'} />
+      <HeartIcon className={small ? 'h-3.5 w-3.5 text-black/40 dark:text-white/40' : 'h-4 w-4 text-black/40 dark:text-white/40'} />
     </span>
   )
 }
@@ -131,7 +131,7 @@ function SectionHead({
 }) {
   return (
     <div className="mb-6 flex items-baseline justify-between">
-      <h2 className="text-2xl font-bold tracking-tight text-[#13191f] md:text-[26px]">{title}</h2>
+      <h2 className="text-2xl font-bold tracking-tight text-[#13191f] dark:text-white md:text-[26px]">{title}</h2>
       <Link
         href={link}
         className="text-sm font-semibold text-[#0dd5b5] transition-colors hover:text-[#0bc4a6]"
@@ -144,7 +144,7 @@ function SectionHead({
 
 function EventCard({ event }: { event: SeedEvent }) {
   return (
-    <div className="group flex h-full flex-col overflow-hidden rounded-2xl border border-black/8 bg-white transition-all duration-300 hover:border-black/20 hover:shadow-lg hover:shadow-black/5">
+    <div className="group flex h-full flex-col overflow-hidden rounded-2xl border border-black/8 dark:border-white/8 bg-white dark:bg-[#1a1e26] transition-all duration-300 hover:border-black/20 dark:hover:border-white/20 hover:shadow-lg hover:shadow-black/5">
       <Link href={event.href} className="block">
         <div className="relative aspect-[16/10] overflow-hidden bg-[#0dd5b5]/10">
           <Image
@@ -166,19 +166,19 @@ function EventCard({ event }: { event: SeedEvent }) {
       </Link>
       <div className="flex flex-1 flex-col p-4">
         <Link href={event.href}>
-          <h3 className="text-[17px] font-bold text-[#13191f] transition-colors group-hover:text-[#0dd5b5]">
+          <h3 className="text-[17px] font-bold text-[#13191f] dark:text-white transition-colors group-hover:text-[#0dd5b5]">
             {event.title}
           </h3>
         </Link>
-        <div className="mt-1.5 flex items-center gap-1.5 text-[13px] text-black/55">
+        <div className="mt-1.5 flex items-center gap-1.5 text-[13px] text-black/55 dark:text-white/50">
           <PinIcon className="h-3.5 w-3.5 shrink-0" />
           <span>{event.location}</span>
         </div>
-        <div className="mt-1 flex items-center gap-1.5 text-[13px] text-black/55">
+        <div className="mt-1 flex items-center gap-1.5 text-[13px] text-black/55 dark:text-white/50">
           <CalendarIcon className="h-3.5 w-3.5 shrink-0" />
           <span>{event.date}</span>
         </div>
-        <div className="mt-2 text-lg font-bold text-[#13191f]">{event.price}</div>
+        <div className="mt-2 text-lg font-bold text-[#13191f] dark:text-white">{event.price}</div>
         <Link
           href={event.href}
           className="mt-3 rounded-lg bg-[#f7d656] px-4 py-2.5 text-center text-sm font-semibold text-[#3a2a00] transition-colors hover:bg-[#f7d656]/85"
@@ -194,7 +194,7 @@ function ListingCard({ listing }: { listing: SeedListing }) {
   return (
     <Link
       href={listing.href}
-      className="group block h-full overflow-hidden rounded-2xl border border-black/8 bg-white transition-all duration-300 hover:border-black/20 hover:shadow-lg hover:shadow-black/5"
+      className="group block h-full overflow-hidden rounded-2xl border border-black/8 dark:border-white/8 bg-white dark:bg-[#1a1e26] transition-all duration-300 hover:border-black/20 dark:hover:border-white/20 hover:shadow-lg hover:shadow-black/5"
     >
       <div className="relative aspect-[5/4] overflow-hidden bg-[#0dd5b5]/10">
         <Image
@@ -207,7 +207,7 @@ function ListingCard({ listing }: { listing: SeedListing }) {
         <span className="absolute right-2 top-2">
           <HeartBubble small />
         </span>
-        <span className="absolute bottom-2 left-2 rounded-full bg-white/90 px-2 py-0.5 text-[11px] font-semibold text-[#13191f]">
+        <span className="absolute bottom-2 left-2 rounded-full bg-white/90 dark:bg-black/70 px-2 py-0.5 text-[11px] font-semibold text-[#13191f] dark:text-white">
           {listing.distance}
         </span>
         {listing.verified && (
@@ -217,16 +217,16 @@ function ListingCard({ listing }: { listing: SeedListing }) {
         )}
       </div>
       <div className="p-3">
-        <h4 className="truncate text-sm font-bold text-[#13191f] transition-colors group-hover:text-[#0dd5b5]">
+        <h4 className="truncate text-sm font-bold text-[#13191f] dark:text-white transition-colors group-hover:text-[#0dd5b5]">
           {listing.name}
         </h4>
-        <div className="mt-1.5 flex items-center gap-1.5 text-xs text-black/55">
+        <div className="mt-1.5 flex items-center gap-1.5 text-xs text-black/55 dark:text-white/50">
           <StarIcon className="h-3.5 w-3.5 text-[#f7d656]" />
-          <span className="font-bold text-[#13191f]">{listing.rating.toFixed(1)}</span>
+          <span className="font-bold text-[#13191f] dark:text-white">{listing.rating.toFixed(1)}</span>
           <span>({listing.reviews})</span>
-          <span className="text-black/15">|</span>
-          <span className="font-bold text-[#13191f]">{listing.priceLevel}</span>
-          <span className="text-black/15">·</span>
+          <span className="text-black/15 dark:text-white/15">|</span>
+          <span className="font-bold text-[#13191f] dark:text-white">{listing.priceLevel}</span>
+          <span className="text-black/15 dark:text-white/15">·</span>
           <span className="truncate">{listing.category}</span>
         </div>
       </div>
@@ -246,7 +246,7 @@ function SeeAllCard({
   return (
     <Link
       href={href}
-      className="group relative flex h-full flex-col overflow-hidden rounded-2xl border-2 border-dashed border-[#0dd5b5] bg-gradient-to-br from-[#0dd5b5]/15 via-white to-[#f7d656]/20 transition-all hover:border-solid hover:shadow-lg hover:shadow-[#0dd5b5]/20"
+      className="group relative flex h-full flex-col overflow-hidden rounded-2xl border-2 border-dashed border-[#0dd5b5] bg-gradient-to-br from-[#0dd5b5]/15 via-white dark:via-[#1a1e26] to-[#f7d656]/20 transition-all hover:border-solid hover:shadow-lg hover:shadow-[#0dd5b5]/20"
     >
       <span
         aria-hidden
@@ -258,13 +258,13 @@ function SeeAllCard({
       />
 
       <div className="relative flex flex-1 flex-col items-center justify-center px-6 py-10">
-        <span className="relative flex h-16 w-16 items-center justify-center rounded-full bg-[#13191f] text-[#0dd5b5] shadow-lg shadow-black/20 ring-4 ring-white transition-all duration-300 group-hover:rotate-[8deg] group-hover:scale-110">
+        <span className="relative flex h-16 w-16 items-center justify-center rounded-full bg-[#13191f] dark:bg-[#0dd5b5]/20 text-[#0dd5b5] shadow-lg shadow-black/20 ring-4 ring-white dark:ring-white/10 transition-all duration-300 group-hover:rotate-[8deg] group-hover:scale-110">
           <ArrowRightIcon className="h-7 w-7" />
         </span>
-        <h3 className="mt-5 text-xl font-bold tracking-tight text-[#13191f]">{label}</h3>
-        <p className="mt-1.5 max-w-[18ch] text-center text-sm text-black/55">{sub}</p>
+        <h3 className="mt-5 text-xl font-bold tracking-tight text-[#13191f] dark:text-white">{label}</h3>
+        <p className="mt-1.5 max-w-[18ch] text-center text-sm text-black/55 dark:text-white/50">{sub}</p>
       </div>
-      <div className="relative border-t border-dashed border-[#0dd5b5]/40 bg-white/50 px-4 py-3 text-center text-[11px] font-bold uppercase tracking-[0.18em] text-[#0a6e70] backdrop-blur-sm">
+      <div className="relative border-t border-dashed border-[#0dd5b5]/40 bg-white/50 dark:bg-black/30 px-4 py-3 text-center text-[11px] font-bold uppercase tracking-[0.18em] text-[#0a6e70] dark:text-[#0dd5b5] backdrop-blur-sm">
         Tap to explore →
       </div>
     </Link>
@@ -380,7 +380,7 @@ export default async function Home() {
             fill
             priority
             sizes="100vw"
-            className="object-cover object-right-center"
+            className="object-cover object-[80%_top]"
           />
           <div
             aria-hidden
@@ -436,7 +436,7 @@ export default async function Home() {
         </section>
 
         {/* ─── Explore Categories ─── */}
-        <section className="bg-white pt-12 pb-10 md:pt-16 md:pb-14">
+        <section className="bg-white dark:bg-[#0f1117] pt-12 pb-10 md:pt-16 md:pb-14">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <SectionHead title="Explore Categories" link="/listings" linkLabel="See all" />
             <div className="grid grid-cols-5 gap-x-2 gap-y-5 md:gap-x-3">
@@ -446,10 +446,10 @@ export default async function Home() {
                   href={href}
                   className="group flex flex-col items-center gap-2.5"
                 >
-                  <span className="flex h-11 w-11 items-center justify-center rounded-full border-[1.8px] border-[#0dd5b5] bg-white text-[#0dd5b5] transition-colors group-hover:bg-[#0dd5b5]/5 md:h-14 md:w-14">
+                  <span className="flex h-11 w-11 items-center justify-center rounded-full border-[1.8px] border-[#0dd5b5] bg-white dark:bg-transparent text-[#0dd5b5] transition-colors group-hover:bg-[#0dd5b5]/5 md:h-14 md:w-14">
                     <Icon className="h-4 w-4 md:h-6 md:w-6" />
                   </span>
-                  <span className="text-[11px] font-semibold text-[#13191f] md:text-sm">{label}</span>
+                  <span className="text-[11px] font-semibold text-[#13191f] dark:text-white/80 md:text-sm">{label}</span>
                 </Link>
               ))}
             </div>
@@ -457,7 +457,7 @@ export default async function Home() {
         </section>
 
         {/* ─── Featured Events ─── */}
-        <section className="bg-white pb-10 md:pb-14">
+        <section className="bg-white dark:bg-[#0f1117] pb-10 md:pb-14">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <SectionHead
               title="Featured Events"
@@ -486,10 +486,10 @@ export default async function Home() {
                   </div>
                 </div>
               </div>
-              <div className="mt-1 flex items-center justify-center gap-2 text-[10px] font-bold uppercase tracking-[0.22em] text-black/35">
-                <span className="h-px w-6 bg-black/15" />
+              <div className="mt-1 flex items-center justify-center gap-2 text-[10px] font-bold uppercase tracking-[0.22em] text-black/35 dark:text-white/25">
+                <span className="h-px w-6 bg-black/15 dark:bg-white/15" />
                 Swipe to explore
-                <span className="h-px w-6 bg-black/15" />
+                <span className="h-px w-6 bg-black/15 dark:bg-white/15" />
               </div>
             </div>
 
@@ -503,7 +503,7 @@ export default async function Home() {
         </section>
 
         {/* ─── Explore Listings ─── */}
-        <section className="bg-white pb-10 md:pb-14">
+        <section className="bg-white dark:bg-[#0f1117] pb-10 md:pb-14">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <SectionHead
               title="Explore Listings"
@@ -532,10 +532,10 @@ export default async function Home() {
                   </div>
                 </div>
               </div>
-              <div className="mt-1 flex items-center justify-center gap-2 text-[10px] font-bold uppercase tracking-[0.22em] text-black/35">
-                <span className="h-px w-6 bg-black/15" />
+              <div className="mt-1 flex items-center justify-center gap-2 text-[10px] font-bold uppercase tracking-[0.22em] text-black/35 dark:text-white/25">
+                <span className="h-px w-6 bg-black/15 dark:bg-white/15" />
                 Swipe to explore
-                <span className="h-px w-6 bg-black/15" />
+                <span className="h-px w-6 bg-black/15 dark:bg-white/15" />
               </div>
             </div>
 
@@ -549,17 +549,17 @@ export default async function Home() {
         </section>
 
         {/* ─── Community banner ─── */}
-        <section className="bg-white pb-16 md:pb-20">
+        <section className="bg-white dark:bg-[#0f1117] pb-16 md:pb-20">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="flex flex-col items-center gap-5 rounded-2xl bg-[#0dd5b5]/10 p-6 text-center sm:flex-row sm:text-left md:p-7">
-              <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-[#0dd5b5]/20 text-[#0a6e70] md:h-16 md:w-16">
+            <div className="flex flex-col items-center gap-5 rounded-2xl bg-[#0dd5b5]/10 dark:bg-[#0dd5b5]/8 p-6 text-center sm:flex-row sm:text-left md:p-7">
+              <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-[#0dd5b5]/20 text-[#0a6e70] dark:text-[#0dd5b5] md:h-16 md:w-16">
                 <UsersIcon className="h-8 w-8" />
               </span>
               <div className="flex-1">
-                <h3 className="text-xl font-bold text-[#13191f] md:text-2xl">
+                <h3 className="text-xl font-bold text-[#13191f] dark:text-white md:text-2xl">
                   Connect. Share. Grow Together.
                 </h3>
-                <p className="mt-1 text-sm text-black/55 md:text-base">
+                <p className="mt-1 text-sm text-black/55 dark:text-white/50 md:text-base">
                   Join a community that inspires and supports your fitness journey.
                 </p>
               </div>
@@ -570,7 +570,7 @@ export default async function Home() {
                 >
                   Join Community
                 </Link>
-                <span className="text-[11px] text-black/40">Coming Soon</span>
+                <span className="text-[11px] text-black/40 dark:text-white/30">Coming Soon</span>
               </div>
             </div>
           </div>

@@ -47,7 +47,7 @@ export default function Header({ transparent = false }: { transparent?: boolean 
   const isGlass = transparent && !scrolled && !mobileMenuOpen
 
   return (
-    <header className={`${transparent ? 'fixed inset-x-0' : 'sticky'} top-0 z-50 transition-[background-color,border-color,box-shadow] duration-300 ${isGlass ? 'bg-transparent border-b border-transparent' : 'bg-white border-b border-black/8'}`}>
+    <header className={`${transparent ? 'fixed inset-x-0' : 'sticky'} top-0 z-50 transition-[background-color,border-color,box-shadow] duration-300 ${isGlass ? 'bg-transparent border-b border-transparent' : 'bg-white dark:bg-[#0f1117] border-b border-black/8 dark:border-white/8'}`}>
       <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-[60px] items-center justify-between">
 
@@ -68,7 +68,7 @@ export default function Header({ transparent = false }: { transparent?: boolean 
           <div className="hidden md:flex md:items-center md:gap-1">
             <Link
               href="/"
-              className={`px-3 py-2 text-sm font-medium transition-colors ${isGlass ? 'text-white/90 hover:text-white' : 'text-black/70 hover:text-black'}`}
+              className={`px-3 py-2 text-sm font-medium transition-colors ${isGlass ? 'text-white/90 hover:text-white' : 'text-black/70 dark:text-white/70 hover:text-black dark:hover:text-white'}`}
               style={{ fontFamily: 'var(--font-body)' }}
             >
               Home
@@ -81,7 +81,7 @@ export default function Header({ transparent = false }: { transparent?: boolean 
               onMouseLeave={() => setEventsDropdownOpen(false)}
             >
               <button
-                className={`flex items-center gap-1 px-3 py-2 text-sm font-medium transition-colors ${isGlass ? 'text-white/90 hover:text-white' : 'text-black/70 hover:text-black'}`}
+                className={`flex items-center gap-1 px-3 py-2 text-sm font-medium transition-colors ${isGlass ? 'text-white/90 hover:text-white' : 'text-black/70 dark:text-white/70 hover:text-black dark:hover:text-white'}`}
                 style={{ fontFamily: 'var(--font-body)' }}
               >
                 Events
@@ -91,13 +91,13 @@ export default function Header({ transparent = false }: { transparent?: boolean 
               </button>
 
               {eventsDropdownOpen && (
-                <div className="absolute left-0 top-full mt-0 w-52 bg-white border border-black/8 shadow-xl shadow-black/5 rounded-lg overflow-hidden z-50">
+                <div className="absolute left-0 top-full mt-0 w-52 bg-white dark:bg-[#1a1e26] border border-black/8 dark:border-white/8 shadow-xl shadow-black/5 rounded-lg overflow-hidden z-50">
                   <div className="py-1.5">
                     {fitnessEventsMenu.map((item) => (
                       <Link
                         key={item.name}
                         href={item.href}
-                        className="block px-4 py-2 text-sm text-black/70 hover:text-[#0dd5b5] hover:bg-[#0dd5b5]/5 transition-colors"
+                        className="block px-4 py-2 text-sm text-black/70 dark:text-white/70 hover:text-[#0dd5b5] hover:bg-[#0dd5b5]/5 transition-colors"
                       >
                         {item.name}
                       </Link>
@@ -114,7 +114,7 @@ export default function Header({ transparent = false }: { transparent?: boolean 
               onMouseLeave={() => setListingsDropdownOpen(false)}
             >
               <button
-                className={`flex items-center gap-1 px-3 py-2 text-sm font-medium transition-colors ${isGlass ? 'text-white/90 hover:text-white' : 'text-black/70 hover:text-black'}`}
+                className={`flex items-center gap-1 px-3 py-2 text-sm font-medium transition-colors ${isGlass ? 'text-white/90 hover:text-white' : 'text-black/70 dark:text-white/70 hover:text-black dark:hover:text-white'}`}
                 style={{ fontFamily: 'var(--font-body)' }}
               >
                 Listings
@@ -124,13 +124,13 @@ export default function Header({ transparent = false }: { transparent?: boolean 
               </button>
 
               {listingsDropdownOpen && (
-                <div className="absolute left-0 top-full mt-0 w-52 bg-white border border-black/8 shadow-xl shadow-black/5 rounded-lg overflow-hidden z-50">
+                <div className="absolute left-0 top-full mt-0 w-52 bg-white dark:bg-[#1a1e26] border border-black/8 dark:border-white/8 shadow-xl shadow-black/5 rounded-lg overflow-hidden z-50">
                   <div className="py-1.5">
                     {fitnessListingsMenu.map((item) => (
                       <Link
                         key={item.name}
                         href={item.href}
-                        className="block px-4 py-2 text-sm text-black/70 hover:text-[#0dd5b5] hover:bg-[#0dd5b5]/5 transition-colors"
+                        className="block px-4 py-2 text-sm text-black/70 dark:text-white/70 hover:text-[#0dd5b5] hover:bg-[#0dd5b5]/5 transition-colors"
                       >
                         {item.name}
                       </Link>
@@ -143,7 +143,7 @@ export default function Header({ transparent = false }: { transparent?: boolean 
             {/* Blog Link */}
             <Link
               href="/blog"
-              className={`px-3 py-2 text-sm font-medium transition-colors ${isGlass ? 'text-white/90 hover:text-white' : 'text-black/70 hover:text-black'}`}
+              className={`px-3 py-2 text-sm font-medium transition-colors ${isGlass ? 'text-white/90 hover:text-white' : 'text-black/70 dark:text-white/70 hover:text-black dark:hover:text-white'}`}
               style={{ fontFamily: 'var(--font-body)' }}
             >
               Blog
@@ -167,13 +167,13 @@ export default function Header({ transparent = false }: { transparent?: boolean 
                 </button>
 
                 {createDropdownOpen && (
-                  <div className="absolute right-0 top-full mt-0 w-44 bg-white border border-black/8 shadow-xl shadow-black/5 rounded-lg overflow-hidden z-50">
+                  <div className="absolute right-0 top-full mt-0 w-44 bg-white dark:bg-[#1a1e26] border border-black/8 dark:border-white/8 shadow-xl shadow-black/5 rounded-lg overflow-hidden z-50">
                     <div className="py-1.5">
                       {createMenu.map((item) => (
                         <Link
                           key={item.name}
                           href={item.href}
-                          className="block px-4 py-2.5 text-sm text-black/70 hover:text-[#0dd5b5] hover:bg-[#0dd5b5]/5 transition-colors"
+                          className="block px-4 py-2.5 text-sm text-black/70 dark:text-white/70 hover:text-[#0dd5b5] hover:bg-[#0dd5b5]/5 transition-colors"
                         >
                           {item.name}
                         </Link>
@@ -192,7 +192,7 @@ export default function Header({ transparent = false }: { transparent?: boolean 
                 onMouseEnter={() => setAccountDropdownOpen(true)}
                 onMouseLeave={() => setAccountDropdownOpen(false)}
               >
-                <button className={`flex items-center gap-2 px-3 py-2 text-sm font-medium transition-colors ${isGlass ? 'text-white/90 hover:text-white' : 'text-black/70 hover:text-black'}`}>
+                <button className={`flex items-center gap-2 px-3 py-2 text-sm font-medium transition-colors ${isGlass ? 'text-white/90 hover:text-white' : 'text-black/70 dark:text-white/70 hover:text-black dark:hover:text-white'}`}>
                   <div className={`h-7 w-7 rounded-full flex items-center justify-center flex-shrink-0 ${isGlass ? 'bg-white/20 backdrop-blur-sm' : 'bg-[#0dd5b5]'}`}>
                     <span className="text-white font-semibold text-xs">
                       {session.user.name?.charAt(0).toUpperCase()}
@@ -205,21 +205,21 @@ export default function Header({ transparent = false }: { transparent?: boolean 
                 </button>
 
                 {accountDropdownOpen && (
-                  <div className="absolute right-0 top-full mt-0 w-48 bg-white border border-black/8 shadow-xl shadow-black/5 rounded-lg overflow-hidden z-50">
+                  <div className="absolute right-0 top-full mt-0 w-48 bg-white dark:bg-[#1a1e26] border border-black/8 dark:border-white/8 shadow-xl shadow-black/5 rounded-lg overflow-hidden z-50">
                     <div className="py-1.5">
-                      <div className="px-4 py-2.5 border-b border-black/6">
-                        <div className="text-sm font-semibold text-black">{session.user.name}</div>
-                        <div className="text-xs text-black/40 mt-0.5 truncate">{session.user.email}</div>
+                      <div className="px-4 py-2.5 border-b border-black/6 dark:border-white/6">
+                        <div className="text-sm font-semibold text-black dark:text-white">{session.user.name}</div>
+                        <div className="text-xs text-black/40 dark:text-white/40 mt-0.5 truncate">{session.user.email}</div>
                       </div>
-                      <Link href="/dashboard" className="block px-4 py-2 text-sm text-black/70 hover:text-[#0dd5b5] hover:bg-[#0dd5b5]/5 transition-colors">
+                      <Link href="/dashboard" className="block px-4 py-2 text-sm text-black/70 dark:text-white/70 hover:text-[#0dd5b5] hover:bg-[#0dd5b5]/5 transition-colors">
                         Dashboard
                       </Link>
                       {session.user.role === 'admin' && (
-                        <Link href="/admin" className="block px-4 py-2 text-sm text-black/70 hover:text-[#0dd5b5] hover:bg-[#0dd5b5]/5 transition-colors">
+                        <Link href="/admin" className="block px-4 py-2 text-sm text-black/70 dark:text-white/70 hover:text-[#0dd5b5] hover:bg-[#0dd5b5]/5 transition-colors">
                           Admin Panel
                         </Link>
                       )}
-                      <Link href="/profile" className="block px-4 py-2 text-sm text-black/70 hover:text-[#0dd5b5] hover:bg-[#0dd5b5]/5 transition-colors">
+                      <Link href="/profile" className="block px-4 py-2 text-sm text-black/70 dark:text-white/70 hover:text-[#0dd5b5] hover:bg-[#0dd5b5]/5 transition-colors">
                         Profile Settings
                       </Link>
                       <button
@@ -236,13 +236,13 @@ export default function Header({ transparent = false }: { transparent?: boolean 
               <div className="flex items-center gap-2">
                 <Link
                   href="/auth/signin"
-                  className={`px-4 py-2 text-sm font-medium transition-colors ${isGlass ? 'text-white/90 hover:text-white' : 'text-black/70 hover:text-black'}`}
+                  className={`px-4 py-2 text-sm font-medium transition-colors ${isGlass ? 'text-white/90 hover:text-white' : 'text-black/70 dark:text-white/70 hover:text-black dark:hover:text-white'}`}
                 >
                   Sign In
                 </Link>
                 <Link
                   href="/auth/signup"
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${isGlass ? 'bg-white text-black hover:bg-white/90' : 'bg-black text-white hover:bg-[#0dd5b5]'}`}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${isGlass ? 'bg-white text-black hover:bg-white/90' : 'bg-black dark:bg-[#0dd5b5] text-white dark:text-black hover:bg-[#0dd5b5] dark:hover:bg-[#0bc4a6]'}`}
                 >
                   Join Free
                 </Link>
@@ -254,7 +254,7 @@ export default function Header({ transparent = false }: { transparent?: boolean 
           <div className="md:hidden">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className={`p-2 transition-colors ${isGlass ? 'text-white/90 hover:text-white' : 'text-black/70 hover:text-black'}`}
+              className={`p-2 transition-colors ${isGlass ? 'text-white/90 hover:text-white' : 'text-black/70 dark:text-white/70 hover:text-black dark:hover:text-white'}`}
               aria-label="Toggle menu"
             >
               <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -270,11 +270,11 @@ export default function Header({ transparent = false }: { transparent?: boolean 
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden border-t border-black/8 py-4">
+          <div className="md:hidden border-t border-black/8 dark:border-white/8 py-4">
             <div className="space-y-0.5">
               <Link
                 href="/"
-                className="block px-3 py-2.5 text-sm font-medium text-black/70 hover:text-black hover:bg-black/3 rounded-lg transition-colors"
+                className="block px-3 py-2.5 text-sm font-medium text-black/70 dark:text-white/70 hover:text-black dark:hover:text-white hover:bg-black/3 dark:hover:bg-white/5 rounded-lg transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Home
@@ -282,21 +282,21 @@ export default function Header({ transparent = false }: { transparent?: boolean 
 
               <Link
                 href="/blog"
-                className="block px-3 py-2.5 text-sm font-medium text-black/70 hover:text-black hover:bg-black/3 rounded-lg transition-colors"
+                className="block px-3 py-2.5 text-sm font-medium text-black/70 dark:text-white/70 hover:text-black dark:hover:text-white hover:bg-black/3 dark:hover:bg-white/5 rounded-lg transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Blog
               </Link>
 
               <div>
-                <div className="px-3 py-2.5 text-xs font-semibold text-black/40 uppercase tracking-widest">
+                <div className="px-3 py-2.5 text-xs font-semibold text-black/40 dark:text-white/30 uppercase tracking-widest">
                   Events
                 </div>
                 {fitnessEventsMenu.map((item) => (
                   <Link
                     key={item.name}
                     href={item.href}
-                    className="block pl-5 pr-3 py-2 text-sm text-black/60 hover:text-[#0dd5b5] hover:bg-[#0dd5b5]/5 rounded-lg transition-colors"
+                    className="block pl-5 pr-3 py-2 text-sm text-black/60 dark:text-white/60 hover:text-[#0dd5b5] hover:bg-[#0dd5b5]/5 rounded-lg transition-colors"
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     {item.name}
@@ -305,14 +305,14 @@ export default function Header({ transparent = false }: { transparent?: boolean 
               </div>
 
               <div>
-                <div className="px-3 py-2.5 text-xs font-semibold text-black/40 uppercase tracking-widest">
+                <div className="px-3 py-2.5 text-xs font-semibold text-black/40 dark:text-white/30 uppercase tracking-widest">
                   Listings
                 </div>
                 {fitnessListingsMenu.map((item) => (
                   <Link
                     key={item.name}
                     href={item.href}
-                    className="block pl-5 pr-3 py-2 text-sm text-black/60 hover:text-[#0dd5b5] hover:bg-[#0dd5b5]/5 rounded-lg transition-colors"
+                    className="block pl-5 pr-3 py-2 text-sm text-black/60 dark:text-white/60 hover:text-[#0dd5b5] hover:bg-[#0dd5b5]/5 rounded-lg transition-colors"
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     {item.name}
@@ -323,14 +323,14 @@ export default function Header({ transparent = false }: { transparent?: boolean 
               {/* Mobile Create Section */}
               {session && (
                 <div>
-                  <div className="px-3 py-2.5 text-xs font-semibold text-black/40 uppercase tracking-widest">
+                  <div className="px-3 py-2.5 text-xs font-semibold text-black/40 dark:text-white/30 uppercase tracking-widest">
                     Create
                   </div>
                   {createMenu.map((item) => (
                     <Link
                       key={item.name}
                       href={item.href}
-                      className="block pl-5 pr-3 py-2 text-sm text-black/60 hover:text-[#0dd5b5] hover:bg-[#0dd5b5]/5 rounded-lg transition-colors"
+                      className="block pl-5 pr-3 py-2 text-sm text-black/60 dark:text-white/60 hover:text-[#0dd5b5] hover:bg-[#0dd5b5]/5 rounded-lg transition-colors"
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       {item.name}
@@ -339,13 +339,13 @@ export default function Header({ transparent = false }: { transparent?: boolean 
                 </div>
               )}
 
-              <div className="pt-3 border-t border-black/8 mt-3 flex flex-col gap-2 px-3">
+              <div className="pt-3 border-t border-black/8 dark:border-white/8 mt-3 flex flex-col gap-2 px-3">
                 {session ? (
                   <>
-                    <div className="text-sm font-medium text-black">{session.user.name}</div>
-                    <Link href="/dashboard" className="text-sm text-black/60 hover:text-[#0dd5b5] transition-colors" onClick={() => setMobileMenuOpen(false)}>Dashboard</Link>
+                    <div className="text-sm font-medium text-black dark:text-white">{session.user.name}</div>
+                    <Link href="/dashboard" className="text-sm text-black/60 dark:text-white/60 hover:text-[#0dd5b5] transition-colors" onClick={() => setMobileMenuOpen(false)}>Dashboard</Link>
                     {session.user.role === 'admin' && (
-                      <Link href="/admin" className="text-sm text-black/60 hover:text-[#0dd5b5] transition-colors" onClick={() => setMobileMenuOpen(false)}>Admin Panel</Link>
+                      <Link href="/admin" className="text-sm text-black/60 dark:text-white/60 hover:text-[#0dd5b5] transition-colors" onClick={() => setMobileMenuOpen(false)}>Admin Panel</Link>
                     )}
                     <button
                       onClick={() => { signOut({ callbackUrl: '/' }); setMobileMenuOpen(false); }}
@@ -358,14 +358,14 @@ export default function Header({ transparent = false }: { transparent?: boolean 
                   <>
                     <Link
                       href="/auth/signin"
-                      className="text-center py-2.5 text-sm font-medium text-black border border-black/15 rounded-lg hover:border-black/30 transition-colors"
+                      className="text-center py-2.5 text-sm font-medium text-black dark:text-white border border-black/15 dark:border-white/15 rounded-lg hover:border-black/30 dark:hover:border-white/30 transition-colors"
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       Sign In
                     </Link>
                     <Link
                       href="/auth/signup"
-                      className="text-center py-2.5 text-sm font-medium bg-black text-white rounded-lg hover:bg-[#0dd5b5] transition-colors"
+                      className="text-center py-2.5 text-sm font-medium bg-black dark:bg-[#0dd5b5] text-white dark:text-black rounded-lg hover:bg-[#0dd5b5] transition-colors"
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       Join Free
