@@ -295,7 +295,7 @@ export default async function Home() {
             fill
             priority
             sizes="100vw"
-            className="object-cover object-right-center"
+            className="object-cover object-right"
           />
           {/* Directional scrim — darkens the left for legibility */}
           <div
