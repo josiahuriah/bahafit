@@ -284,18 +284,18 @@ export default async function Home() {
 
   return (
     <>
-      <Header />
+      <Header transparent />
 
       <main>
         {/* ─── Immersive hero (desktop ≥ md) — full-bleed photo ─── */}
-        <section className="relative hidden h-[calc(100vh-60px)] min-h-[600px] w-full overflow-hidden bg-black md:block">
+        <section className="relative hidden h-screen min-h-[600px] w-full overflow-hidden bg-black md:block">
           <Image
             src={heroImage}
             alt="Fitness in the Bahamas"
             fill
             priority
             sizes="100vw"
-            className="object-cover object-[75%_center]"
+            className="object-cover object-[30%_center]"
           />
           {/* Directional scrim — darkens the left for legibility */}
           <div
@@ -362,14 +362,14 @@ export default async function Home() {
         </section>
 
         {/* ─── Immersive hero (mobile < md) — full-bleed photo, bottom-pinned ─── */}
-        <section className="relative flex h-[calc(100svh-60px)] min-h-[560px] w-full flex-col overflow-hidden bg-black md:hidden">
+        <section className="relative flex h-[100svh] min-h-[560px] w-full flex-col overflow-hidden bg-black md:hidden">
           <Image
             src={heroImage}
             alt="Fitness in the Bahamas"
             fill
             priority
             sizes="100vw"
-            className="object-cover object-[75%_center]"
+            className="object-cover object-[30%_center]"
           />
           <div
             aria-hidden

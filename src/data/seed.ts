@@ -28,7 +28,7 @@ export interface SeedListing {
   href: string
 }
 
-export const heroImage = '/images/seed1.jpg'
+export const heroImage = '/images/hero.jpg'
 
 export const seedEvents: SeedEvent[] = [
   {
