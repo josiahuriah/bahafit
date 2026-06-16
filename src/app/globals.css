@@ -1,8 +1,10 @@
 @import "tailwindcss";
 
+@variant dark (&:where(.dark, .dark *));
+
 :root {
-  --background: #ffffff;
-  --foreground: #000000;
+  --background: #0f1117;
+  --foreground: #f0f2f5;
   --color-main: #0dd5b5;
   --color-secondary: #000000;
   --color-tertiary: #f7d656;
@@ -18,13 +20,6 @@
   --color-main: var(--color-main);
   --color-secondary: var(--color-secondary);
   --color-tertiary: var(--color-tertiary);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0f1117;
-    --foreground: #f0f2f5;
-  }
 }
 
 body {

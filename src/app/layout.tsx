@@ -26,7 +26,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <body className={`${lato.variable} ${roboto.variable} antialiased`}>
         <SessionProvider>
           {children}
