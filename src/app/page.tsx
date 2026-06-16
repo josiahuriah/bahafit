@@ -295,7 +295,7 @@ export default async function Home() {
             fill
             priority
             sizes="100vw"
-            className="object-cover object-[30%_center]"
+            className="object-cover object-right-center"
           />
           {/* Directional scrim — darkens the left for legibility */}
           <div
@@ -369,7 +369,7 @@ export default async function Home() {
             fill
             priority
             sizes="100vw"
-            className="object-cover object-[30%_center]"
+            className="object-cover object-right-center"
           />
           <div
             aria-hidden
