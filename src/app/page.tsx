@@ -398,8 +398,8 @@ export default async function Home() {
               <br />
               All Things <span className="text-[#F5BE2E]">Fitness.</span>
             </h1>
-            <p className="mt-[13px] max-w-[310px] text-[14.5px] leading-[1.5] text-white/90 [text-shadow:0_1px_10px_rgba(0,0,0,.5)]">
-              Events, gyms, trainers &amp; classes across the islands — all in one place.
+            <p className="mt-[13px] text-[13px] leading-[1.5] text-white/90 [text-shadow:0_1px_10px_rgba(0,0,0,.5)]">
+              Discover events, gyms, trainers &amp; classes across the islands — buy &amp; sell tickets and connect with the community, all in one place.
             </p>
 
             {/* Category chips — equal-width */}
