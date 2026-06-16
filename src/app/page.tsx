@@ -289,13 +289,24 @@ export default async function Home() {
       <main>
         {/* ─── Immersive hero (desktop ≥ md) — full-bleed photo ─── */}
         <section className="relative hidden h-screen min-h-[600px] w-full overflow-hidden bg-black md:block">
+          {/* Desktop */}
           <Image
             src={heroImage}
             alt="Fitness in the Bahamas"
             fill
             priority
             sizes="100vw"
-            className="object-cover object-right"
+            className="hidden md:block object-cover object-right"
+          />
+
+          {/* Mobile */}
+          <Image
+            src={heroImage}
+            alt="Fitness in the Bahamas"
+            fill
+            priority
+            sizes="100vw"
+            className="md:hidden object-cover object-[65%_center]"
           />
           {/* Directional scrim — darkens the left for legibility */}
           <div
