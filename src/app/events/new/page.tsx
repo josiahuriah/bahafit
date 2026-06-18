@@ -145,6 +145,7 @@ export default function CreateEventPage() {
   const [city, setCity] = useState('')
   const [island, setIsland] = useState('')
   const [country, setCountry] = useState('Bahamas')
+  const [mapUrl, setMapUrl] = useState('')
 
   // Section 4 — Capacity
   const [requiresRegistration, setRequiresRegistration] = useState(true)
@@ -204,6 +205,7 @@ export default function CreateEventPage() {
             city: city || undefined,
             island: island || undefined,
             country: country || undefined,
+            mapUrl: mapUrl.trim() || undefined,
           },
       capacity: capacity ? Number(capacity) : undefined,
       requiresRegistration,
@@ -464,6 +466,18 @@ export default function CreateEventPage() {
                       />
                     </Field>
                   </div>
+                  <Field
+                    label="Google Maps Link"
+                    hint="Paste a Google Maps link (or address) so attendees can find the exact spot. Optional."
+                  >
+                    <input
+                      type="text"
+                      value={mapUrl}
+                      onChange={(e) => setMapUrl(e.target.value)}
+                      placeholder="https://maps.app.goo.gl/… or paste an address"
+                      className={inputClass}
+                    />
+                  </Field>
                 </>
               )}
             </SectionCard>

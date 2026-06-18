@@ -179,6 +179,12 @@ export default {
           },
         },
         { name: 'country', type: 'string', title: 'Country', initialValue: 'Bahamas' },
+        {
+          name: 'mapUrl',
+          type: 'url',
+          title: 'Google Maps Link',
+          description: 'Link to the location on Google Maps so attendees can get directions.',
+        },
         { name: 'directions', type: 'text', title: 'Directions / Notes', rows: 2 },
       ],
     },

@@ -7,7 +7,7 @@ import Image from 'next/image'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import Carousel from '@/components/ui/Carousel'
-import { formatDate, formatDateTime } from '@/lib/utils'
+import { formatDate, formatDateTime, grossPrice } from '@/lib/utils'
 
 interface Event {
   _id: string
@@ -33,6 +33,7 @@ interface Event {
     country?: string
     latitude?: number
     longitude?: number
+    mapUrl?: string
     directions?: string
   }
   capacity?: number
@@ -236,6 +237,23 @@ export default function EventDetailPage() {
   const canRegister = isRegistrationOpen && !isSoldOut && !event.externalRegistrationUrl
   const checkoutHref = `/events/${event.slug?.current}/checkout`
 
+  // Location map — keyless (no Google Maps API key required). The embed uses
+  // the assembled address; the "Open in Google Maps" button prefers the
+  // organizer's pasted map link and otherwise falls back to an address search.
+  const loc = event.location
+  const addressQuery = loc
+    ? [loc.venueName, loc.address, loc.city, loc.island, loc.country]
+        .filter(Boolean)
+        .join(', ')
+    : ''
+  const showMapEmbed = !event.isVirtual && addressQuery.length > 0
+  const mapEmbedSrc = `https://maps.google.com/maps?q=${encodeURIComponent(addressQuery)}&z=15&output=embed`
+  const mapDirectionsHref = loc?.mapUrl
+    ? loc.mapUrl
+    : addressQuery
+      ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addressQuery)}`
+      : ''
+
   return (
     <>
       <Header />
@@ -298,7 +316,7 @@ export default function EventDetailPage() {
 
       <main className="bg-gray-50">
         {/* Quick Info Bar */}
-        <section className="bg-white border-b sticky top-16 z-30">
+        <section className="bg-white border-b sticky top-20 z-30">
           <div className="max-w-7xl mx-auto px-4 py-3">
             <div className="flex items-center justify-between gap-4 overflow-x-auto" style={{ scrollbarWidth: 'none' }}>
               <div className="flex items-center gap-6 flex-shrink-0">
@@ -320,7 +338,7 @@ export default function EventDetailPage() {
               <div className="flex items-center gap-3 flex-shrink-0">
                 <span className="text-lg font-bold text-[#0dd5b5]">
                   {event.isFree !== false ? 'Free' : lowestPrice && lowestPrice.price !== Infinity
-                    ? `From ${lowestPrice.currency} ${lowestPrice.price}`
+                    ? `From ${lowestPrice.currency} ${grossPrice(lowestPrice.price).toFixed(2)}`
                     : ''}
                 </span>
                 {requiresReg && (
@@ -537,7 +555,7 @@ export default function EventDetailPage() {
                   <p className="text-sm text-gray-500 mb-4">
                     {event.isFree !== false
                       ? 'This event is free to attend.'
-                      : `Starting from ${lowestPrice?.currency} ${lowestPrice?.price}`}
+                      : `Starting from ${lowestPrice?.currency} ${grossPrice(lowestPrice?.price ?? 0).toFixed(2)}`}
                   </p>
                   <Link
                     href={checkoutHref}
@@ -556,7 +574,10 @@ export default function EventDetailPage() {
               {/* Pricing Card */}
               {event.isFree === false && event.pricing && event.pricing.length > 0 && (
                 <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6">
-                  <h3 className="font-semibold text-gray-900 mb-4">Pricing</h3>
+                  <h3 className="font-semibold text-gray-900 mb-1">Pricing</h3>
+                  <p className="text-xs text-gray-400 mb-4">
+                    Prices include a 9% service charge and 1% facility fee.
+                  </p>
                   {isEarlyBird && (
                     <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-4">
                       <p className="text-green-800 text-sm font-medium">
@@ -578,15 +599,15 @@ export default function EventDetailPage() {
                             {isEarlyBird && tier.earlyBirdPrice ? (
                               <>
                                 <p className="text-lg font-bold text-[#0dd5b5]">
-                                  {tier.currency} {tier.earlyBirdPrice}
+                                  {tier.currency} {grossPrice(tier.earlyBirdPrice).toFixed(2)}
                                 </p>
                                 <p className="text-sm text-gray-400 line-through">
-                                  {tier.currency} {tier.price}
+                                  {tier.currency} {grossPrice(tier.price).toFixed(2)}
                                 </p>
                               </>
                             ) : (
                               <p className="text-lg font-bold text-gray-900">
-                                {tier.currency} {tier.price}
+                                {tier.currency} {grossPrice(tier.price).toFixed(2)}
                               </p>
                             )}
                           </div>
@@ -635,7 +656,7 @@ export default function EventDetailPage() {
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                         </svg>
                       </div>
-                      <div>
+                      <div className="min-w-0">
                         <p className="text-sm text-gray-500">Location</p>
                         <p className="font-medium text-gray-900">{event.location.venueName || event.location.city}</p>
                         {event.location.address && (
@@ -644,7 +665,34 @@ export default function EventDetailPage() {
                         {event.location.city && event.location.island && (
                           <p className="text-sm text-gray-600">{event.location.city}, {event.location.island}</p>
                         )}
+                        {mapDirectionsHref && (
+                          <a
+                            href={mapDirectionsHref}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="mt-1 inline-flex items-center gap-1.5 text-sm font-medium text-[#0dd5b5] hover:text-[#0bc5a5] transition-colors"
+                          >
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            Open in Google Maps
+                          </a>
+                        )}
                       </div>
+                    </div>
+                  )}
+
+                  {/* Map embed — keyless, shows the event location visually */}
+                  {showMapEmbed && (
+                    <div className="overflow-hidden rounded-lg border border-gray-100">
+                      <iframe
+                        title={`Map showing ${event.title} location`}
+                        src={mapEmbedSrc}
+                        className="w-full h-48"
+                        loading="lazy"
+                        referrerPolicy="no-referrer-when-downgrade"
+                      />
                     </div>
                   )}
 
@@ -767,7 +815,7 @@ export default function EventDetailPage() {
                       <p className="text-sm text-gray-500">{formatDate(relEvent.startDate)}</p>
                       <p className="text-sm text-[#0dd5b5] font-medium mt-1">
                         {relEvent.isFree !== false ? 'Free' : relEvent.pricing
-                          ? `${relEvent.pricing.currency} ${relEvent.pricing.price}`
+                          ? `${relEvent.pricing.currency} ${grossPrice(relEvent.pricing.price).toFixed(2)}`
                           : 'See pricing'}
                       </p>
                     </div>

@@ -49,7 +49,7 @@ export default function Header({ transparent = false }: { transparent?: boolean 
   return (
     <header className={`${transparent ? 'fixed inset-x-0' : 'sticky'} top-0 z-50 transition-[background-color,border-color,box-shadow] duration-300 ${isGlass ? 'bg-transparent border-b border-transparent' : 'bg-white dark:bg-[#0f1117] border-b border-black/8 dark:border-white/8'}`}>
       <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-[60px] items-center justify-between">
+        <div className="flex h-20 items-center justify-between">
 
           {/* Logo */}
           <div className="flex items-center flex-shrink-0">
@@ -57,9 +57,9 @@ export default function Header({ transparent = false }: { transparent?: boolean 
               <Image
                 src={isGlass ? '/images/white-logo.png' : '/images/logo.png'}
                 alt="Bahafit"
-                width={110}
-                height={36}
-                className="h-9 w-auto transition-opacity duration-300"
+                width={220}
+                height={72}
+                className="h-16 w-auto transition-opacity duration-300"
               />
             </Link>
           </div>

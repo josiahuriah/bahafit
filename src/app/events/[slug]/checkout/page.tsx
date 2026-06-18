@@ -502,13 +502,13 @@ export default function CheckoutPage() {
                     {!event.isFree && fees.subtotal > 0 && (
                       <>
                         <div className="flex justify-between text-sm">
-                          <span className="text-gray-600">Vendor fee (9%)</span>
+                          <span className="text-gray-600">Service charge (9%)</span>
                           <span className="text-gray-900">
                             {currency} {fees.vendorFee.toFixed(2)}
                           </span>
                         </div>
                         <div className="flex justify-between text-sm">
-                          <span className="text-gray-600">Processing fee (1%)</span>
+                          <span className="text-gray-600">Facility fee (1%)</span>
                           <span className="text-gray-900">
                             {currency} {fees.processingFee.toFixed(2)}
                           </span>

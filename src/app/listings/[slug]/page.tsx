@@ -322,7 +322,7 @@ export default function ListingDetailPage() {
 
       <main className="bg-gray-50">
         {/* Quick Info Bar */}
-        <section className="bg-white border-b sticky top-16 z-30">
+        <section className="bg-white border-b sticky top-20 z-30">
           <div className="max-w-7xl mx-auto px-4 py-3">
             <div className="flex items-center justify-between gap-4 overflow-x-auto" style={{ scrollbarWidth: 'none' }}>
               <div className="flex items-center gap-4 flex-shrink-0 text-sm">

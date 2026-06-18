@@ -281,7 +281,7 @@ export default function ListingsPage() {
       </section>
 
       {/* Category Pills */}
-      <section className="bg-gray-50 py-4 px-4 sticky top-16 z-40 border-b">
+      <section className="bg-gray-50 py-4 px-4 sticky top-20 z-40 border-b">
         <div className="max-w-7xl mx-auto">
           <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide" style={{ scrollbarWidth: 'none' }}>
             <button

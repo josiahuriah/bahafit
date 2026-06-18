@@ -57,3 +57,10 @@ export function computeCheckoutFees(subtotal: number): CheckoutFees {
     total: round2(safe + vendorFee + processingFee),
   }
 }
+
+// The price a buyer actually pays for a ticket: the vendor's listed price
+// plus the 9% service charge and 1% facility fee. Used wherever a price is
+// shown to buyers so listings match what they're charged at checkout.
+export function grossPrice(listedPrice: number): number {
+  return computeCheckoutFees(listedPrice).total
+}

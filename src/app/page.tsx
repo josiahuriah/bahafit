@@ -9,6 +9,7 @@ import {
   type EventTagTone,
 } from '@/data/seed'
 import { getHomepageEvents, getHomepageListings } from '@/data/homepage'
+import { grossPrice } from '@/lib/utils'
 import {
   CalendarIcon,
   UsersIcon,
@@ -90,17 +91,31 @@ const heroCategories = [
   { label: 'Runs', Icon: HeroRunsIcon, href: '/events/races' },
 ]
 
+// Each category renders its PNG icon from /public/images when `img` is set,
+// falling back to the monoline SVG icon otherwise (e.g. the "More" tile).
 const categories = [
-  { label: 'Events', Icon: CalendarIcon, href: '/events' },
-  { label: 'Runs', Icon: RunIcon, href: '/events/races' },
-  { label: 'Clubs', Icon: GroupIcon, href: '/listings/clubs' },
-  { label: 'Trainers', Icon: UserIcon, href: '/listings' },
-  { label: 'Studios', Icon: StudioIcon, href: '/listings/wellness' },
-  { label: 'Gyms', Icon: DumbbellIcon, href: '/listings/gyms' },
-  { label: 'Wellness', Icon: LotusIcon, href: '/listings/wellness' },
-  { label: 'Classes', Icon: ClassesIcon, href: '/listings/gyms' },
-  { label: 'More', Icon: MoreIcon, href: '/listings' },
+  { label: 'Events', Icon: CalendarIcon, img: '/images/events.png', href: '/events' },
+  { label: 'Runs', Icon: RunIcon, img: '/images/runs.png', href: '/events/races' },
+  { label: 'Clubs', Icon: GroupIcon, img: '/images/clubs.png', href: '/listings/clubs' },
+  { label: 'Trainers', Icon: UserIcon, img: '/images/trainers.png', href: '/listings' },
+  { label: 'Studios', Icon: StudioIcon, img: '/images/studios.png', href: '/listings/wellness' },
+  { label: 'Gyms', Icon: DumbbellIcon, img: '/images/gyms.png', href: '/listings/gyms' },
+  { label: 'Wellness', Icon: LotusIcon, img: '/images/wellness.png', href: '/listings/wellness' },
+  { label: 'Classes', Icon: ClassesIcon, img: '/images/classes.png', href: '/listings/gyms' },
+  { label: 'More', Icon: MoreIcon, img: null, href: '/listings' },
 ]
+
+// Buyers pay the listed price plus a 9% service charge and 1% facility fee.
+// Display that final price wherever a ticket price is shown, while leaving
+// "Free"/"TBA" and other non-numeric labels untouched.
+function priceWithFees(price: string): string {
+  const match = price.match(/^(.*?)([\d,]+(?:\.\d+)?)(.*)$/)
+  if (!match) return price
+  const [, prefix, num, suffix] = match
+  const value = parseFloat(num.replace(/,/g, ''))
+  if (isNaN(value)) return price
+  return `${prefix}${grossPrice(value).toFixed(2)}${suffix}`
+}
 
 const tagTone: Record<EventTagTone, string> = {
   trending: 'bg-[#f7d656] text-[#3a2a00]',
@@ -178,7 +193,7 @@ function EventCard({ event }: { event: SeedEvent }) {
           <CalendarIcon className="h-3.5 w-3.5 shrink-0" />
           <span>{event.date}</span>
         </div>
-        <div className="mt-2 text-lg font-bold text-[#13191f] dark:text-white">{event.price}</div>
+        <div className="mt-2 text-lg font-bold text-[#13191f] dark:text-white">{priceWithFees(event.price)}</div>
         <Link
           href={event.href}
           className="mt-3 rounded-lg bg-[#f7d656] px-4 py-2.5 text-center text-sm font-semibold text-[#3a2a00] transition-colors hover:bg-[#f7d656]/85"
@@ -334,9 +349,14 @@ export default async function Home() {
               <br />
               All Things <span className="text-[#F5BE2E]">Fitness.</span>
             </h1>
-            <p className="mt-5 max-w-[520px] text-[19px] leading-[1.5] text-white/90 [text-shadow:0_1px_12px_rgba(0,0,0,.5)]">
-              Discover events, gyms, trainers &amp; classes across the islands — buy &amp; sell
-              tickets and connect with the community, all in one place.
+            <p className="mt-5 max-w-[520px] text-[19px] leading-[1.6] text-white/90 [text-shadow:0_1px_12px_rgba(0,0,0,.5)]">
+              Discover fitness events, businesses
+              <br />
+              List your events and businesses
+              <br />
+              Buy or sell tickets here
+              <br />
+              Connect with others through community
             </p>
 
             {/* Category chips */}
@@ -398,8 +418,14 @@ export default async function Home() {
               <br />
               All Things <span className="text-[#F5BE2E]">Fitness.</span>
             </h1>
-            <p className="mt-[13px] text-[13px] leading-[1.5] text-white/90 [text-shadow:0_1px_10px_rgba(0,0,0,.5)]">
-              Discover events, gyms, trainers &amp; classes across the islands — buy &amp; sell tickets and connect with the community, all in one place.
+            <p className="mt-[13px] text-[13px] leading-[1.6] text-white/90 [text-shadow:0_1px_10px_rgba(0,0,0,.5)]">
+              Discover fitness events, businesses
+              <br />
+              List your events and businesses
+              <br />
+              Buy or sell tickets here
+              <br />
+              Connect with others through community
             </p>
 
             {/* Category chips — equal-width */}
@@ -440,14 +466,24 @@ export default async function Home() {
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <SectionHead title="Explore Categories" link="/listings" linkLabel="See all" />
             <div className="grid grid-cols-5 gap-x-2 gap-y-5 md:gap-x-3">
-              {categories.map(({ label, Icon, href }) => (
+              {categories.map(({ label, Icon, img, href }) => (
                 <Link
                   key={label}
                   href={href}
                   className="group flex flex-col items-center gap-2.5"
                 >
-                  <span className="flex h-11 w-11 items-center justify-center rounded-full border-[1.8px] border-[#0dd5b5] bg-white dark:bg-transparent text-[#0dd5b5] transition-colors group-hover:bg-[#0dd5b5]/5 md:h-14 md:w-14">
-                    <Icon className="h-4 w-4 md:h-6 md:w-6" />
+                  <span className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border-[1.8px] border-[#0dd5b5] bg-white dark:bg-transparent text-[#0dd5b5] transition-colors group-hover:bg-[#0dd5b5]/5 md:h-14 md:w-14">
+                    {img ? (
+                      <Image
+                        src={img}
+                        alt={label}
+                        width={56}
+                        height={56}
+                        className="h-7 w-7 object-contain md:h-9 md:w-9"
+                      />
+                    ) : (
+                      <Icon className="h-4 w-4 md:h-6 md:w-6" />
+                    )}
                   </span>
                   <span className="text-[11px] font-semibold text-[#13191f] dark:text-white/80 md:text-sm">{label}</span>
                 </Link>
@@ -544,6 +580,82 @@ export default async function Home() {
               {desktopListings.map((listing) => (
                 <ListingCard key={listing.id} listing={listing} />
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ─── How It Works ─── */}
+        <section className="bg-white dark:bg-[#0f1117] pb-14 md:pb-20">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="mb-8 text-center md:mb-12">
+              <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#0dd5b5]">
+                How It Works
+              </p>
+              <h2 className="mt-3 text-2xl font-bold tracking-tight text-[#13191f] dark:text-white md:text-[32px]">
+                Simple. Straightforward. Effective.
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-8">
+              {/* For You */}
+              <div className="rounded-2xl border border-black/8 dark:border-white/8 bg-white dark:bg-[#1a1e26] p-6 md:p-8">
+                <div className="mb-6 flex items-center gap-3">
+                  <span className="text-[11px] font-bold uppercase tracking-[0.25em] text-[#0dd5b5]">For You</span>
+                  <span className="h-px flex-1 bg-black/10 dark:bg-white/10" />
+                </div>
+                <ol className="space-y-6">
+                  {[
+                    { num: '01', title: 'Search & Discover', body: 'Browse fitness events, gyms, trainers, and wellness spots across the islands.' },
+                    { num: '02', title: 'Compare & Choose', body: 'Review details, pricing, and amenities to find the perfect fit for your goals.' },
+                    { num: '03', title: 'Connect & Train', body: 'Buy tickets, register for events, and start your fitness journey with confidence.' },
+                  ].map((step) => (
+                    <li key={step.num} className="flex gap-4">
+                      <span className="text-2xl font-bold leading-none text-[#0dd5b5]/30 dark:text-[#0dd5b5]/40">{step.num}</span>
+                      <div>
+                        <h3 className="font-bold text-[#13191f] dark:text-white">{step.title}</h3>
+                        <p className="mt-1 text-sm leading-relaxed text-black/55 dark:text-white/50">{step.body}</p>
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+                <Link
+                  href="/listings"
+                  className="mt-8 inline-flex items-center gap-2 rounded-lg bg-[#0dd5b5] px-5 py-2.5 text-sm font-semibold text-black transition-colors hover:bg-[#0bc4a6]"
+                >
+                  Browse Listings
+                  <ArrowRightIcon className="h-4 w-4" />
+                </Link>
+              </div>
+
+              {/* For Businesses */}
+              <div className="rounded-2xl border border-black/8 dark:border-white/8 bg-[#13191f] dark:bg-[#15191f] p-6 md:p-8">
+                <div className="mb-6 flex items-center gap-3">
+                  <span className="text-[11px] font-bold uppercase tracking-[0.25em] text-[#f7d656]">For Businesses</span>
+                  <span className="h-px flex-1 bg-white/10" />
+                </div>
+                <ol className="space-y-6">
+                  {[
+                    { num: '01', title: 'Create Your Profile', body: 'Sign up and build a profile showcasing your services, pricing, and what makes you unique.' },
+                    { num: '02', title: 'List Events & Sell Tickets', body: 'Create events, sell tickets, and promote workshops, classes, and competitions.' },
+                    { num: '03', title: 'Grow Your Reach', body: 'Get discovered by fitness enthusiasts actively looking for exactly what you offer.' },
+                  ].map((step) => (
+                    <li key={step.num} className="flex gap-4">
+                      <span className="text-2xl font-bold leading-none text-[#f7d656]/40">{step.num}</span>
+                      <div>
+                        <h3 className="font-bold text-white">{step.title}</h3>
+                        <p className="mt-1 text-sm leading-relaxed text-white/50">{step.body}</p>
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+                <Link
+                  href="/list-your-business"
+                  className="mt-8 inline-flex items-center gap-2 rounded-lg bg-[#f7d656] px-5 py-2.5 text-sm font-semibold text-[#3a2a00] transition-colors hover:bg-[#f7d656]/85"
+                >
+                  List Your Business
+                  <ArrowRightIcon className="h-4 w-4" />
+                </Link>
+              </div>
             </div>
           </div>
         </section>

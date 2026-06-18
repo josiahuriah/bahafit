@@ -32,6 +32,7 @@ export async function GET(
         country,
         latitude,
         longitude,
+        mapUrl,
         directions
       },
       capacity,

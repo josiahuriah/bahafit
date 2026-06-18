@@ -29,6 +29,7 @@ export interface UserEvent {
     city?: string
     island?: string
     country?: string
+    mapUrl?: string
   }
 
   // Capacity & registration

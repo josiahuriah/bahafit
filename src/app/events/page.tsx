@@ -6,7 +6,7 @@ import Image from 'next/image'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import Carousel from '@/components/ui/Carousel'
-import { formatDate } from '@/lib/utils'
+import { formatDate, grossPrice } from '@/lib/utils'
 
 interface Event {
   _id: string
@@ -148,7 +148,7 @@ function EventCard({ event }: { event: Event }) {
         <div className="flex items-center justify-between">
           <span className="text-[#0dd5b5] font-bold">
             {event.isFree !== false ? 'Free' : lowestPrice && lowestPrice.price !== Infinity
-              ? `From ${lowestPrice.currency} ${lowestPrice.price}`
+              ? `From ${lowestPrice.currency} ${grossPrice(lowestPrice.price).toFixed(2)}`
               : 'See pricing'}
           </span>
           {event.capacity ? (
@@ -274,7 +274,7 @@ export default function EventsPage() {
       </section>
 
       {/* Category Pills */}
-      <section className="bg-gray-50 py-4 px-4 sticky top-16 z-40 border-b">
+      <section className="bg-gray-50 py-4 px-4 sticky top-20 z-40 border-b">
         <div className="max-w-7xl mx-auto">
           <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide" style={{ scrollbarWidth: 'none' }}>
             <button
