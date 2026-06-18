@@ -30,51 +30,6 @@ import {
 // ─── Immersive hero icons (stroke style, viewBox 0 0 24 24, exact design paths) ───
 type HeroIconProps = { className?: string }
 
-function HeroEventsIcon({ className }: HeroIconProps) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
-      <rect x="3.5" y="5" width="17" height="15" rx="2" />
-      <path d="M3.5 10h17M8 3v4M16 3v4" />
-    </svg>
-  )
-}
-
-function HeroClassesIcon({ className }: HeroIconProps) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="6.5" cy="6" r="1.6" />
-      <circle cx="12" cy="5" r="1.6" />
-      <circle cx="17.5" cy="6" r="1.6" />
-      <path d="M5 16l1.5-7 2 3h6.5l2-3L19 16" />
-      <path d="M5 16l1 4M19 16l-1 4" />
-    </svg>
-  )
-}
-
-function HeroClubsIcon({ className }: HeroIconProps) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="7" r="2.2" />
-      <circle cx="6" cy="9" r="1.8" />
-      <circle cx="18" cy="9" r="1.8" />
-      <path d="M4 17c.4-2 1.8-3.2 3.5-3.5" />
-      <path d="M20 17c-.4-2-1.8-3.2-3.5-3.5" />
-      <path d="M8 19c.5-2.5 2-3.8 4-3.8S15.5 16.5 16 19" />
-    </svg>
-  )
-}
-
-function HeroRunsIcon({ className }: HeroIconProps) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="14.5" cy="5.5" r="1.8" />
-      <path d="M7 21l3-5 2-3-3-2-1 3-3 1" />
-      <path d="M12 13l3 2 2 4" />
-      <path d="M15 10l3-1 2 2" />
-    </svg>
-  )
-}
-
 function HeroArrowIcon({ className }: HeroIconProps) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.1} strokeLinecap="round" strokeLinejoin="round">
@@ -85,10 +40,10 @@ function HeroArrowIcon({ className }: HeroIconProps) {
 
 // Floating category shortcuts shared across both breakpoints
 const heroCategories = [
-  { label: 'Events', Icon: HeroEventsIcon, href: '/events' },
-  { label: 'Classes', Icon: HeroClassesIcon, href: '/listings/gyms' },
-  { label: 'Clubs', Icon: HeroClubsIcon, href: '/listings/clubs' },
-  { label: 'Runs', Icon: HeroRunsIcon, href: '/events/races' },
+  { label: 'Events', img: '/images/events.png', href: '/events' },
+  { label: 'Classes', img: '/images/classes.png', href: '/listings/gyms' },
+  { label: 'Clubs', img: '/images/clubs.png', href: '/listings/clubs' },
+  { label: 'Runs', img: '/images/runs.png', href: '/events/races' },
 ]
 
 // Each category renders its PNG icon from /public/images when `img` is set,
@@ -361,13 +316,13 @@ export default async function Home() {
 
             {/* Category chips */}
             <div className="mt-[30px] mb-[26px] flex gap-3">
-              {heroCategories.map(({ label, Icon, href }) => (
+              {heroCategories.map(({ label, img, href }) => (
                 <Link
                   key={label}
                   href={href}
                   className="flex w-32 flex-col items-center gap-[9px] rounded-[18px] border border-white/[.26] bg-white/[.13] px-1.5 py-4 backdrop-blur-md transition-[background,transform] duration-200 hover:-translate-y-[3px] hover:bg-white/[.26]"
                 >
-                  <Icon className="h-7 w-7 text-white" />
+                  <Image src={img} alt={label} width={36} height={36} className="h-9 w-9 object-contain" />
                   <span className="text-sm font-semibold text-white">{label}</span>
                 </Link>
               ))}
@@ -430,13 +385,13 @@ export default async function Home() {
 
             {/* Category chips — equal-width */}
             <div className="mt-[22px] mb-[18px] flex gap-[9px]">
-              {heroCategories.map(({ label, Icon, href }) => (
+              {heroCategories.map(({ label, img, href }) => (
                 <Link
                   key={label}
                   href={href}
                   className="flex flex-1 flex-col items-center gap-2 rounded-[17px] border border-white/[.28] bg-white/[.14] px-[3px] py-[13px] backdrop-blur-md transition-colors duration-200 hover:bg-white/[.28]"
                 >
-                  <Icon className="h-6 w-6 text-white" />
+                  <Image src={img} alt={label} width={32} height={32} className="h-8 w-8 object-contain" />
                   <span className="text-[11.5px] font-semibold text-white">{label}</span>
                 </Link>
               ))}

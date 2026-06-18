@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { useSession, signOut } from 'next-auth/react'
 import Image from 'next/image';
 
@@ -28,8 +29,10 @@ const createMenu = [
 ]
 
 export default function Header({ transparent = false }: { transparent?: boolean }) {
+  const router = useRouter()
   const { data: session, status } = useSession()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
   const [eventsDropdownOpen, setEventsDropdownOpen] = useState(false)
   const [listingsDropdownOpen, setListingsDropdownOpen] = useState(false)
   const [accountDropdownOpen, setAccountDropdownOpen] = useState(false)
@@ -45,6 +48,14 @@ export default function Header({ transparent = false }: { transparent?: boolean 
   }, [transparent])
 
   const isGlass = transparent && !scrolled && !mobileMenuOpen
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault()
+    const trimmed = searchQuery.trim()
+    if (!trimmed) return
+    setMobileMenuOpen(false)
+    router.push(`/search?q=${encodeURIComponent(trimmed)}`)
+  }
 
   return (
     <header className={`${transparent ? 'fixed inset-x-0' : 'sticky'} top-0 z-50 transition-[background-color,border-color,box-shadow] duration-300 ${isGlass ? 'bg-transparent border-b border-transparent' : 'bg-white dark:bg-[#0f1117] border-b border-black/8 dark:border-white/8'}`}>
@@ -150,8 +161,33 @@ export default function Header({ transparent = false }: { transparent?: boolean 
             </Link>
           </div>
 
-          {/* Right Section — Create + Auth */}
+          {/* Right Section — Search + Create + Auth */}
           <div className="hidden md:flex md:items-center md:gap-2">
+            {/* Search */}
+            <form onSubmit={handleSearch} className="relative mr-1">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search…"
+                aria-label="Search events and listings"
+                className={`w-36 lg:w-48 rounded-full py-2 pl-9 pr-3 text-sm outline-none transition-colors focus:w-44 lg:focus:w-56 ${
+                  isGlass
+                    ? 'bg-white/15 text-white placeholder-white/70 focus:bg-white/25'
+                    : 'bg-black/5 dark:bg-white/10 text-black dark:text-white placeholder-black/40 dark:placeholder-white/40 focus:bg-black/8 dark:focus:bg-white/15'
+                }`}
+              />
+              <button
+                type="submit"
+                aria-label="Search"
+                className={`absolute left-2.5 top-1/2 -translate-y-1/2 ${isGlass ? 'text-white/80' : 'text-black/40 dark:text-white/40'}`}
+              >
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </button>
+            </form>
+
             {/* Create Button */}
             {session && (
               <div
@@ -272,6 +308,20 @@ export default function Header({ transparent = false }: { transparent?: boolean 
         {mobileMenuOpen && (
           <div className="md:hidden border-t border-black/8 dark:border-white/8 py-4">
             <div className="space-y-0.5">
+              <form onSubmit={handleSearch} className="relative mb-3 px-3">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search events, listings, locations…"
+                  aria-label="Search events and listings"
+                  className="w-full rounded-full bg-black/5 dark:bg-white/10 py-2.5 pl-10 pr-3 text-sm text-black dark:text-white placeholder-black/40 dark:placeholder-white/40 outline-none"
+                />
+                <svg className="absolute left-6 top-1/2 h-4 w-4 -translate-y-1/2 text-black/40 dark:text-white/40" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </form>
+
               <Link
                 href="/"
                 className="block px-3 py-2.5 text-sm font-medium text-black/70 dark:text-white/70 hover:text-black dark:hover:text-white hover:bg-black/3 dark:hover:bg-white/5 rounded-lg transition-colors"

@@ -27,7 +27,7 @@ export async function GET(req: NextRequest) {
     }
 
     if (search) {
-      filter += ' && (title match $search || shortDescription match $search)'
+      filter += ' && (title match $search || shortDescription match $search || description match $search || eventType match $search || location.venueName match $search || location.city match $search || location.island match $search || tags[] match $search)'
       params.search = `*${search}*`
     }
 
