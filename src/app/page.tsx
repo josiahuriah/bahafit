@@ -472,19 +472,19 @@ export default async function Home() {
                   href={href}
                   className="group flex flex-col items-center gap-2.5"
                 >
-                  <span className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border-[1.8px] border-[#0dd5b5] bg-white dark:bg-transparent text-[#0dd5b5] transition-colors group-hover:bg-[#0dd5b5]/5 md:h-14 md:w-14">
-                    {img ? (
-                      <Image
-                        src={img}
-                        alt={label}
-                        width={56}
-                        height={56}
-                        className="h-7 w-7 object-contain md:h-9 md:w-9"
-                      />
-                    ) : (
+                  {img ? (
+                    <Image
+                      src={img}
+                      alt={label}
+                      width={56}
+                      height={56}
+                      className="h-11 w-11 object-contain md:h-14 md:w-14"
+                    />
+                  ) : (
+                    <span className="flex h-11 w-11 items-center justify-center rounded-full border-[1.8px] border-[#0dd5b5] bg-white dark:bg-transparent text-[#0dd5b5] transition-colors group-hover:bg-[#0dd5b5]/5 md:h-14 md:w-14">
                       <Icon className="h-4 w-4 md:h-6 md:w-6" />
-                    )}
-                  </span>
+                    </span>
+                  )}
                   <span className="text-[11px] font-semibold text-[#13191f] dark:text-white/80 md:text-sm">{label}</span>
                 </Link>
               ))}
