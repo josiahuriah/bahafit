@@ -350,7 +350,7 @@ export default async function Home() {
 
         {/* ─── Mobile (< md): hero + categories share one viewport. On desktop the
             wrapper becomes `contents` so layout is unchanged. ─── */}
-        <div className="flex h-[100svh] flex-col md:contents">
+        <div className="flex h-[100lvh] flex-col md:contents">
         {/* ─── Immersive hero (mobile < md) — full-bleed photo, bottom-pinned ─── */}
         <section className="relative flex min-h-0 flex-1 w-full flex-col overflow-hidden bg-black md:hidden">
           <Image
