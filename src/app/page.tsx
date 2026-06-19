@@ -57,6 +57,7 @@ const categories = [
   { label: 'Gyms', Icon: DumbbellIcon, img: '/images/gyms.png', href: '/listings/gyms' },
   { label: 'Wellness', Icon: LotusIcon, img: '/images/wellness.png', href: '/listings/wellness' },
   { label: 'Classes', Icon: ClassesIcon, img: '/images/classes.png', href: '/listings/gyms' },
+  { label: 'Nutrition', Icon: LotusIcon, img: '/images/nutrition.png', href: '/listings/nutrition' },
   { label: 'More', Icon: MoreIcon, img: null, href: '/listings' },
 ]
 
@@ -305,7 +306,7 @@ export default async function Home() {
               All Things <span className="text-[#F5BE2E]">Fitness.</span>
             </h1>
             <p className="mt-5 max-w-[520px] text-[19px] leading-[1.6] text-white/90 [text-shadow:0_1px_12px_rgba(0,0,0,.5)]">
-              Discover fitness events, businesses
+              Discover fitness events &amp; businesses
               <br />
               List your events and businesses
               <br />
@@ -347,8 +348,11 @@ export default async function Home() {
           </div>
         </section>
 
+        {/* ─── Mobile (< md): hero + categories share one viewport. On desktop the
+            wrapper becomes `contents` so layout is unchanged. ─── */}
+        <div className="flex h-[100svh] flex-col md:contents">
         {/* ─── Immersive hero (mobile < md) — full-bleed photo, bottom-pinned ─── */}
-        <section className="relative flex h-[100svh] min-h-[560px] w-full flex-col overflow-hidden bg-black md:hidden">
+        <section className="relative flex min-h-0 flex-1 w-full flex-col overflow-hidden bg-black md:hidden">
           <Image
             src={heroImage}
             alt="Fitness in the Bahamas"
@@ -374,7 +378,7 @@ export default async function Home() {
               All Things <span className="text-[#F5BE2E]">Fitness.</span>
             </h1>
             <p className="mt-[13px] text-[13px] leading-[1.6] text-white/90 [text-shadow:0_1px_10px_rgba(0,0,0,.5)]">
-              Discover fitness events, businesses
+              Discover fitness events &amp; businesses
               <br />
               List your events and businesses
               <br />
@@ -417,7 +421,7 @@ export default async function Home() {
         </section>
 
         {/* ─── Explore Categories ─── */}
-        <section className="bg-white dark:bg-[#0f1117] pt-12 pb-10 md:pt-16 md:pb-14">
+        <section className="shrink-0 bg-white dark:bg-[#0f1117] pt-12 pb-10 md:pt-16 md:pb-14">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <SectionHead title="Explore Categories" link="/listings" linkLabel="See all" />
             <div className="grid grid-cols-5 gap-x-2 gap-y-5 md:gap-x-3">
@@ -446,6 +450,7 @@ export default async function Home() {
             </div>
           </div>
         </section>
+        </div>
 
         {/* ─── Featured Events ─── */}
         <section className="bg-white dark:bg-[#0f1117] pb-10 md:pb-14">

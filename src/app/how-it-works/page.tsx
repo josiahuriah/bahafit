@@ -127,6 +127,40 @@ export default function HowItWorksPage() {
         </div>
       </section>
 
+      {/* Payments & Payouts */}
+      <section className="py-24 px-6 md:px-12 lg:px-24 bg-white">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6 mb-16">
+            <span className="text-[#0dd5b5] text-xs tracking-[0.4em] uppercase font-medium">Payments</span>
+            <div className="hidden sm:block w-12 h-px bg-gray-200"></div>
+            <h2 className="text-3xl md:text-4xl font-bold text-black">Getting paid</h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16">
+            <div>
+              <h3 className="text-xl font-bold text-black mb-3">Event Payouts</h3>
+              <p className="text-gray-500 leading-relaxed text-sm">
+                Once an event has concluded, organizers are paid based on the number of
+                registered attendees. Funds are released after the event end date and
+                reconciled against confirmed registrations.
+              </p>
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-black mb-3">Listing Payouts</h3>
+              <p className="text-gray-500 leading-relaxed text-sm">
+                For listings, payment is issued once a sale has been finalized. After a
+                transaction is confirmed, businesses can expect their payout to be processed.
+              </p>
+            </div>
+          </div>
+
+          <p className="mt-12 pt-8 border-t border-gray-100 text-gray-500 leading-relaxed text-sm max-w-3xl">
+            All payouts are made via bank transfer. To receive payment, organizers and
+            businesses are required to provide their banking information to Bahafit.
+          </p>
+        </div>
+      </section>
+
       {/* Features */}
       <section className="py-20 px-6 md:px-12 lg:px-24 bg-gray-50">
         <div className="max-w-7xl mx-auto">
