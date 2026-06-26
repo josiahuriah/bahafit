@@ -196,10 +196,17 @@ export default function EventsPage() {
   const [loading, setLoading] = useState(true)
   const [selectedType, setSelectedType] = useState<string>('all')
   const [searchQuery, setSearchQuery] = useState('')
+  const [cityFilter, setCityFilter] = useState('')
+
+  // Pick up an inbound `?city=` filter (e.g. from the homepage explore selector).
+  useEffect(() => {
+    const city = new URLSearchParams(window.location.search).get('city')
+    if (city) setCityFilter(city)
+  }, [])
 
   useEffect(() => {
     fetchEvents()
-  }, [selectedType, searchQuery])
+  }, [selectedType, searchQuery, cityFilter])
 
   useEffect(() => {
     // Fetch featured events separately
@@ -215,6 +222,7 @@ export default function EventsPage() {
       const params = new URLSearchParams()
       if (selectedType !== 'all') params.append('eventType', selectedType)
       if (searchQuery) params.append('search', searchQuery)
+      if (cityFilter) params.append('city', cityFilter)
       params.append('upcoming', 'true')
 
       const response = await fetch(`/api/events?${params}`)
@@ -269,6 +277,22 @@ export default function EventsPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </div>
+
+            {cityFilter && (
+              <div className="mt-4 flex justify-center">
+                <button
+                  onClick={() => setCityFilter('')}
+                  className="inline-flex items-center gap-2 rounded-full bg-white/20 px-4 py-1.5 text-sm font-medium text-white backdrop-blur-sm transition-colors hover:bg-white/30"
+                >
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  {cityFilter}
+                  <span className="text-white/70">✕</span>
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </section>
