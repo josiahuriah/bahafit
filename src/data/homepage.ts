@@ -249,3 +249,50 @@ export async function getHomepageListings(): Promise<SeedListing[]> {
   const merged = dedupe([...user, ...sanity]).slice(0, FEATURED_LISTING_COUNT)
   return padWithSeeds(merged, seedListings, FEATURED_LISTING_COUNT)
 }
+
+async function fetchSanityUpcomingCities(): Promise<string[]> {
+  try {
+    const query = `*[_type == "fitnessEvent" && status == "published" && defined(slug.current) && startDate > now() && defined(location.city)].location.city`
+    const cities: string[] = await client.fetch(query)
+    return cities
+  } catch (err) {
+    console.error('Failed to load Sanity event cities:', err)
+    return []
+  }
+}
+
+async function fetchUserUpcomingCities(): Promise<string[]> {
+  try {
+    const collection = await getUserEventsCollection()
+    const docs = await collection
+      .find({ status: 'published', startDate: { $gt: new Date().toISOString() } } as any)
+      .toArray()
+    return docs
+      .map((doc) => doc.location?.city)
+      .filter((city): city is string => typeof city === 'string')
+  } catch (err) {
+    console.error('Failed to load user event cities:', err)
+    return []
+  }
+}
+
+/**
+ * Distinct cities that currently have upcoming events, used to power the
+ * homepage "explore events & listings in …" selector. The city is the main
+ * location differentiator, so we collapse on a case-insensitive trimmed key
+ * while preserving the first-seen display spelling.
+ */
+export async function getUpcomingCities(): Promise<string[]> {
+  const [sanity, user] = await Promise.all([
+    fetchSanityUpcomingCities(),
+    fetchUserUpcomingCities(),
+  ])
+  const seen = new Map<string, string>()
+  for (const raw of [...user, ...sanity]) {
+    const city = raw?.trim()
+    if (!city) continue
+    const key = city.toLowerCase()
+    if (!seen.has(key)) seen.set(key, city)
+  }
+  return [...seen.values()].sort((a, b) => a.localeCompare(b))
+}
