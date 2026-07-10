@@ -2,8 +2,6 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { getToken } from 'next-auth/jwt'
 
-const COMING_SOON_MODE = process.env.COMING_SOON_MODE === 'true'
-
 function isComingSoonAllowed(pathname: string) {
   if (pathname === '/coming-soon') return true
   if (pathname.startsWith('/coming-soon/')) return true
@@ -20,7 +18,7 @@ function isComingSoonAllowed(pathname: string) {
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
-  if (COMING_SOON_MODE && !isComingSoonAllowed(pathname)) {
+  if (process.env.COMING_SOON_MODE === 'true' && !isComingSoonAllowed(pathname)) {
     const secret = process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET
     const token = secret
       ? await getToken({
@@ -42,17 +40,18 @@ export async function middleware(request: NextRequest) {
     request.cookies.get('authjs.session-token')?.value ||
     request.cookies.get('__Secure-authjs.session-token')?.value
 
-  if (pathname.startsWith('/admin')) {
-    console.log('=== ADMIN ACCESS DEBUG ===')
-    console.log('Path:', pathname)
-    console.log('Has session token:', !!sessionToken)
-    console.log('========================')
-  }
-
   const isAdminRoute = pathname.startsWith('/admin')
   const isApiAdminRoute = pathname.startsWith('/api/admin')
 
   if (isAdminRoute || isApiAdminRoute) {
+    if (!sessionToken) {
+      const signInUrl = new URL('/auth/signin', request.url)
+      signInUrl.searchParams.set('callbackUrl', pathname)
+      return NextResponse.redirect(signInUrl)
+    }
+  }
+
+  if (pathname.startsWith('/community')) {
     if (!sessionToken) {
       const signInUrl = new URL('/auth/signin', request.url)
       signInUrl.searchParams.set('callbackUrl', pathname)

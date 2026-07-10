@@ -37,7 +37,10 @@ export async function GET(req: NextRequest) {
       params.search = `*${search}*`
     }
 
-    const limitClause = limit ? `[0...${limit}]` : ''
+    // Sanitize limit: only allow a bounded integer — never interpolate
+    // raw user input into the GROQ query.
+    const parsedLimit = limit ? Math.min(Math.max(parseInt(limit, 10) || 0, 0), 100) : 0
+    const limitClause = parsedLimit > 0 ? `[0...${parsedLimit}]` : ''
 
     const query = `*[${filter}] | order(_createdAt desc) ${limitClause} {
       _id,

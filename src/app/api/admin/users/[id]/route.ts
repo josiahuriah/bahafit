@@ -52,18 +52,25 @@ export async function PATCH(
     const body = await req.json()
     const { id } = await params
 
-    // Don't allow updating password through this endpoint
-    delete body.password
-
-    // Validate role if being updated
-    if (body.role !== undefined && body.role !== 'user' && body.role !== 'admin') {
-      return NextResponse.json(
-        { error: 'Invalid role. Allowed roles: user, admin' },
-        { status: 400 }
-      )
+    // Only allow a fixed set of fields to be updated (no mass assignment).
+    const updates: Record<string, unknown> = {}
+    if (typeof body.name === 'string' && body.name.trim()) updates.name = body.name.trim()
+    if (typeof body.isActive === 'boolean') updates.isActive = body.isActive
+    if (body.role !== undefined) {
+      if (body.role !== 'user' && body.role !== 'admin') {
+        return NextResponse.json(
+          { error: 'Invalid role. Allowed roles: user, admin' },
+          { status: 400 }
+        )
+      }
+      updates.role = body.role
     }
 
-    const user = await updateUser(id, body)
+    if (Object.keys(updates).length === 0) {
+      return NextResponse.json({ error: 'No valid fields to update' }, { status: 400 })
+    }
+
+    const user = await updateUser(id, updates)
 
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })

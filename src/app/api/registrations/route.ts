@@ -1,7 +1,30 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth, requireAuth } from '@/lib/auth'
-import { createRegistration, getExistingRegistration } from '@/lib/db/models/registration'
+import { createRegistration, getExistingRegistration, updateRegistration, getRegistrationsByEvent } from '@/lib/db/models/registration'
+import { getUserEventById } from '@/lib/db/models/event'
 import { generateFygaroPaymentLink } from '@/lib/fygaro'
+import { client } from '@/sanity/lib/client'
+import { computeCheckoutFees } from '@/lib/utils'
+
+interface SanityPricingTier {
+  tierName?: string
+  price?: number
+  earlyBirdPrice?: number
+  currency?: string
+}
+
+interface SanityCheckoutEvent {
+  _id: string
+  title: string
+  slug?: { current?: string }
+  isFree?: boolean
+  price?: number
+  pricing?: SanityPricingTier[]
+  earlyBirdDeadline?: string
+  registrationDeadline?: string
+  capacity?: number
+  currentRegistrations?: number
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -9,31 +32,111 @@ export async function POST(req: NextRequest) {
     const user = await requireAuth(session)
 
     const body = await req.json()
-    const {
-      eventId,
-      eventSlug,
-      eventTitle,
-      ticketType,
-      price,
-      subtotal,
-      vendorFee,
-      processingFee,
-      currency,
-    } = body
+    const { eventId, ticketType } = body as {
+      eventId?: string
+      ticketType?: string
+    }
 
-    if (!eventId || !eventSlug || !eventTitle || price == null || !currency) {
+    if (!eventId || typeof eventId !== 'string') {
       return NextResponse.json(
-        { error: 'Missing required fields: eventId, eventSlug, eventTitle, price, currency' },
+        { error: 'Missing required field: eventId' },
         { status: 400 }
       )
     }
 
-    if (typeof price !== 'number' || price < 0) {
+    // ── Load the event from Sanity (the source of truth for pricing). ──
+    // SECURITY: the price is computed entirely server-side from the
+    // event's published pricing. Client-supplied price fields are ignored
+    // so the amount signed into the Fygaro payment JWT can't be tampered
+    // with from the browser.
+    let event: SanityCheckoutEvent | null = null
+    try {
+      event = await client.fetch<SanityCheckoutEvent | null>(
+        `*[_type == "fitnessEvent" && _id == $eventId && status == "published"][0] {
+          _id,
+          title,
+          slug,
+          "isFree": coalesce(isFree, false),
+          price,
+          pricing[] { tierName, price, earlyBirdPrice, currency },
+          earlyBirdDeadline,
+          registrationDeadline,
+          capacity,
+          "currentRegistrations": coalesce(currentRegistrations, 0)
+        }`,
+        { eventId }
+      )
+    } catch {
+      // Sanity not configured/reachable — fall through to user events
+    }
+
+    // Fall back to user-created (MongoDB) events
+    if (!event) {
+      const userEvent = await getUserEventById(eventId)
+      if (userEvent && userEvent.status === 'published') {
+        const existingRegs = await getRegistrationsByEvent(eventId)
+        event = {
+          _id: userEvent._id || eventId,
+          title: userEvent.title,
+          slug: { current: userEvent.slug },
+          isFree: userEvent.isFree,
+          pricing: userEvent.pricing,
+          earlyBirdDeadline: userEvent.earlyBirdDeadline,
+          registrationDeadline: userEvent.registrationDeadline,
+          capacity: userEvent.capacity,
+          currentRegistrations: existingRegs.filter(r => r.status !== 'cancelled').length,
+        }
+      }
+    }
+
+    if (!event || !event.slug?.current) {
+      return NextResponse.json({ error: 'Event not found' }, { status: 404 })
+    }
+
+    // Registration deadline check
+    if (event.registrationDeadline && new Date(event.registrationDeadline) < new Date()) {
       return NextResponse.json(
-        { error: 'Price must be a non-negative number' },
+        { error: 'Registration for this event has closed' },
         { status: 400 }
       )
     }
+
+    // Capacity check
+    if (
+      typeof event.capacity === 'number' &&
+      event.capacity > 0 &&
+      (event.currentRegistrations || 0) >= event.capacity
+    ) {
+      return NextResponse.json(
+        { error: 'This event is sold out' },
+        { status: 409 }
+      )
+    }
+
+    // ── Compute the authoritative price ──
+    let basePrice = 0
+    let currency = 'BSD'
+    let resolvedTicketType: string | undefined
+
+    if (!event.isFree) {
+      const tiers = event.pricing || []
+      if (tiers.length > 0) {
+        const tier =
+          (ticketType && tiers.find(t => t.tierName === ticketType)) || tiers[0]
+        const earlyBirdActive =
+          !!event.earlyBirdDeadline && new Date(event.earlyBirdDeadline) > new Date()
+        basePrice =
+          earlyBirdActive && typeof tier.earlyBirdPrice === 'number'
+            ? tier.earlyBirdPrice
+            : tier.price || 0
+        currency = tier.currency || 'BSD'
+        resolvedTicketType = tier.tierName
+      } else {
+        basePrice = event.price || 0
+      }
+    }
+
+    const fees = computeCheckoutFees(basePrice)
 
     const userId = user.id || user._id || ''
 
@@ -53,32 +156,48 @@ export async function POST(req: NextRequest) {
       )
     }
 
+    // If we're resuming a pending registration and pricing has changed
+    // since it was created (e.g. early-bird expired), sync the stored
+    // amounts to what we're actually charging now.
+    if (existing && existing._id && existing.price !== fees.total) {
+      await updateRegistration(existing._id, {
+        price: fees.total,
+        subtotal: fees.subtotal,
+        vendorFee: fees.vendorFee,
+        processingFee: fees.processingFee,
+        currency,
+        ticketType: resolvedTicketType,
+      })
+      existing.price = fees.total
+      existing.currency = currency
+    }
+
     const registration =
       existing ??
       (await createRegistration({
         eventId,
-        eventTitle,
+        eventTitle: event.title,
         userId,
         userName: user.name,
         userEmail: user.email,
-        ticketType,
-        price,
-        subtotal: typeof subtotal === 'number' ? subtotal : undefined,
-        vendorFee: typeof vendorFee === 'number' ? vendorFee : undefined,
-        processingFee: typeof processingFee === 'number' ? processingFee : undefined,
+        ticketType: resolvedTicketType,
+        price: fees.total,
+        subtotal: fees.subtotal,
+        vendorFee: fees.vendorFee,
+        processingFee: fees.processingFee,
         currency,
         status: 'pending',
         paymentStatus: 'pending',
       }))
 
     const paymentUrl =
-      price > 0
+      fees.total > 0
         ? generateFygaroPaymentLink({
             registrationId: registration._id || '',
-            amount: price,
+            amount: fees.total,
             currency,
-            eventTitle,
-            eventSlug,
+            eventTitle: event.title,
+            eventSlug: event.slug.current,
             customerEmail: user.email,
             customerName: user.name,
           })
@@ -89,9 +208,10 @@ export async function POST(req: NextRequest) {
       paymentUrl,
       resumed: Boolean(existing),
     })
-  } catch (error: any) {
-    if (error.message === 'Unauthorized' || error.message === 'Account is inactive') {
-      return NextResponse.json({ error: error.message }, { status: 401 })
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : ''
+    if (message === 'Unauthorized' || message === 'Account is inactive') {
+      return NextResponse.json({ error: message }, { status: 401 })
     }
     console.error('Failed to create registration:', error)
     return NextResponse.json(
