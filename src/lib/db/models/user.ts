@@ -2,7 +2,6 @@ import { Collection, ObjectId } from 'mongodb'
 import bcrypt from 'bcryptjs'
 import { getDatabase } from '../mongodb'
 import { User, UserRole } from '@/types/auth'
-import { escapeRegex } from '@/lib/utils'
 
 const COLLECTION_NAME = 'users'
 
@@ -59,7 +58,6 @@ export async function getUserByEmail(email: string): Promise<User | null> {
 }
 
 export async function getUserById(id: string): Promise<User | null> {
-  if (!ObjectId.isValid(id)) return null
   const collection = await getUsersCollection()
   const user = await collection.findOne({ _id: new ObjectId(id) } as any)
 
@@ -76,7 +74,6 @@ export async function updateUser(
   id: string,
   data: Partial<User>
 ): Promise<User | null> {
-  if (!ObjectId.isValid(id)) return null
   const collection = await getUsersCollection()
 
   const updateData = {
@@ -128,10 +125,9 @@ export async function getAllUsers(filters?: {
   }
 
   if (filters?.search) {
-    const safeSearch = escapeRegex(filters.search)
     query.$or = [
-      { name: { $regex: safeSearch, $options: 'i' } },
-      { email: { $regex: safeSearch, $options: 'i' } },
+      { name: { $regex: filters.search, $options: 'i' } },
+      { email: { $regex: filters.search, $options: 'i' } },
     ]
   }
 
@@ -145,7 +141,6 @@ export async function getAllUsers(filters?: {
 }
 
 export async function deleteUser(id: string): Promise<boolean> {
-  if (!ObjectId.isValid(id)) return false
   const collection = await getUsersCollection()
   const result = await collection.deleteOne({ _id: new ObjectId(id) } as any)
   return result.deletedCount === 1

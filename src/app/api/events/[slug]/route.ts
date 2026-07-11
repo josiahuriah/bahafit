@@ -1,39 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { client } from '@/sanity/lib/client'
-import { getUserEventBySlug } from '@/lib/db/models/event'
-
-/**
- * Shape a MongoDB user-created event to match the interface the event
- * detail and checkout pages expect from Sanity events.
- */
-function shapeUserEvent(e: NonNullable<Awaited<ReturnType<typeof getUserEventBySlug>>>) {
-  return {
-    _id: e._id,
-    title: e.title,
-    slug: { current: e.slug },
-    eventType: e.eventType,
-    shortDescription: e.shortDescription,
-    description: e.shortDescription,
-    startDate: e.startDate,
-    endDate: e.endDate,
-    isMultiDay: e.isMultiDay || false,
-    registrationDeadline: e.registrationDeadline,
-    earlyBirdDeadline: e.earlyBirdDeadline,
-    isVirtual: e.isVirtual,
-    virtualEventLink: e.virtualEventLink,
-    location: e.location,
-    capacity: e.capacity,
-    currentRegistrations: 0,
-    requiresRegistration: e.requiresRegistration,
-    isFree: e.isFree,
-    pricing: e.pricing,
-    requirements: e.requirements,
-    amenities: e.amenities,
-    contactInfo: e.contactInfo,
-    organizer: { name: e.userName },
-    featured: false,
-  }
-}
 
 export async function GET(
   req: NextRequest,
@@ -138,20 +104,9 @@ export async function GET(
       "featured": coalesce(featured, false)
     }`
 
-    let event = null
-    try {
-      event = await client.fetch(query, { slug })
-    } catch {
-      // Sanity may not be configured — fall through to user events
-    }
+    const event = await client.fetch(query, { slug })
 
     if (!event) {
-      // Fall back to user-created events stored in MongoDB so hosted
-      // events have a working public page.
-      const userEvent = await getUserEventBySlug(slug)
-      if (userEvent) {
-        return NextResponse.json({ event: shapeUserEvent(userEvent), relatedEvents: [] })
-      }
       return NextResponse.json({ error: 'Event not found' }, { status: 404 })
     }
 

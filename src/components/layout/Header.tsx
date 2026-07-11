@@ -151,15 +151,6 @@ export default function Header({ transparent = false }: { transparent?: boolean 
               )}
             </div>
 
-            {/* Community Link */}
-            <Link
-              href="/community"
-              className={`px-3 py-2 text-sm font-medium transition-colors ${isGlass ? 'text-white/90 hover:text-white' : 'text-black/70 dark:text-white/70 hover:text-black dark:hover:text-white'}`}
-              style={{ fontFamily: 'var(--font-body)' }}
-            >
-              Community
-            </Link>
-
             {/* Blog Link */}
             <Link
               href="/blog"
@@ -337,14 +328,6 @@ export default function Header({ transparent = false }: { transparent?: boolean 
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Home
-              </Link>
-
-              <Link
-                href="/community"
-                className="block px-3 py-2.5 text-sm font-medium text-black/70 dark:text-white/70 hover:text-black dark:hover:text-white hover:bg-black/3 dark:hover:bg-white/5 rounded-lg transition-colors"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Community
               </Link>
 
               <Link

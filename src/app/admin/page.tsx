@@ -30,7 +30,6 @@ async function getStats() {
       totalRegistrations: registrationStats.total,
       registrationsByStatus: registrationStats.byStatus,
       registrationsByPayment: registrationStats.byPayment,
-      revenueByCurrency: registrationStats.revenueByCurrency,
     }
   } catch (error) {
     console.error('Failed to fetch stats:', error)
@@ -41,7 +40,6 @@ async function getStats() {
       totalRegistrations: 0,
       registrationsByStatus: {},
       registrationsByPayment: {},
-      revenueByCurrency: {} as Record<string, { total: number; count: number }>,
     }
   }
 }
@@ -125,20 +123,6 @@ export default async function AdminDashboard() {
         />
 
         <StatsCard
-          title="Revenue (paid)"
-          value={
-            Object.entries(stats.revenueByCurrency || {})
-              .map(([cur, r]) => `${cur} ${r.total.toFixed(2)}`)
-              .join(' + ') || '—'
-          }
-          icon={
-            <svg className="w-6 h-6 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          }
-        />
-
-        <StatsCard
           title="Checked In"
           value={stats.registrationsByStatus.checked_in || 0}
           icon={
@@ -186,19 +170,19 @@ export default async function AdminDashboard() {
           </a>
 
           <a
-            href="/admin/blog"
+            href="/admin/analytics"
             className="block p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-50 transition-colors"
           >
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Manage Blog</h3>
-            <p className="text-sm text-gray-600">Review posts and set the featured article</p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">View Analytics</h3>
+            <p className="text-sm text-gray-600">Check platform statistics and insights</p>
           </a>
 
           <a
-            href="/studio"
+            href="/admin/settings"
             className="block p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-50 transition-colors"
           >
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Content Studio</h3>
-            <p className="text-sm text-gray-600">Edit events and listings content in Sanity Studio</p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Settings</h3>
+            <p className="text-sm text-gray-600">Configure platform settings</p>
           </a>
         </div>
       </div>

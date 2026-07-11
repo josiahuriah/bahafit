@@ -116,15 +116,7 @@ export async function getUserEventsByUser(userId: string): Promise<UserEvent[]> 
   return events.map((e) => ({ ...e, _id: e._id?.toString() }))
 }
 
-export async function getUserEventBySlug(slug: string): Promise<UserEvent | null> {
-  const collection = await getUserEventsCollection()
-  const event = await collection.findOne({ slug, status: 'published' })
-  if (!event) return null
-  return { ...event, _id: event._id?.toString() }
-}
-
 export async function getUserEventById(id: string): Promise<UserEvent | null> {
-  if (!ObjectId.isValid(id)) return null
   const collection = await getUserEventsCollection()
   const event = await collection.findOne({ _id: new ObjectId(id) } as any)
   if (!event) return null
@@ -136,7 +128,6 @@ export async function updateUserEvent(
   userId: string,
   data: Partial<UserEvent>
 ): Promise<UserEvent | null> {
-  if (!ObjectId.isValid(id)) return null
   const collection = await getUserEventsCollection()
 
   const updateData = { ...data, updatedAt: new Date() }

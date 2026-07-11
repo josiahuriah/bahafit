@@ -8,8 +8,7 @@ import {
   type SeedListing,
   type EventTagTone,
 } from '@/data/seed'
-import { getHomepageEvents, getHomepageListings, getUpcomingCities } from '@/data/homepage'
-import CityExplore from '@/components/home/CityExplore'
+import { getHomepageEvents, getHomepageListings } from '@/data/homepage'
 import { grossPrice } from '@/lib/utils'
 import {
   CalendarIcon,
@@ -244,10 +243,9 @@ function SeeAllCard({
 }
 
 export default async function Home() {
-  const [featuredEvents, featuredListings, upcomingCities] = await Promise.all([
+  const [featuredEvents, featuredListings] = await Promise.all([
     getHomepageEvents(),
     getHomepageListings(),
-    getUpcomingCities(),
   ])
 
   const mobileEvents = featuredEvents.slice(0, 8)
@@ -422,9 +420,10 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* ─── Category icons + location-first explore ─── */}
+        {/* ─── Explore Categories ─── */}
         <section className="shrink-0 bg-white dark:bg-[#0f1117] pt-12 pb-10 md:pt-16 md:pb-14">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <SectionHead title="Explore Categories" link="/listings" linkLabel="See all" />
             <div className="grid grid-cols-5 gap-x-2 gap-y-5 md:gap-x-3">
               {categories.map(({ label, Icon, img, href }) => (
                 <Link
@@ -449,7 +448,6 @@ export default async function Home() {
                 </Link>
               ))}
             </div>
-            <CityExplore cities={upcomingCities} />
           </div>
         </section>
         </div>

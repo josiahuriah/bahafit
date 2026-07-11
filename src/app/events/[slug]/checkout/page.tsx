@@ -151,11 +151,16 @@ export default function CheckoutPage() {
       const response = await fetch('/api/registrations', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        // The server recomputes the price from the event's published
-        // pricing — we only send which event and which tier.
         body: JSON.stringify({
           eventId: event._id,
+          eventSlug: event.slug.current,
+          eventTitle: event.title,
           ticketType: selectedTier?.tierName,
+          price: fees.total,
+          subtotal: fees.subtotal,
+          vendorFee: fees.vendorFee,
+          processingFee: fees.processingFee,
+          currency,
         }),
       })
 

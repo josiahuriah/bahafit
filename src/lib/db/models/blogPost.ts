@@ -1,6 +1,5 @@
 import { Collection, ObjectId } from 'mongodb'
 import { getDatabase } from '../mongodb'
-import { escapeRegex } from '@/lib/utils'
 
 export interface BlogPost {
   _id?: string
@@ -110,11 +109,10 @@ export async function getBlogPosts(filters?: {
   }
 
   if (filters?.search) {
-    const safeSearch = escapeRegex(filters.search)
     query.$or = [
-      { title: { $regex: safeSearch, $options: 'i' } },
-      { excerpt: { $regex: safeSearch, $options: 'i' } },
-      { content: { $regex: safeSearch, $options: 'i' } },
+      { title: { $regex: filters.search, $options: 'i' } },
+      { excerpt: { $regex: filters.search, $options: 'i' } },
+      { content: { $regex: filters.search, $options: 'i' } },
     ]
   }
 
