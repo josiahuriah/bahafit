@@ -6,6 +6,7 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url)
     const eventType = searchParams.get('eventType')
     const search = searchParams.get('search')
+    const city = searchParams.get('city')
     const featured = searchParams.get('featured')
     const upcoming = searchParams.get('upcoming')
     const limit = searchParams.get('limit')
@@ -16,6 +17,12 @@ export async function GET(req: NextRequest) {
     if (eventType && eventType !== 'all') {
       filter += ' && eventType == $eventType'
       params.eventType = eventType
+    }
+
+    if (city) {
+      // City is the main location differentiator — match it case-insensitively.
+      filter += ' && lower(location.city) == $city'
+      params.city = city.toLowerCase()
     }
 
     if (featured === 'true') {
