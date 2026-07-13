@@ -76,6 +76,18 @@ export function generateFygaroPaymentLink(
     return null
   }
 
+  // Guard against the env var resolving to its own key name or any other
+  // non-URL value (e.g. placeholder text left in .env).
+  try {
+    new URL(buttonUrl)
+  } catch {
+    console.error(
+      '[fygaro] FYGARO_PAYMENT_BUTTON_URL is not a valid URL — check your .env.local. Value received:',
+      buttonUrl
+    )
+    return null
+  }
+
   const now = Math.floor(Date.now() / 1000)
   const ttl = params.expiresInSeconds ?? 60 * 30 // 30 minutes
 

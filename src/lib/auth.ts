@@ -62,18 +62,17 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         const user = await getUserByEmail(credentials.email as string)
 
-        if (!user) {
-          throw new Error('No user found with this email')
-        }
-
-        if (!user.password) {
-          throw new Error('Please use social login')
+        // Use a single generic message for "no user", "OAuth-only account",
+        // and "wrong password" so attackers can't enumerate which emails
+        // have accounts.
+        if (!user || !user.password) {
+          throw new Error('Invalid email or password')
         }
 
         const isValid = await verifyPassword(credentials.password as string, user.password)
 
         if (!isValid) {
-          throw new Error('Invalid password')
+          throw new Error('Invalid email or password')
         }
 
         if (!user.isActive) {

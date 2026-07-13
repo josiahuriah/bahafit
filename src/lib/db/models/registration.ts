@@ -28,6 +28,7 @@ export async function createRegistration(
 }
 
 export async function getRegistrationById(id: string): Promise<Registration | null> {
+  if (!ObjectId.isValid(id)) return null
   const collection = await getRegistrationsCollection()
   const registration = await collection.findOne({ _id: new ObjectId(id) } as any)
 
@@ -116,6 +117,7 @@ export async function updateRegistration(
   id: string,
   data: Partial<Registration>
 ): Promise<Registration | null> {
+  if (!ObjectId.isValid(id)) return null
   const collection = await getRegistrationsCollection()
 
   const updateData = { ...data }
@@ -151,7 +153,7 @@ export async function cancelRegistration(id: string): Promise<Registration | nul
 export async function getRegistrationStats() {
   const collection = await getRegistrationsCollection()
 
-  const [totalCount, statusStats, paymentStats] = await Promise.all([
+  const [totalCount, statusStats, paymentStats, revenueStats] = await Promise.all([
     collection.countDocuments(),
     collection.aggregate([
       { $group: { _id: '$status', count: { $sum: 1 } } },
@@ -159,11 +161,18 @@ export async function getRegistrationStats() {
     collection.aggregate([
       { $group: { _id: '$paymentStatus', count: { $sum: 1 } } },
     ]).toArray(),
+    collection.aggregate([
+      { $match: { paymentStatus: 'paid' } },
+      { $group: { _id: '$currency', total: { $sum: '$price' }, count: { $sum: 1 } } },
+    ]).toArray(),
   ])
 
   return {
     total: totalCount,
     byStatus: Object.fromEntries(statusStats.map(s => [s._id, s.count])),
     byPayment: Object.fromEntries(paymentStats.map(p => [p._id, p.count])),
+    revenueByCurrency: Object.fromEntries(
+      revenueStats.map(r => [r._id || 'BSD', { total: r.total, count: r.count }])
+    ) as Record<string, { total: number; count: number }>,
   }
 }

@@ -6,6 +6,7 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url)
     const eventType = searchParams.get('eventType')
     const search = searchParams.get('search')
+    const city = searchParams.get('city')
     const featured = searchParams.get('featured')
     const upcoming = searchParams.get('upcoming')
     const limit = searchParams.get('limit')
@@ -16,6 +17,12 @@ export async function GET(req: NextRequest) {
     if (eventType && eventType !== 'all') {
       filter += ' && eventType == $eventType'
       params.eventType = eventType
+    }
+
+    if (city) {
+      // City is the main location differentiator — match it case-insensitively.
+      filter += ' && lower(location.city) == $city'
+      params.city = city.toLowerCase()
     }
 
     if (featured === 'true') {
@@ -31,7 +38,10 @@ export async function GET(req: NextRequest) {
       params.search = `*${search}*`
     }
 
-    const limitClause = limit ? `[0...${limit}]` : ''
+    // Sanitize limit: only allow a bounded integer — never interpolate
+    // raw user input into the GROQ query.
+    const parsedLimit = limit ? Math.min(Math.max(parseInt(limit, 10) || 0, 0), 100) : 0
+    const limitClause = parsedLimit > 0 ? `[0...${parsedLimit}]` : ''
 
     const query = `*[${filter}] | order(startDate asc) ${limitClause} {
       _id,
