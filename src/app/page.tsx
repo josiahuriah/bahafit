@@ -10,6 +10,7 @@ import {
 } from '@/data/seed'
 import { getHomepageEvents, getHomepageListings, getUpcomingCities } from '@/data/homepage'
 import CityExplore from '@/components/home/CityExplore'
+import EventCalendar from '@/components/EventCalendar'
 import { grossPrice } from '@/lib/utils'
 import {
   CalendarIcon,
@@ -497,6 +498,21 @@ export default async function Home() {
                 <EventCard key={event.id} event={event} />
               ))}
             </div>
+          </div>
+        </section>
+
+        {/* ─── Events Calendar ─── */}
+        <section className="bg-white dark:bg-[#0f1117] pb-10 md:pb-14">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <SectionHead
+              title="Events Calendar"
+              link="/events"
+              linkLabel="See all events"
+            />
+            <EventCalendar
+              title="Upcoming Events"
+              subtitle="Pick a date to see what’s on — and register in a tap."
+            />
           </div>
         </section>
 

@@ -7,6 +7,7 @@ import Image from 'next/image'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import Carousel from '@/components/ui/Carousel'
+import { SearchXIcon } from '@/components/ui/icons'
 
 interface Listing {
   _id: string
@@ -240,7 +241,7 @@ export default function ListingDetailPage() {
       <>
         <Header />
         <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4">
-          <div className="text-6xl mb-4">😕</div>
+          <SearchXIcon className="w-16 h-16 mb-4 text-gray-300" />
           <h1 className="text-2xl font-bold text-gray-900 mb-2">Listing Not Found</h1>
           <p className="text-gray-600 mb-6">The listing you're looking for doesn't exist or has been removed.</p>
           <Link href="/listings" className="bg-[#0dd5b5] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#0bc5a5] transition-colors">
