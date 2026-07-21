@@ -6,6 +6,7 @@ import Image from 'next/image'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import Carousel from '@/components/ui/Carousel'
+import { StoreIcon, SearchXIcon } from '@/components/ui/icons'
 
 interface Listing {
   _id: string
@@ -60,32 +61,6 @@ const listingTypeLabels: Record<string, string> = {
   other: 'Other',
 }
 
-const listingTypeIcons: Record<string, string> = {
-  gym: '🏋️',
-  trainer: '💪',
-  fitness_class: '👥',
-  wellness_center: '🌿',
-  yoga_studio: '🧘',
-  crossfit_box: '⚡',
-  martial_arts: '🥋',
-  dance_studio: '💃',
-  aquatics: '🏊',
-  sports_club: '⚽',
-  equipment_sale: '🎽',
-  equipment_rental: '📦',
-  apparel: '👕',
-  supplements: '💊',
-  nutrition_coaching: '🥗',
-  sports_medicine: '🩺',
-  massage: '💆',
-  pt_services: '🏃',
-  group_training: '👯',
-  online_coaching: '💻',
-  fitness_retreat: '🏝️',
-  facility_rental: '🏟️',
-  other: '📍',
-}
-
 const priceRangeLabels: Record<string, { label: string; color: string }> = {
   free: { label: 'Free', color: 'text-green-600' },
   budget: { label: '$', color: 'text-gray-600' },
@@ -111,7 +86,7 @@ function ListingCard({ listing }: { listing: Listing }) {
           />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-            <span className="text-5xl">{listingTypeIcons[listing.listingType] || '📍'}</span>
+            <StoreIcon className="w-14 h-14 text-gray-400" />
           </div>
         )}
         {listing.featured && (
@@ -190,7 +165,6 @@ function CategoryPill({
           : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'
       }`}
     >
-      <span>{listingTypeIcons[type] || '📍'}</span>
       <span>{listingTypeLabels[type] || type}</span>
       <span className={`text-xs ${active ? 'text-white/80' : 'text-gray-400'}`}>({count})</span>
     </button>
@@ -343,7 +317,7 @@ export default function ListingsPage() {
             </div>
           ) : listings.length === 0 ? (
             <div className="text-center py-20">
-              <div className="text-6xl mb-4">🔍</div>
+              <SearchXIcon className="w-16 h-16 mx-auto mb-4 text-gray-300" />
               <h3 className="text-xl font-semibold text-gray-900 mb-2">No listings found</h3>
               <p className="text-gray-600 mb-6">
                 {searchQuery
@@ -367,7 +341,7 @@ export default function ListingsPage() {
                 .map(([type, typeListings]) => (
                   <section key={type} className="py-6">
                     <Carousel
-                      title={`${listingTypeIcons[type] || '📍'} ${listingTypeLabels[type] || type}`}
+                      title={`${listingTypeLabels[type] || type}`}
                       showDots={false}
                     >
                       {typeListings.map((listing) => (

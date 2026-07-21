@@ -7,6 +7,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
+import EventCalendar from '@/components/EventCalendar'
 import { formatDate } from '@/lib/utils'
 
 interface EventSummary {
@@ -393,6 +394,13 @@ function DashboardContent() {
               )}
             </div>
           )}
+        </div>
+
+        <div className="max-w-6xl mx-auto px-4 pb-10">
+          <EventCalendar
+            title="Upcoming Events"
+            subtitle="Discover and register for what’s coming up."
+          />
         </div>
       </main>
 

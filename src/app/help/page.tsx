@@ -11,7 +11,7 @@ export const metadata = {
 const helpCategories = [
   {
     title: 'Account & Profile',
-    icon: '👤',
+    icon: '',
     articles: [
       'How to create an account',
       'Resetting your password',
@@ -22,7 +22,7 @@ const helpCategories = [
   },
   {
     title: 'Listings',
-    icon: '📍',
+    icon: '',
     articles: [
       'Creating a business listing',
       'Editing your listing',
@@ -33,7 +33,7 @@ const helpCategories = [
   },
   {
     title: 'Events',
-    icon: '📅',
+    icon: '',
     articles: [
       'Creating a new event',
       'Managing registrations',
@@ -44,7 +44,7 @@ const helpCategories = [
   },
   {
     title: 'Billing & Payments',
-    icon: '💳',
+    icon: '',
     articles: [
       'Understanding pricing plans',
       'Updating payment method',
@@ -55,7 +55,7 @@ const helpCategories = [
   },
   {
     title: 'Reviews & Ratings',
-    icon: '⭐',
+    icon: '',
     articles: [
       'How reviews work',
       'Responding to reviews',
@@ -66,7 +66,7 @@ const helpCategories = [
   },
   {
     title: 'Technical Issues',
-    icon: '🔧',
+    icon: '',
     articles: [
       'Troubleshooting login issues',
       'Page not loading',
