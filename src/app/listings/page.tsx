@@ -248,12 +248,16 @@ export default function ListingsPage() {
       <Header />
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-gray-900 to-gray-800 pt-24 pb-12 px-4">
+      <section className="bg-black pt-28 pb-14 px-6 md:px-12 lg:px-24">
         <div className="max-w-7xl mx-auto">
-          <h1 className="text-3xl md:text-5xl font-bold text-white mb-4 text-center">
-            Fitness Directory
+          <p className="text-[#0dd5b5] text-[10px] tracking-[0.5em] uppercase mb-4 font-medium text-center">Fitness Directory</p>
+          <h1
+            className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-[0.95] tracking-tight text-center mb-5"
+            style={{ fontFamily: 'var(--font-syne)' }}
+          >
+            Find Your <span className="text-[#f7d656]">Fit.</span>
           </h1>
-          <p className="text-gray-300 text-center mb-8 max-w-2xl mx-auto">
+          <p className="text-white/60 text-center mb-8 max-w-2xl mx-auto">
             Find gyms, trainers, studios, and everything you need for your fitness journey in the Caribbean.
           </p>
 

@@ -25,7 +25,7 @@ const fitnessListingsMenu = [
 const createMenu = [
   { name: 'Blog Post', href: '/blog/create' },
   { name: 'Event', href: '/create-event' },
-  { name: 'Listing', href: '/list-your-business' },
+  { name: 'Listing', href: '/listings/new' },
 ]
 
 export default function Header({ transparent = false }: { transparent?: boolean }) {
@@ -315,7 +315,7 @@ export default function Header({ transparent = false }: { transparent?: boolean 
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden border-t border-black/8 dark:border-white/8 py-4">
+          <div className="md:hidden border-t border-black/8 dark:border-white/8 py-4 max-h-[calc(100vh-5rem)] overflow-y-auto overscroll-contain">
             <div className="space-y-0.5">
               <form onSubmit={handleSearch} className="relative mb-3 px-3">
                 <input

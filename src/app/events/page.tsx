@@ -249,12 +249,16 @@ export default function EventsPage() {
       <Header />
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-[#0dd5b5] to-[#0bc5a5] pt-24 pb-12 px-4">
+      <section className="bg-black pt-28 pb-14 px-6 md:px-12 lg:px-24">
         <div className="max-w-7xl mx-auto">
-          <h1 className="text-3xl md:text-5xl font-bold text-white mb-4 text-center">
-            Fitness Events
+          <p className="text-[#0dd5b5] text-[10px] tracking-[0.5em] uppercase mb-4 font-medium text-center">Fitness Events</p>
+          <h1
+            className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-[0.95] tracking-tight text-center mb-5"
+            style={{ fontFamily: 'var(--font-syne)' }}
+          >
+            Show Up. <span className="text-[#f7d656]">Compete.</span>
           </h1>
-          <p className="text-white/90 text-center mb-8 max-w-2xl mx-auto">
+          <p className="text-white/60 text-center mb-8 max-w-2xl mx-auto">
             Discover races, competitions, workshops, and more. Join the Caribbean's most exciting fitness events.
           </p>
 
