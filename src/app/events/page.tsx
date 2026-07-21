@@ -7,7 +7,7 @@ import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import Carousel from '@/components/ui/Carousel'
 import EventCalendar from '@/components/EventCalendar'
-import { CalendarIcon, CalendarXIcon, XIcon } from '@/components/ui/icons'
+import { CalendarIcon, XIcon } from '@/components/ui/icons'
 import { formatDate, grossPrice } from '@/lib/utils'
 
 interface Event {
@@ -310,16 +310,6 @@ export default function EventsPage() {
 
       <main className="bg-gray-50 min-h-screen pb-16">
         <div className="max-w-7xl mx-auto px-4">
-          {/* Events Calendar */}
-          {selectedType === 'all' && !searchQuery && (
-            <section className="py-8">
-              <EventCalendar
-                title="Events Calendar"
-                subtitle="Find upcoming events by date and register in a tap."
-              />
-            </section>
-          )}
-
           {/* Featured Events Carousel */}
           {featuredEvents.length > 0 && selectedType === 'all' && !searchQuery && (
             <section className="py-8">
@@ -334,24 +324,6 @@ export default function EventsPage() {
           {loading ? (
             <div className="flex items-center justify-center py-20">
               <div className="animate-spin rounded-full h-12 w-12 border-4 border-[#0dd5b5] border-t-transparent"></div>
-            </div>
-          ) : events.length === 0 ? (
-            <div className="text-center py-20">
-              <CalendarXIcon className="w-16 h-16 mx-auto mb-4 text-gray-300" />
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">No events found</h3>
-              <p className="text-gray-600 mb-6">
-                {searchQuery
-                  ? `No events match "${searchQuery}"`
-                  : 'Check back soon for upcoming events!'}
-              </p>
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery('')}
-                  className="text-[#0dd5b5] font-semibold hover:underline"
-                >
-                  Clear search
-                </button>
-              )}
             </div>
           ) : selectedType === 'all' && !searchQuery ? (
             // Show events grouped by type in carousels
@@ -389,6 +361,14 @@ export default function EventsPage() {
               </div>
             </section>
           )}
+
+          {/* Events Calendar — after featured events and any other events */}
+          <section className="py-8">
+            <EventCalendar
+              title="Events Calendar"
+              subtitle="Find upcoming events by date and register in a tap."
+            />
+          </section>
         </div>
       </main>
 
