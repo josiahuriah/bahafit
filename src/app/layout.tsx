@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Lato, Roboto } from "next/font/google";
 import SessionProvider from "@/components/providers/SessionProvider";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 const lato = Lato({
@@ -31,6 +32,7 @@ export default function RootLayout({
         <SessionProvider>
           {children}
         </SessionProvider>
+        <Analytics />
       </body>
     </html>
   );

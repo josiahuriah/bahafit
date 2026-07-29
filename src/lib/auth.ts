@@ -112,11 +112,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (account?.provider !== 'credentials') {
         const existingUser = await getUserByEmail(user.email || '')
         if (!existingUser && user.email && user.name) {
-          // Create new user with default role
+          // Create new user with default role. No password is stored — the
+          // Credentials provider then correctly rejects sign-in attempts
+          // against an OAuth-only account.
           await createUser({
             name: user.name,
             email: user.email,
-            password: '', // OAuth users don't need password
+            image: user.image ?? undefined,
           })
         }
       }

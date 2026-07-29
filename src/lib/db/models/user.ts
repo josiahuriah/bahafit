@@ -14,7 +14,10 @@ export async function getUsersCollection(): Promise<Collection<User>> {
 export async function createUser(data: {
   name: string
   email: string
-  password: string
+  // Omitted for OAuth accounts (Google/Facebook). Those users have no
+  // credentials password at all, rather than a hash of the empty string.
+  password?: string
+  image?: string
 }): Promise<User> {
   const collection = await getUsersCollection()
 
@@ -25,12 +28,13 @@ export async function createUser(data: {
   }
 
   // Hash password
-  const hashedPassword = await bcrypt.hash(data.password, 10)
+  const hashedPassword = data.password ? await bcrypt.hash(data.password, 10) : undefined
 
   const user: User = {
     name: data.name,
     email: data.email,
     password: hashedPassword,
+    image: data.image,
     role: 'user',
     isActive: true,
     createdAt: new Date(),

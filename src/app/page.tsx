@@ -39,12 +39,13 @@ function HeroArrowIcon({ className }: HeroIconProps) {
   )
 }
 
-// Floating category shortcuts shared across both breakpoints
+// Floating category shortcuts shared across both breakpoints. Each one maps to
+// a line of the hero copy above it: discover → list → buy/sell → connect.
 const heroCategories = [
-  { label: 'Events', img: '/images/events.png', href: '/events' },
-  { label: 'Classes', img: '/images/classes.png', href: '/listings/gyms' },
-  { label: 'Clubs', img: '/images/clubs.png', href: '/listings/clubs' },
-  { label: 'Runs', img: '/images/runs.png', href: '/events/races' },
+  { label: 'Discover', img: '/images/discover.png', href: '/search' },
+  { label: 'List', img: '/images/list.png', href: '/list-your-business' },
+  { label: 'Buy/Sell', img: '/images/buysell.png', href: '/events' },
+  { label: 'Connect', img: '/images/connect.png', href: '/community' },
 ]
 
 // Each category renders its PNG icon from /public/images when `img` is set,
