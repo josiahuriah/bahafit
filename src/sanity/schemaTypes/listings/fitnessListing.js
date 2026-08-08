@@ -606,7 +606,7 @@ export default {
         other: 'Other'
       }
       return {
-        title: `${title}${verified ? ' ✓' : ''}`,
+        title: `${title}${verified ? ' (Verified)' : ''}`,
         subtitle: `${listingTypeLabels[subtitle] || subtitle} | ${status}`,
         media
       }

@@ -1,6 +1,14 @@
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import Link from 'next/link'
+import {
+  UsersIcon,
+  ChartBarIcon,
+  StarIcon,
+  CalendarIcon,
+  CheckBadgeIcon,
+  PhoneIcon,
+} from '@/components/ui/icons'
 
 export const metadata = {
   title: 'List Your Business | Bahafit',
@@ -9,32 +17,32 @@ export const metadata = {
 
 const benefits = [
   {
-    icon: '👥',
+    Icon: UsersIcon,
     title: 'Reach More Customers',
     description: 'Get discovered by thousands of fitness enthusiasts actively searching for services like yours.',
   },
   {
-    icon: '📊',
+    Icon: ChartBarIcon,
     title: 'Track Performance',
     description: 'Access analytics to see how many people view your listing and engage with your business.',
   },
   {
-    icon: '⭐',
+    Icon: StarIcon,
     title: 'Build Your Reputation',
     description: 'Collect reviews and ratings that help build trust with potential customers.',
   },
   {
-    icon: '📅',
+    Icon: CalendarIcon,
     title: 'Promote Events',
     description: 'Create and promote fitness events, classes, and workshops to attract new clients.',
   },
   {
-    icon: '✅',
+    Icon: CheckBadgeIcon,
     title: 'Get Verified',
     description: 'Earn a verified badge to stand out from competitors and build credibility.',
   },
   {
-    icon: '📱',
+    Icon: PhoneIcon,
     title: 'Mobile Friendly',
     description: 'Your listing looks great on all devices, reaching customers wherever they are.',
   },
@@ -90,7 +98,9 @@ export default function ListYourBusinessPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {benefits.map((benefit, index) => (
                 <div key={index} className="bg-white rounded-xl shadow-sm p-6">
-                  <div className="text-4xl mb-4">{benefit.icon}</div>
+                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-[#0dd5b5]/10 text-[#0dd5b5]">
+                    <benefit.Icon className="w-6 h-6" />
+                  </div>
                   <h3 className="text-xl font-semibold text-gray-900 mb-2">{benefit.title}</h3>
                   <p className="text-gray-600">{benefit.description}</p>
                 </div>

@@ -7,6 +7,7 @@ import Image from 'next/image'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import Carousel from '@/components/ui/Carousel'
+import { CalendarXIcon, MapPinIcon, SparkleIcon } from '@/components/ui/icons'
 import { formatDate, formatDateTime, grossPrice } from '@/lib/utils'
 
 interface Event {
@@ -207,7 +208,7 @@ export default function EventDetailPage() {
       <>
         <Header />
         <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4">
-          <div className="text-6xl mb-4">😕</div>
+          <CalendarXIcon className="w-16 h-16 mb-4 text-gray-300" />
           <h1 className="text-2xl font-bold text-gray-900 mb-2">Event Not Found</h1>
           <p className="text-gray-600 mb-6">The event you're looking for doesn't exist or has been removed.</p>
           <Link href="/events" className="bg-[#0dd5b5] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#0bc5a5] transition-colors">
@@ -489,7 +490,10 @@ export default function EventDetailPage() {
                                   <p className="text-sm text-gray-600 mt-1">{item.description}</p>
                                 )}
                                 {item.location && (
-                                  <p className="text-xs text-gray-500 mt-1">📍 {item.location}</p>
+                                  <p className="flex items-center gap-1 text-xs text-gray-500 mt-1">
+                                    <MapPinIcon className="w-3.5 h-3.5 flex-shrink-0" />
+                                    {item.location}
+                                  </p>
                                 )}
                               </div>
                             </div>
@@ -580,8 +584,9 @@ export default function EventDetailPage() {
                   </p>
                   {isEarlyBird && (
                     <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-4">
-                      <p className="text-green-800 text-sm font-medium">
-                        🎉 Early Bird pricing available until {formatDate(event.earlyBirdDeadline!)}
+                      <p className="flex items-center gap-1.5 text-green-800 text-sm font-medium">
+                        <SparkleIcon className="w-4 h-4 flex-shrink-0" />
+                        Early Bird pricing available until {formatDate(event.earlyBirdDeadline!)}
                       </p>
                     </div>
                   )}

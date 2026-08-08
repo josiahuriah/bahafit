@@ -12,34 +12,34 @@ const resources = [
   {
     category: 'Getting Started',
     items: [
-      { title: 'How to Create Your First Listing', icon: '📝', description: 'Step-by-step guide to setting up your business profile.' },
-      { title: 'Optimizing Your Business Profile', icon: '⚡', description: 'Tips to make your listing stand out from the competition.' },
-      { title: 'Understanding the Verification Process', icon: '✅', description: 'Learn how to get verified and build trust with customers.' },
+      { title: 'How to Create Your First Listing', icon: '', description: 'Step-by-step guide to setting up your business profile.' },
+      { title: 'Optimizing Your Business Profile', icon: '', description: 'Tips to make your listing stand out from the competition.' },
+      { title: 'Understanding the Verification Process', icon: '', description: 'Learn how to get verified and build trust with customers.' },
     ],
   },
   {
     category: 'Events',
     items: [
-      { title: 'Creating Successful Events', icon: '🎯', description: 'Best practices for event creation and promotion.' },
-      { title: 'Managing Event Registrations', icon: '📋', description: 'Tools and tips for handling attendee management.' },
-      { title: 'Promoting Your Events', icon: '📢', description: 'Marketing strategies to fill your events.' },
+      { title: 'Creating Successful Events', icon: '', description: 'Best practices for event creation and promotion.' },
+      { title: 'Managing Event Registrations', icon: '', description: 'Tools and tips for handling attendee management.' },
+      { title: 'Promoting Your Events', icon: '', description: 'Marketing strategies to fill your events.' },
     ],
   },
   {
     category: 'Growth & Marketing',
     items: [
-      { title: 'Getting More Reviews', icon: '⭐', description: 'How to encourage customers to leave positive reviews.' },
-      { title: 'Using Analytics', icon: '📊', description: 'Understanding your dashboard and tracking performance.' },
-      { title: 'Social Media Integration', icon: '📱', description: 'Connecting your social media for maximum reach.' },
+      { title: 'Getting More Reviews', icon: '', description: 'How to encourage customers to leave positive reviews.' },
+      { title: 'Using Analytics', icon: '', description: 'Understanding your dashboard and tracking performance.' },
+      { title: 'Social Media Integration', icon: '', description: 'Connecting your social media for maximum reach.' },
     ],
   },
 ]
 
 const guides = [
-  { title: 'Business Owner Handbook', description: 'Complete guide to managing your Bahafit listing', icon: '📖' },
-  { title: 'Event Organizer Guide', description: 'Everything you need to know about hosting events', icon: '🎪' },
-  { title: 'Marketing Best Practices', description: 'Tips for promoting your fitness business', icon: '🚀' },
-  { title: 'Customer Service Tips', description: 'How to respond to reviews and inquiries', icon: '💬' },
+  { title: 'Business Owner Handbook', description: 'Complete guide to managing your Bahafit listing', icon: '' },
+  { title: 'Event Organizer Guide', description: 'Everything you need to know about hosting events', icon: '' },
+  { title: 'Marketing Best Practices', description: 'Tips for promoting your fitness business', icon: '' },
+  { title: 'Customer Service Tips', description: 'How to respond to reviews and inquiries', icon: '' },
 ]
 */
 

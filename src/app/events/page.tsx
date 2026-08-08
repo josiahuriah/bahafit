@@ -6,6 +6,8 @@ import Image from 'next/image'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import Carousel from '@/components/ui/Carousel'
+import EventCalendar from '@/components/EventCalendar'
+import { CalendarIcon, XIcon } from '@/components/ui/icons'
 import { formatDate, grossPrice } from '@/lib/utils'
 
 interface Event {
@@ -60,29 +62,6 @@ const eventTypeLabels: Record<string, string> = {
   other: 'Other',
 }
 
-const eventTypeIcons: Record<string, string> = {
-  race: '🏃',
-  marathon: '🏅',
-  triathlon: '🏊',
-  cycling: '🚴',
-  swimming: '🏊',
-  competition: '🏆',
-  crossfit: '💪',
-  bodybuilding: '🏋️',
-  challenge: '🎯',
-  bootcamp: '⚡',
-  yoga_retreat: '🧘',
-  wellness_expo: '🌿',
-  workshop: '📚',
-  charity: '❤️',
-  beach_workout: '🏖️',
-  group_class: '👥',
-  tournament: '🏆',
-  outdoor_adventure: '🏔️',
-  virtual: '💻',
-  other: '📅',
-}
-
 function EventCard({ event }: { event: Event }) {
   const lowestPrice = event.pricing?.reduce((min, p) => {
     const price = p.earlyBirdPrice || p.price
@@ -107,7 +86,7 @@ function EventCard({ event }: { event: Event }) {
           />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-[#0dd5b5] to-[#0bc5a5] flex items-center justify-center">
-            <span className="text-5xl">{eventTypeIcons[event.eventType] || '📅'}</span>
+            <CalendarIcon className="w-14 h-14 text-white/90" />
           </div>
         )}
         {event.featured && (
@@ -182,7 +161,6 @@ function CategoryPill({
           : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'
       }`}
     >
-      <span>{eventTypeIcons[type] || '📅'}</span>
       <span>{eventTypeLabels[type] || type}</span>
       <span className={`text-xs ${active ? 'text-white/80' : 'text-gray-400'}`}>({count})</span>
     </button>
@@ -293,7 +271,7 @@ export default function EventsPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
                   {cityFilter}
-                  <span className="text-white/70">✕</span>
+                  <XIcon className="w-3.5 h-3.5 text-white/70" />
                 </button>
               </div>
             )}
@@ -347,24 +325,6 @@ export default function EventsPage() {
             <div className="flex items-center justify-center py-20">
               <div className="animate-spin rounded-full h-12 w-12 border-4 border-[#0dd5b5] border-t-transparent"></div>
             </div>
-          ) : events.length === 0 ? (
-            <div className="text-center py-20">
-              <div className="text-6xl mb-4">📅</div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">No events found</h3>
-              <p className="text-gray-600 mb-6">
-                {searchQuery
-                  ? `No events match "${searchQuery}"`
-                  : 'Check back soon for upcoming events!'}
-              </p>
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery('')}
-                  className="text-[#0dd5b5] font-semibold hover:underline"
-                >
-                  Clear search
-                </button>
-              )}
-            </div>
           ) : selectedType === 'all' && !searchQuery ? (
             // Show events grouped by type in carousels
             <>
@@ -373,7 +333,7 @@ export default function EventsPage() {
                 .map(([type, typeEvents]) => (
                   <section key={type} className="py-6">
                     <Carousel
-                      title={`${eventTypeIcons[type] || '📅'} ${eventTypeLabels[type] || type} Events`}
+                      title={`${eventTypeLabels[type] || type} Events`}
                       showDots={false}
                     >
                       {typeEvents.map((event) => (
@@ -401,6 +361,14 @@ export default function EventsPage() {
               </div>
             </section>
           )}
+
+          {/* Events Calendar — after featured events and any other events */}
+          <section className="py-8">
+            <EventCalendar
+              title="Events Calendar"
+              subtitle="Find upcoming events by date and register in a tap."
+            />
+          </section>
         </div>
       </main>
 

@@ -21,7 +21,7 @@ async function debugUser() {
 
   try {
     await client.connect()
-    console.log('\n✓ Connected to MongoDB\n')
+    console.log('\nConnected to MongoDB\n')
 
     const db = client.db()
     console.log('Database name:', db.databaseName)
@@ -50,7 +50,7 @@ async function debugUser() {
       console.log('\nFull document:')
       console.log(JSON.stringify(user, null, 2))
     } else {
-      console.log(`\n❌ No user found with email: ${USER_EMAIL}`)
+      console.log(`\nNo user found with email: ${USER_EMAIL}`)
 
       // Show all users
       console.log('\nAll users in database:')

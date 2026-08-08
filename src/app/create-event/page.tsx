@@ -6,36 +6,48 @@ import { useRouter } from 'next/navigation'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import Link from 'next/link'
+import {
+  DumbbellIcon,
+  TrophyIcon,
+  BookIcon,
+  LotusIcon,
+  HandshakeIcon,
+  CertificateIcon,
+  SparkleIcon,
+  ClipboardIcon,
+  MegaphoneIcon,
+  ChartBarIcon,
+} from '@/components/ui/icons'
 
 const eventTypes = [
-  { name: 'Fitness Classes', icon: '🏋️', description: 'Yoga, HIIT, spin, and more' },
-  { name: 'Competitions', icon: '🏆', description: 'Races, challenges, tournaments' },
-  { name: 'Workshops', icon: '📚', description: 'Educational sessions and seminars' },
-  { name: 'Wellness Retreats', icon: '🧘', description: 'Multi-day wellness experiences' },
-  { name: 'Community Meetups', icon: '🤝', description: 'Group runs, beach workouts' },
-  { name: 'Certification Courses', icon: '📜', description: 'Professional development' },
+  { name: 'Fitness Classes', Icon: DumbbellIcon, description: 'Yoga, HIIT, spin, and more' },
+  { name: 'Competitions', Icon: TrophyIcon, description: 'Races, challenges, tournaments' },
+  { name: 'Workshops', Icon: BookIcon, description: 'Educational sessions and seminars' },
+  { name: 'Wellness Retreats', Icon: LotusIcon, description: 'Multi-day wellness experiences' },
+  { name: 'Community Meetups', Icon: HandshakeIcon, description: 'Group runs, beach workouts' },
+  { name: 'Certification Courses', Icon: CertificateIcon, description: 'Professional development' },
 ]
 
 const features = [
   {
     title: 'Easy Event Creation',
     description: 'User-friendly form to create detailed event listings in minutes.',
-    icon: '✨',
+    Icon: SparkleIcon,
   },
   {
     title: 'Registration Management',
     description: 'Track attendees and manage event capacity effortlessly.',
-    icon: '📋',
+    Icon: ClipboardIcon,
   },
   {
     title: 'Promotion Tools',
     description: 'Featured placement options to maximize your event visibility.',
-    icon: '📢',
+    Icon: MegaphoneIcon,
   },
   {
     title: 'Analytics Dashboard',
     description: 'Track views, registrations, and engagement for your events.',
-    icon: '📊',
+    Icon: ChartBarIcon,
   },
 ]
 
@@ -104,7 +116,9 @@ export default function CreateEventPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {eventTypes.map((type, index) => (
                 <div key={index} className="bg-white rounded-xl shadow-sm p-6 flex items-start gap-4">
-                  <div className="text-4xl">{type.icon}</div>
+                  <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-[#0dd5b5]/10 text-[#0dd5b5]">
+                    <type.Icon className="w-6 h-6" />
+                  </div>
                   <div>
                     <h3 className="font-semibold text-gray-900 mb-1">{type.name}</h3>
                     <p className="text-sm text-gray-600">{type.description}</p>
@@ -123,8 +137,8 @@ export default function CreateEventPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {features.map((feature, index) => (
                 <div key={index} className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-[#f7d656]/20 rounded-lg flex items-center justify-center flex-shrink-0 text-2xl">
-                    {feature.icon}
+                  <div className="w-12 h-12 bg-[#f7d656]/20 rounded-lg flex items-center justify-center flex-shrink-0 text-[#3a2a00]">
+                    <feature.Icon className="w-6 h-6" />
                   </div>
                   <div>
                     <h3 className="font-semibold text-gray-900 mb-2">{feature.title}</h3>

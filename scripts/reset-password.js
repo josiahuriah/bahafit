@@ -59,7 +59,7 @@ async function resetPassword() {
     )
 
     if (result.modifiedCount === 1) {
-      console.log('\n✅ Password updated successfully!')
+      console.log('\nPassword updated successfully!')
       console.log(`   Email: ${USER_EMAIL}`)
       console.log(`   New Password: ${NEW_PASSWORD}`)
       console.log('\nYou can now log in with your new password.')

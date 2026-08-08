@@ -1,4 +1,5 @@
 import type {StructureResolver} from 'sanity/structure'
+import {UsersIcon, CalendarIcon, DumbbellIcon} from '../components/ui/icons'
 
 // https://www.sanity.io/docs/structure-builder-cheat-sheet
 export const structure: StructureResolver = (S) =>
@@ -8,7 +9,7 @@ export const structure: StructureResolver = (S) =>
       // Users Section
       S.listItem()
         .title('Users')
-        .icon(() => '👤')
+        .icon(UsersIcon)
         .child(
           S.list()
             .title('Users')
@@ -46,7 +47,7 @@ export const structure: StructureResolver = (S) =>
       // Fitness Events Section
       S.listItem()
         .title('Fitness Events')
-        .icon(() => '📅')
+        .icon(CalendarIcon)
         .child(
           S.list()
             .title('Fitness Events')
@@ -102,7 +103,7 @@ export const structure: StructureResolver = (S) =>
       // Fitness Listings Section
       S.listItem()
         .title('Fitness Listings')
-        .icon(() => '🏋️')
+        .icon(DumbbellIcon)
         .child(
           S.list()
             .title('Fitness Listings')
