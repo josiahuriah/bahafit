@@ -4,8 +4,9 @@ import Credentials from 'next-auth/providers/credentials'
 import Google from 'next-auth/providers/google'
 import Facebook from 'next-auth/providers/facebook'
 import { MongoDBAdapter } from '@auth/mongodb-adapter'
-import clientPromise from './db/mongodb'
-import { getUserByEmail, verifyPassword, createUser } from './db/models/user'
+import type { Adapter, AdapterUser } from 'next-auth/adapters'
+import { getClientPromise } from './db/mongodb'
+import { getUserByEmail, verifyPassword } from './db/models/user'
 import { User, UserRole } from '@/types/auth'
 
 // Extend NextAuth types
@@ -33,19 +34,33 @@ declare module 'next-auth' {
   }
 }
 
-// Create a custom adapter that wraps MongoDB adapter and ensures proper typing
-const adapter = MongoDBAdapter(clientPromise)
-const customAdapter = {
+// Passing a function keeps the connection lazy while ensuring Auth.js always
+// receives a real MongoClient promise rather than a Promise-shaped proxy.
+// The adapter currently resolves a patch-newer @auth/core than next-auth does.
+// Their Adapter shapes are runtime-compatible, so normalize the duplicate type.
+const adapter = MongoDBAdapter(getClientPromise) as unknown as Adapter
+const createAdapterUser = adapter.createUser
+
+if (!createAdapterUser) {
+  throw new Error('MongoDB adapter is missing createUser')
+}
+
+// Persist application-specific defaults when Auth.js creates an OAuth user.
+const customAdapter: Adapter = {
   ...adapter,
-  createUser: async (user: any) => {
-    const newUser = await adapter.createUser?.(user)
-    return {
-      ...newUser,
-      role: 'user' as UserRole,
-      isActive: true,
+  createUser: async (user: AdapterUser) => {
+    const now = new Date()
+    const userWithDefaults = {
+      ...user,
+      role: user.role ?? ('user' as UserRole),
+      isActive: user.isActive ?? true,
+      createdAt: now,
+      updatedAt: now,
     }
+
+    return createAdapterUser(userWithDefaults)
   },
-} as any
+}
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: customAdapter,
@@ -92,6 +107,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID || '',
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+      // Google verifies the email in its OIDC identity. This lets an existing
+      // password account sign in with Google without creating a duplicate user.
+      allowDangerousEmailAccountLinking: true,
     }),
     Facebook({
       clientId: process.env.FACEBOOK_CLIENT_ID || '',
@@ -107,20 +125,18 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     error: '/auth/error',
   },
   callbacks: {
-    async signIn({ user, account }) {
-      // For OAuth providers, ensure user has a role
-      if (account?.provider !== 'credentials') {
-        const existingUser = await getUserByEmail(user.email || '')
-        if (!existingUser && user.email && user.name) {
-          // Create new user with default role. No password is stored — the
-          // Credentials provider then correctly rejects sign-in attempts
-          // against an OAuth-only account.
-          await createUser({
-            name: user.name,
-            email: user.email,
-            image: user.image ?? undefined,
-          })
-        }
+    async signIn({ user, account, profile }) {
+      // Only permit automatic Google account linking for identities whose email
+      // Google explicitly marks as verified.
+      if (account?.provider === 'google' && profile?.email_verified !== true) {
+        return false
+      }
+
+      // Auth.js owns OAuth user creation and account linking. This callback only
+      // prevents an inactive existing user from bypassing that status via OAuth.
+      if (account?.provider !== 'credentials' && user.email) {
+        const existingUser = await getUserByEmail(user.email)
+        if (existingUser?.isActive === false) return false
       }
       return true
     },
@@ -128,8 +144,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       // Initial sign in
       if (user) {
         token.id = user.id || ''
-        token.role = user.role
-        token.isActive = user.isActive
+        token.role = user.role ?? 'user'
+        token.isActive = user.isActive ?? true
       }
 
       // Handle session updates
@@ -144,7 +160,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         if (dbUser) {
           // Normalize legacy roles: anything that isn't 'admin' becomes 'user'
           token.role = dbUser.role === 'admin' ? 'admin' : 'user'
-          token.isActive = dbUser.isActive
+          token.isActive = dbUser.isActive ?? true
         }
       }
 
@@ -177,7 +193,7 @@ export async function requireAuth(session: Session | null): Promise<User> {
     throw new Error('Account is inactive')
   }
 
-  return session.user as any
+  return session.user as unknown as User
 }
 
 export async function requireRole(session: Session | null, allowedRoles: UserRole[]): Promise<User> {

@@ -9,11 +9,10 @@ let client: MongoClient
 let clientPromise: Promise<MongoClient> | null = null
 
 declare global {
-  // eslint-disable-next-line no-var
   var _mongoClientPromise: Promise<MongoClient> | undefined
 }
 
-function getClientPromise(): Promise<MongoClient> {
+export function getClientPromise(): Promise<MongoClient> {
   if (!process.env.MONGODB_URI) {
     throw new Error('Please add your MONGODB_URI to .env.local')
   }
@@ -40,20 +39,6 @@ function getClientPromise(): Promise<MongoClient> {
 
   return clientPromise
 }
-
-// Create a proxy that delays connection until actually needed
-const clientPromiseProxy = new Proxy({} as Promise<MongoClient>, {
-  get(target, prop) {
-    const promise = getClientPromise()
-    return (promise as any)[prop]
-  },
-  apply(target, thisArg, args) {
-    const promise = getClientPromise()
-    return (promise as any).apply(thisArg, args)
-  }
-})
-
-export default clientPromiseProxy as Promise<MongoClient>
 
 export async function getDatabase(): Promise<Db> {
   const client = await getClientPromise()
