@@ -5,42 +5,32 @@ const options = {
   socketTimeoutMS: 10000,
 }
 
-let client: MongoClient
-let clientPromise: Promise<MongoClient> | null = null
+let client: MongoClient | undefined
 
 declare global {
-  var _mongoClientPromise: Promise<MongoClient> | undefined
+  var _mongoClient: MongoClient | undefined
 }
 
-export function getClientPromise(): Promise<MongoClient> {
+export function getMongoClient(): MongoClient {
   if (!process.env.MONGODB_URI) {
     throw new Error('Please add your MONGODB_URI to .env.local')
   }
 
-  if (clientPromise) {
-    return clientPromise
-  }
-
-  const uri = process.env.MONGODB_URI
-
   if (process.env.NODE_ENV === 'development') {
     // In development mode, use a global variable to preserve the connection
     // across hot reloads in Next.js
-    if (!global._mongoClientPromise) {
-      client = new MongoClient(uri, options)
-      global._mongoClientPromise = client.connect()
+    if (!global._mongoClient) {
+      global._mongoClient = new MongoClient(process.env.MONGODB_URI, options)
     }
-    clientPromise = global._mongoClientPromise
-  } else {
-    // In production mode, create a new client for each connection
-    client = new MongoClient(uri, options)
-    clientPromise = client.connect()
+    return global._mongoClient
   }
 
-  return clientPromise
+  // Reuse the client while a production server instance remains warm. The
+  // MongoDB driver connects lazily when the first operation is executed.
+  client ??= new MongoClient(process.env.MONGODB_URI, options)
+  return client
 }
 
 export async function getDatabase(): Promise<Db> {
-  const client = await getClientPromise()
-  return client.db(process.env.MONGODB_DB || 'bahafit')
+  return getMongoClient().db(process.env.MONGODB_DB || 'bahafit')
 }

@@ -5,7 +5,7 @@ import Google from 'next-auth/providers/google'
 import Facebook from 'next-auth/providers/facebook'
 import { MongoDBAdapter } from '@auth/mongodb-adapter'
 import type { Adapter, AdapterUser } from 'next-auth/adapters'
-import { getClientPromise } from './db/mongodb'
+import { getMongoClient } from './db/mongodb'
 import { getUserByEmail, verifyPassword } from './db/models/user'
 import { User, UserRole } from '@/types/auth'
 
@@ -34,11 +34,11 @@ declare module 'next-auth' {
   }
 }
 
-// Passing a function keeps the connection lazy while ensuring Auth.js always
-// receives a real MongoClient promise rather than a Promise-shaped proxy.
+// Passing a function keeps the connection lazy while ensuring Auth.js receives
+// a MongoClient directly, with no thenable object at the adapter boundary.
 // The adapter currently resolves a patch-newer @auth/core than next-auth does.
 // Their Adapter shapes are runtime-compatible, so normalize the duplicate type.
-const adapter = MongoDBAdapter(getClientPromise) as unknown as Adapter
+const adapter = MongoDBAdapter(getMongoClient) as unknown as Adapter
 const createAdapterUser = adapter.createUser
 
 if (!createAdapterUser) {
