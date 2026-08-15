@@ -352,11 +352,11 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* ─── Mobile (< md): compact hero followed immediately by both category
-            rows. On desktop this wrapper becomes `contents` so layout is unchanged. ─── */}
-        <div className="md:contents">
+        {/* ─── Mobile (< md): reserve the initial viewport for the hero and both
+            category rows. On desktop this wrapper becomes `contents`. ─── */}
+        <div className="flex min-h-[100svh] flex-col md:contents">
         {/* ─── Compact immersive hero (mobile < md) ─── */}
-        <section className="relative flex h-[330px] w-full shrink-0 flex-col overflow-hidden bg-black min-[380px]:h-[350px] sm:h-[380px] md:hidden">
+        <section className="relative flex h-[55svh] min-h-[330px] max-h-[520px] w-full shrink-0 flex-col overflow-hidden bg-black md:hidden">
           <Image
             src={heroImage}
             alt="Fitness in the Bahamas"
@@ -404,9 +404,9 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* ─── Category icons + location-first explore ─── */}
-        <section className="shrink-0 bg-white pt-4 pb-5 dark:bg-[#0f1117] md:pt-16 md:pb-14">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        {/* ─── Category icons ─── */}
+        <section className="flex min-h-[154px] flex-1 items-center bg-white py-4 dark:bg-[#0f1117] md:block md:min-h-0 md:py-16 md:pb-14">
+          <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-5 gap-x-1 gap-y-3 md:gap-x-3 md:gap-y-5">
               {categories.map(({ label, Icon, img, href }) => (
                 <Link
@@ -431,10 +431,19 @@ export default async function Home() {
                 </Link>
               ))}
             </div>
-            <CityExplore cities={upcomingCities} />
+            <div className="hidden md:block">
+              <CityExplore cities={upcomingCities} />
+            </div>
           </div>
         </section>
         </div>
+
+        {/* Location explore begins below the initial mobile viewport. */}
+        <section className="bg-white pb-10 dark:bg-[#0f1117] md:hidden">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6">
+            <CityExplore cities={upcomingCities} />
+          </div>
+        </section>
 
         {/* ─── Featured Events ─── */}
         <section className="bg-white dark:bg-[#0f1117] pb-10 md:pb-14">
