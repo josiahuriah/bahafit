@@ -14,6 +14,24 @@ const labelCls = 'block text-sm font-medium text-gray-700 mb-1'
 
 const MAX_MEDIA = 3
 const MAX_BYTES = 4 * 1024 * 1024
+const IMAGE_TYPES = new Set(['image/jpeg', 'image/png', 'image/gif', 'image/webp'])
+const VIDEO_TYPES = new Set(['video/mp4', 'video/quicktime', 'video/webm'])
+const IMAGE_EXTENSIONS = new Set(['jpg', 'jpeg', 'png', 'gif', 'webp'])
+const VIDEO_EXTENSIONS = new Set(['mp4', 'mov', 'webm'])
+
+function getMediaKind(file: File): 'image' | 'video' | null {
+  const type = file.type.toLowerCase()
+  if (IMAGE_TYPES.has(type)) return 'image'
+  if (VIDEO_TYPES.has(type)) return 'video'
+
+  if (!type) {
+    const extension = file.name.split('.').pop()?.toLowerCase() ?? ''
+    if (IMAGE_EXTENSIONS.has(extension)) return 'image'
+    if (VIDEO_EXTENSIONS.has(extension)) return 'video'
+  }
+
+  return null
+}
 
 interface PendingMedia {
   file: File
@@ -60,18 +78,32 @@ export default function LogWorkoutPage() {
     if (!files) return
     setError(null)
     const next: PendingMedia[] = []
+    const problems: string[] = []
     for (const file of Array.from(files)) {
-      if (media.length + next.length >= MAX_MEDIA) break
-      const isVideo = file.type.startsWith('video/')
-      const isImage = file.type.startsWith('image/')
-      if (!isVideo && !isImage) continue
-      if (file.size > MAX_BYTES) {
-        setError(`"${file.name}" is over 4MB — use a smaller photo or shorter clip.`)
+      if (media.length + next.length >= MAX_MEDIA) {
+        problems.push(`You can attach up to ${MAX_MEDIA} files.`)
+        break
+      }
+
+      const kind = getMediaKind(file)
+      if (!kind) {
+        const isHeic = /\.(heic|heif)$/i.test(file.name) || /image\/hei[cf]/i.test(file.type)
+        problems.push(
+          isHeic
+            ? `"${file.name}" is an HEIC photo. Convert it to JPEG or choose Most Compatible in your camera settings.`
+            : `"${file.name}" is not supported. Use JPEG, PNG, GIF, WebP, MP4, MOV, or WebM.`
+        )
         continue
       }
-      next.push({ file, previewUrl: URL.createObjectURL(file), isVideo })
+
+      if (file.size > MAX_BYTES) {
+        problems.push(`"${file.name}" is over 4MB — use a smaller photo or shorter clip.`)
+        continue
+      }
+      next.push({ file, previewUrl: URL.createObjectURL(file), isVideo: kind === 'video' })
     }
     if (next.length > 0) setMedia((m) => [...m, ...next])
+    if (problems.length > 0) setError(problems[0])
   }
 
   const removeMedia = (index: number) => {
@@ -97,8 +129,13 @@ export default function LogWorkoutPage() {
         const form = new FormData()
         form.append('file', media[i].file)
         const res = await fetch('/api/activities/media', { method: 'POST', body: form })
-        const data = await res.json()
-        if (!res.ok) throw new Error(data.error || 'Media upload failed')
+        const data = await res.json().catch(() => null)
+        if (!res.ok) {
+          const fallback = res.status === 413
+            ? 'This file is too large for the upload service. Use a file under 4MB.'
+            : 'Media upload failed'
+          throw new Error(data?.error || fallback)
+        }
         uploaded.push(data)
       }
 
@@ -265,7 +302,7 @@ export default function LogWorkoutPage() {
                     <span className="text-[11px] mt-1">Add</span>
                     <input
                       type="file"
-                      accept="image/jpeg,image/png,image/gif,image/webp,video/mp4,video/quicktime,video/webm"
+                      accept=".jpg,.jpeg,.png,.gif,.webp,.mp4,.mov,.webm,image/jpeg,image/png,image/gif,image/webp,video/mp4,video/quicktime,video/webm"
                       multiple
                       className="hidden"
                       onChange={(e) => { addFiles(e.target.files); e.target.value = '' }}

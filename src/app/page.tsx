@@ -352,11 +352,12 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* ─── Mobile (< md): hero + categories share one viewport. On desktop the
-            wrapper becomes `contents` so layout is unchanged. ─── */}
-        <div className="flex h-[100lvh] flex-col md:contents">
+        {/* ─── Mobile (< md): keep the hero tall enough for its content, then let
+            categories flow naturally below it. On desktop this wrapper becomes
+            `contents` so the layout is unchanged. ─── */}
+        <div className="md:contents">
         {/* ─── Immersive hero (mobile < md) — full-bleed photo, bottom-pinned ─── */}
-        <section className="relative flex min-h-0 flex-1 w-full flex-col overflow-hidden bg-black md:hidden">
+        <section className="relative flex h-[100svh] min-h-[620px] w-full flex-col overflow-hidden bg-black md:hidden">
           <Image
             src={heroImage}
             alt="Fitness in the Bahamas"
@@ -375,7 +376,7 @@ export default async function Home() {
           />
 
           {/* Bottom-pinned content */}
-          <div className="relative mt-auto px-6 pb-[30px]">
+          <div className="relative mt-auto px-6 pt-24 pb-[30px]">
             <h1 className="text-[38px] font-extrabold leading-[1.03] tracking-[-.02em] text-white [text-shadow:0_2px_24px_rgba(0,0,0,.5)]">
               One Platform.
               <br />
