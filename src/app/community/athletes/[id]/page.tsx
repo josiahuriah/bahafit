@@ -8,6 +8,7 @@ import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import ActivityCard, { Avatar, FeedActivity } from '@/components/community/ActivityCard'
 import { formatDuration } from '@/components/community/helpers'
+import { kilometersToMiles } from '@/lib/units'
 
 interface AthleteProfile {
   athlete: { _id: string; name: string; image?: string; createdAt?: string }
@@ -162,11 +163,11 @@ export default function AthletePage() {
               </div>
               <div className="bg-gray-50 border border-gray-100 rounded-xl px-4 py-3">
                 <p className="text-xs text-gray-500">Week distance</p>
-                <p className="text-xl font-bold text-gray-900">{stats.week.distanceKm} km</p>
+                <p className="text-xl font-bold text-gray-900">{kilometersToMiles(stats.week.distanceKm).toFixed(1)} mi</p>
               </div>
               <div className="bg-gray-50 border border-gray-100 rounded-xl px-4 py-3">
                 <p className="text-xs text-gray-500">All-time distance</p>
-                <p className="text-xl font-bold text-gray-900">{stats.allTime.distanceKm} km</p>
+                <p className="text-xl font-bold text-gray-900">{kilometersToMiles(stats.allTime.distanceKm).toFixed(1)} mi</p>
               </div>
               <div className="bg-gray-50 border border-gray-100 rounded-xl px-4 py-3">
                 <p className="text-xs text-gray-500">All-time time</p>

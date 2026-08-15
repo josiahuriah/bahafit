@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { SportIcon, SPORT_LABELS, formatDuration, formatPace, timeAgo } from './helpers'
+import { kilometersToMiles } from '@/lib/units'
 
 export interface FeedActivity {
   _id: string
@@ -93,7 +94,7 @@ export default function ActivityCard({
   const pace = formatPace(activity.durationSec, activity.distanceKm)
 
   const stats: Array<{ label: string; value: string }> = []
-  if (activity.distanceKm) stats.push({ label: 'Distance', value: `${activity.distanceKm.toFixed(2)} km` })
+  if (activity.distanceKm) stats.push({ label: 'Distance', value: `${kilometersToMiles(activity.distanceKm).toFixed(2)} mi` })
   stats.push({ label: 'Time', value: formatDuration(activity.durationSec) })
   if (pace) stats.push({ label: 'Pace', value: pace })
   if (activity.elevationGainM) stats.push({ label: 'Elevation', value: `${activity.elevationGainM} m` })

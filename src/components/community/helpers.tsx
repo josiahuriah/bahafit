@@ -1,4 +1,5 @@
 import React from 'react'
+import { KILOMETERS_PER_MILE } from '@/lib/units'
 
 export const SPORT_LABELS: Record<string, string> = {
   run: 'Run',
@@ -46,10 +47,10 @@ export function formatDuration(sec: number): string {
 
 export function formatPace(durationSec: number, distanceKm?: number): string | null {
   if (!distanceKm || distanceKm <= 0) return null
-  const secPerKm = durationSec / distanceKm
-  const m = Math.floor(secPerKm / 60)
-  const s = Math.round(secPerKm % 60)
-  return `${m}:${String(s).padStart(2, '0')} /km`
+  const secPerMile = (durationSec / distanceKm) * KILOMETERS_PER_MILE
+  const m = Math.floor(secPerMile / 60)
+  const s = Math.round(secPerMile % 60)
+  return `${m}:${String(s).padStart(2, '0')} /mi`
 }
 
 export function timeAgo(date: string | Date): string {

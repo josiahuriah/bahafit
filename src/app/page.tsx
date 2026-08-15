@@ -352,12 +352,11 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* ─── Mobile (< md): keep the hero tall enough for its content, then let
-            categories flow naturally below it. On desktop this wrapper becomes
-            `contents` so the layout is unchanged. ─── */}
+        {/* ─── Mobile (< md): compact hero followed immediately by both category
+            rows. On desktop this wrapper becomes `contents` so layout is unchanged. ─── */}
         <div className="md:contents">
-        {/* ─── Immersive hero (mobile < md) — full-bleed photo, bottom-pinned ─── */}
-        <section className="relative flex h-[100svh] min-h-[620px] w-full flex-col overflow-hidden bg-black md:hidden">
+        {/* ─── Compact immersive hero (mobile < md) ─── */}
+        <section className="relative flex h-[330px] w-full shrink-0 flex-col overflow-hidden bg-black min-[380px]:h-[350px] sm:h-[380px] md:hidden">
           <Image
             src={heroImage}
             alt="Fitness in the Bahamas"
@@ -376,48 +375,28 @@ export default async function Home() {
           />
 
           {/* Bottom-pinned content */}
-          <div className="relative mt-auto px-6 pt-24 pb-[30px]">
-            <h1 className="text-[38px] font-extrabold leading-[1.03] tracking-[-.02em] text-white [text-shadow:0_2px_24px_rgba(0,0,0,.5)]">
+          <div className="relative mt-auto px-5 pt-[92px] pb-4">
+            <h1 className="text-[32px] font-extrabold leading-[1.02] tracking-[-.02em] text-white [text-shadow:0_2px_24px_rgba(0,0,0,.5)] min-[380px]:text-[34px]">
               One Platform.
               <br />
               All Things <span className="text-[#F5BE2E]">Fitness.</span>
             </h1>
-            <p className="mt-[13px] text-[13px] leading-[1.6] text-white/90 [text-shadow:0_1px_10px_rgba(0,0,0,.5)]">
-              Discover fitness events &amp; businesses
-              <br />
-              List your events and businesses
-              <br />
-              Buy or sell tickets here
-              <br />
-              Connect with others through community
+            <p className="mt-2 max-w-[290px] text-[12px] leading-[1.45] text-white/90 [text-shadow:0_1px_10px_rgba(0,0,0,.5)]">
+              Discover events, businesses, tickets, and the Bahamian fitness community.
             </p>
 
-            {/* Category chips — equal-width */}
-            <div className="mt-[22px] mb-[18px] flex gap-[9px]">
-              {heroCategories.map(({ label, img, href }) => (
-                <Link
-                  key={label}
-                  href={href}
-                  className="flex flex-1 flex-col items-center gap-2 rounded-[17px] border border-white/[.28] bg-white/[.14] px-[3px] py-[13px] backdrop-blur-md transition-colors duration-200 hover:bg-white/[.28]"
-                >
-                  <Image src={img} alt={label} width={32} height={32} className="h-8 w-8 object-contain" />
-                  <span className="text-[11.5px] font-semibold text-white">{label}</span>
-                </Link>
-              ))}
-            </div>
-
             {/* CTAs */}
-            <div className="flex gap-[11px]">
+            <div className="mt-3 flex gap-[10px]">
               <Link
                 href="/events"
-                className="flex flex-1 items-center justify-center gap-2 rounded-[13px] bg-[#F5BE2E] px-4 py-[15px] text-[15px] font-bold text-[#3a2a00] active:scale-[0.98]"
+                className="flex flex-1 items-center justify-center gap-2 rounded-[12px] bg-[#F5BE2E] px-4 py-3 text-[14px] font-bold text-[#3a2a00] active:scale-[0.98]"
               >
                 Find Events
-                <HeroArrowIcon className="h-[18px] w-[18px]" />
+                <HeroArrowIcon className="h-4 w-4" />
               </Link>
               <Link
                 href="/listings"
-                className="flex items-center justify-center rounded-[13px] border border-white/50 bg-white/[.15] px-5 py-[15px] text-[15px] font-semibold text-white backdrop-blur-[6px] active:scale-[0.98]"
+                className="flex items-center justify-center rounded-[12px] border border-white/50 bg-white/[.15] px-5 py-3 text-[14px] font-semibold text-white backdrop-blur-[6px] active:scale-[0.98]"
               >
                 Listings
               </Link>
@@ -426,14 +405,14 @@ export default async function Home() {
         </section>
 
         {/* ─── Category icons + location-first explore ─── */}
-        <section className="shrink-0 bg-white dark:bg-[#0f1117] pt-12 pb-10 md:pt-16 md:pb-14">
+        <section className="shrink-0 bg-white pt-4 pb-5 dark:bg-[#0f1117] md:pt-16 md:pb-14">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-5 gap-x-2 gap-y-5 md:gap-x-3">
+            <div className="grid grid-cols-5 gap-x-1 gap-y-3 md:gap-x-3 md:gap-y-5">
               {categories.map(({ label, Icon, img, href }) => (
                 <Link
                   key={label}
                   href={href}
-                  className="group flex flex-col items-center gap-2.5"
+                  className="group flex flex-col items-center gap-1.5 md:gap-2.5"
                 >
                   {img ? (
                     <Image
@@ -441,14 +420,14 @@ export default async function Home() {
                       alt={label}
                       width={56}
                       height={56}
-                      className="h-11 w-11 object-contain md:h-14 md:w-14"
+                      className="h-9 w-9 object-contain md:h-14 md:w-14"
                     />
                   ) : (
-                    <span className="flex h-11 w-11 items-center justify-center rounded-full border-[1.8px] border-[#0dd5b5] bg-white dark:bg-transparent text-[#0dd5b5] transition-colors group-hover:bg-[#0dd5b5]/5 md:h-14 md:w-14">
+                    <span className="flex h-9 w-9 items-center justify-center rounded-full border-[1.8px] border-[#0dd5b5] bg-white text-[#0dd5b5] transition-colors group-hover:bg-[#0dd5b5]/5 dark:bg-transparent md:h-14 md:w-14">
                       <Icon className="h-4 w-4 md:h-6 md:w-6" />
                     </span>
                   )}
-                  <span className="text-[11px] font-semibold text-[#13191f] dark:text-white/80 md:text-sm">{label}</span>
+                  <span className="text-center text-[10px] font-semibold leading-tight text-[#13191f] dark:text-white/80 md:text-sm">{label}</span>
                 </Link>
               ))}
             </div>

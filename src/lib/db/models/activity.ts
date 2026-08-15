@@ -1,5 +1,6 @@
 import { Collection, ObjectId } from 'mongodb'
 import { getDatabase } from '../mongodb'
+import { KILOMETERS_PER_MILE, kilometersToMiles } from '@/lib/units'
 
 /**
  * Community feed activities — the "Strava layer" of Bahafit.
@@ -354,9 +355,10 @@ function fmtDuration(sec: number): string {
 }
 
 function fmtPace(secPerKm: number): string {
-  const m = Math.floor(secPerKm / 60)
-  const s = Math.round(secPerKm % 60)
-  return `${m}:${String(s).padStart(2, '0')} /km`
+  const secPerMile = secPerKm * KILOMETERS_PER_MILE
+  const m = Math.floor(secPerMile / 60)
+  const s = Math.round(secPerMile % 60)
+  return `${m}:${String(s).padStart(2, '0')} /mi`
 }
 
 export async function getAthleteStats(userId: string): Promise<AthleteStats> {
@@ -400,7 +402,7 @@ export async function getAthleteStats(userId: string): Promise<AthleteStats> {
   const bests: AthleteStats['bests'] = []
   for (const [sport, b] of Object.entries(bestBySport)) {
     if (b.maxDistance > 0) {
-      bests.push({ sportType: sport, label: `Longest ${sport === 'gym' ? 'workout' : sport}`, value: `${b.maxDistance.toFixed(1)} km` })
+      bests.push({ sportType: sport, label: `Longest ${sport === 'gym' ? 'workout' : sport}`, value: `${kilometersToMiles(b.maxDistance).toFixed(1)} mi` })
     }
     if (b.bestPace) {
       bests.push({ sportType: sport, label: `Best ${sport} pace`, value: fmtPace(b.bestPace) })

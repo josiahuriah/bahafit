@@ -8,6 +8,7 @@ import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import ActivityCard, { Avatar, FeedActivity } from '@/components/community/ActivityCard'
 import { formatDuration } from '@/components/community/helpers'
+import { kilometersToMiles } from '@/lib/units'
 
 type FeedScope = 'following' | 'all' | 'me'
 
@@ -212,8 +213,8 @@ export default function CommunityPage() {
                         <p className="text-[11px] text-gray-500">workouts</p>
                       </div>
                       <div>
-                        <p className="text-lg font-bold text-gray-900">{stats.week.distanceKm}</p>
-                        <p className="text-[11px] text-gray-500">km</p>
+                        <p className="text-lg font-bold text-gray-900">{kilometersToMiles(stats.week.distanceKm).toFixed(1)}</p>
+                        <p className="text-[11px] text-gray-500">mi</p>
                       </div>
                       <div>
                         <p className="text-lg font-bold text-gray-900">{formatDuration(stats.week.durationSec)}</p>

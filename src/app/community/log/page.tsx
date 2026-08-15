@@ -7,6 +7,7 @@ import Link from 'next/link'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import { SPORT_LABELS } from '@/components/community/helpers'
+import { milesToKilometers } from '@/lib/units'
 
 const inputCls =
   'w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-[#0dd5b5] bg-white'
@@ -49,7 +50,7 @@ export default function LogWorkoutPage() {
   const [time, setTime] = useState('07:00')
   const [hours, setHours] = useState('0')
   const [minutes, setMinutes] = useState('30')
-  const [distanceKm, setDistanceKm] = useState('')
+  const [distanceMiles, setDistanceMiles] = useState('')
   const [elevation, setElevation] = useState('')
   const [heartRate, setHeartRate] = useState('')
   const [calories, setCalories] = useState('')
@@ -149,7 +150,7 @@ export default function LogWorkoutPage() {
           sportType,
           startedAt: new Date(`${date}T${time}:00`).toISOString(),
           durationSec,
-          distanceKm: distanceKm ? Number(distanceKm) : undefined,
+          distanceKm: distanceMiles ? milesToKilometers(Number(distanceMiles)) : undefined,
           elevationGainM: elevation ? Number(elevation) : undefined,
           avgHeartRate: heartRate ? Number(heartRate) : undefined,
           calories: calories ? Number(calories) : undefined,
@@ -240,8 +241,8 @@ export default function LogWorkoutPage() {
                 <input type="number" min="0" max="59" className={inputCls} value={minutes} onChange={(e) => setMinutes(e.target.value)} />
               </div>
               <div>
-                <label className={labelCls}>Distance (km)</label>
-                <input type="number" min="0" step="0.01" className={inputCls} value={distanceKm} onChange={(e) => setDistanceKm(e.target.value)} placeholder="5.0" />
+                <label className={labelCls}>Distance (mi)</label>
+                <input type="number" min="0" step="0.01" className={inputCls} value={distanceMiles} onChange={(e) => setDistanceMiles(e.target.value)} placeholder="3.1" />
               </div>
               <div>
                 <label className={labelCls}>Elevation (m)</label>
