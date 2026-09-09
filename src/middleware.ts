@@ -1,56 +1,61 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import { GATE_COOKIE, getGateMode, verifyAccessToken } from './lib/siteGate'
 
-// Paths that stay reachable without the password prompt so framework
-// internals and static assets keep working. Everything else is gated when
-// COMING_SOON_MODE is on.
-function isPasswordExempt(pathname: string) {
+// Framework internals and static assets always load, whatever the gate does,
+// so the coming-soon page and the /enter page can render their own styling.
+function isAssetPath(pathname: string) {
   if (pathname.startsWith('/_next/')) return true
   if (pathname === '/favicon.ico' || pathname === '/robots.txt') return true
   if (/\.(?:png|jpe?g|svg|gif|webp|ico|css|js|woff2?|ttf|otf|map)$/i.test(pathname)) return true
   return false
 }
 
-// Simple HTTP Basic Auth check. Credentials default to admin / Fit4it! and
-// can be overridden with COMING_SOON_USER / COMING_SOON_PASSWORD.
-function hasValidPassword(request: NextRequest) {
-  const header = request.headers.get('authorization')
-  if (!header?.startsWith('Basic ')) return false
+// The site gate. Returns a response to short-circuit the request, or null to
+// let it continue to the normal auth checks below.
+//
+//   coming-soon → everyone is redirected to /coming-soon (the public block)
+//   password    → visitors must unlock the site on /enter with the shared
+//                 password (used on the developer build / preview deploys)
+//   off         → site is live, nothing is gated
+async function applyGate(request: NextRequest): Promise<NextResponse | null> {
+  const mode = getGateMode()
+  if (mode === 'off') return null
 
-  let decoded: string
-  try {
-    decoded = atob(header.slice('Basic '.length))
-  } catch {
-    return false
+  const { pathname } = request.nextUrl
+  if (isAssetPath(pathname)) return null
+
+  if (mode === 'coming-soon') {
+    // Pure public block: everyone lands on the marketing page, no bypass.
+    if (pathname === '/coming-soon' || pathname.startsWith('/coming-soon/')) {
+      return null
+    }
+    const url = request.nextUrl.clone()
+    url.pathname = '/coming-soon'
+    url.search = ''
+    return NextResponse.redirect(url)
   }
 
-  const separator = decoded.indexOf(':')
-  if (separator === -1) return false
+  // mode === 'password' — the developer build. Let test users open the real
+  // site by entering the shared password on the dedicated /enter page.
+  if (pathname === '/enter' || pathname === '/api/enter') return null
 
-  const user = decoded.slice(0, separator)
-  const password = decoded.slice(separator + 1)
+  const unlocked = await verifyAccessToken(request.cookies.get(GATE_COOKIE)?.value)
+  if (unlocked) return null
 
-  const expectedUser = process.env.COMING_SOON_USER ?? 'admin'
-  const expectedPassword = process.env.COMING_SOON_PASSWORD ?? 'Fit4it!'
-
-  return user === expectedUser && password === expectedPassword
+  const enterUrl = new URL('/enter', request.url)
+  const target = pathname + request.nextUrl.search
+  if (target && target !== '/') {
+    enterUrl.searchParams.set('callbackUrl', target)
+  }
+  return NextResponse.redirect(enterUrl)
 }
 
 export async function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl
+  const gateResponse = await applyGate(request)
+  if (gateResponse) return gateResponse
 
-  if (
-    process.env.COMING_SOON_MODE === 'true' &&
-    !isPasswordExempt(pathname) &&
-    !hasValidPassword(request)
-  ) {
-    return new NextResponse('Authentication required.', {
-      status: 401,
-      headers: {
-        'WWW-Authenticate': 'Basic realm="Bahafit", charset="UTF-8"',
-      },
-    })
-  }
+  const { pathname } = request.nextUrl
 
   const sessionToken =
     request.cookies.get('authjs.session-token')?.value ||
