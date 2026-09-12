@@ -352,11 +352,11 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* ─── Mobile (< md): reserve the initial viewport for the hero and both
-            category rows. On desktop this wrapper becomes `contents`. ─── */}
-        <div className="flex min-h-[100svh] flex-col md:contents">
+        {/* ─── Mobile (< md): hero + category icons flow naturally. On desktop
+            this wrapper becomes `contents` so it drops out of the layout. ─── */}
+        <div className="md:contents">
         {/* ─── Compact immersive hero (mobile < md) ─── */}
-        <section className="relative flex h-[55svh] min-h-[330px] max-h-[520px] w-full shrink-0 flex-col overflow-hidden bg-black md:hidden">
+        <section className="relative flex h-[64svh] min-h-[460px] max-h-[600px] w-full shrink-0 flex-col overflow-hidden bg-black md:hidden">
           <Image
             src={heroImage}
             alt="Fitness in the Bahamas"
@@ -375,7 +375,7 @@ export default async function Home() {
           />
 
           {/* Bottom-pinned content */}
-          <div className="relative mt-auto px-5 pt-[92px] pb-4">
+          <div className="relative mt-auto px-5 pt-16 pb-4">
             <h1 className="text-[32px] font-extrabold leading-[1.02] tracking-[-.02em] text-white [text-shadow:0_2px_24px_rgba(0,0,0,.5)] min-[380px]:text-[34px]">
               One Platform.
               <br />
@@ -384,6 +384,20 @@ export default async function Home() {
             <p className="mt-2 max-w-[290px] text-[12px] leading-[1.45] text-white/90 [text-shadow:0_1px_10px_rgba(0,0,0,.5)]">
               Discover events, businesses, tickets, and the Bahamian fitness community.
             </p>
+
+            {/* Category chips — mirror the desktop hero: discover → list → buy/sell → connect */}
+            <div className="mt-4 flex gap-2">
+              {heroCategories.map(({ label, img, href }) => (
+                <Link
+                  key={label}
+                  href={href}
+                  className="flex flex-1 flex-col items-center gap-1.5 rounded-[16px] border border-white/[.26] bg-white/[.13] px-1 py-3 backdrop-blur-md transition-colors duration-200 hover:bg-white/[.26] active:scale-[0.98]"
+                >
+                  <Image src={img} alt={label} width={30} height={30} className="h-7 w-7 object-contain" />
+                  <span className="text-[11px] font-semibold text-white">{label}</span>
+                </Link>
+              ))}
+            </div>
 
             {/* CTAs */}
             <div className="mt-3 flex gap-[10px]">
@@ -405,7 +419,7 @@ export default async function Home() {
         </section>
 
         {/* ─── Category icons ─── */}
-        <section className="flex min-h-[154px] flex-1 items-center bg-white py-4 dark:bg-[#0f1117] md:block md:min-h-0 md:py-16 md:pb-14">
+        <section className="bg-white pt-5 pb-6 dark:bg-[#0f1117] md:py-14 md:pb-12">
           <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-5 gap-x-1 gap-y-3 md:gap-x-3 md:gap-y-5">
               {categories.map(({ label, Icon, img, href }) => (

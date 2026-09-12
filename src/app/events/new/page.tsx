@@ -654,6 +654,17 @@ export default function CreateEventPage() {
               </div>
             </SectionCard>
 
+            {/* ── Payout notice ── */}
+            <div className="flex items-start gap-3 rounded-2xl border border-[#0dd5b5]/30 bg-[#0dd5b5]/[0.07] px-5 py-4">
+              <svg className="mt-0.5 h-5 w-5 flex-shrink-0 text-[#0a9d86]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 21h18M4 10h16M5 10l7-6 7 6M6 10v11M18 10v11M10 10v11M14 10v11" />
+              </svg>
+              <p className="text-sm leading-relaxed text-gray-600">
+                <span className="font-semibold text-gray-800">All payouts are made via bank transfer.</span>{' '}
+                To receive payment, organizers and businesses are required to provide their banking information to Bahafit.
+              </p>
+            </div>
+
             {/* ── Error ── */}
             {submitError && (
               <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-xl px-4 py-3">

@@ -78,7 +78,7 @@ export default function ListYourBusinessPage() {
             Join the Caribbean's premier fitness directory and connect with thousands of health-conscious customers.
           </p>
           <Link
-            href="/auth/signup"
+            href="/auth/signup?callbackUrl=/listings/new"
             className="inline-flex items-center justify-center px-8 py-4 bg-white text-[#0dd5b5] font-semibold rounded-lg hover:bg-gray-100 transition-colors text-lg"
           >
             Get Started Free
